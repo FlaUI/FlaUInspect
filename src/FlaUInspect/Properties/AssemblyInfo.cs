@@ -6,7 +6,7 @@ using System.Windows;
 [assembly: AssemblyDescription("Tool to inspect applications from an UI side.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Roemer")]
-[assembly: AssemblyProduct("FlaUI")]
+[assembly: AssemblyProduct("FlaUInspect")]
 [assembly: AssemblyCopyright("Copyright © 2016-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,6 +22,6 @@ using System.Windows;
     // app, or any theme specific resource dictionaries)
     )]
 
-[assembly: AssemblyVersion("1.1.0")]
-[assembly: AssemblyFileVersion("1.1.0")]
-[assembly: AssemblyInformationalVersion("1.1.0")]
+[assembly: AssemblyVersion("1.2.0")]
+[assembly: AssemblyFileVersion("1.2.0")]
+[assembly: AssemblyInformationalVersion("1.2.0")]

@@ -1,10 +1,10 @@
 # Changelog
 
-## vnext (xxxx-xx-xx)
+## 1.2.0 (2017-05-24)
 
 ### Enhancements
-
-### Bug fixes
+  * Moved to its own repository
+  * New logo
 
 ## Older changes
 See https://raw.githubusercontent.com/Roemer/FlaUI/master/CHANGELOG.md
