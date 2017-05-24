@@ -1,4 +1,12 @@
 # FlaUInspect
+
+### Build
+
+| *Build* | [![Build status](https://ci.appveyor.com/api/projects/status/w9mh36aegw6rutpu?svg=true)](https://ci.appveyor.com/project/RomanBaeriswyl/flauinspect) |
+| *FlaUInspect* | [![FlaUInspect](https://img.shields.io/badge/FlaUInspect-choco-brightgreen.svg)](https://chocolatey.org/packages/flauinspect)<br />`choco install flauinspect` |
+| *CI Artefacts* | [FlauInspect CI](https://ci.appveyor.com/project/RomanBaeriswyl/flauinspect/build/artifacts) |
+
+### Description
 There are various tools around which help inspecting application that should be ui tested or automated. Some of them are:
 * VisualUIAVerify
 * Inspect
