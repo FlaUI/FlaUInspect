@@ -74,7 +74,7 @@ namespace FlaUInspect.ViewModels
 
         public string AutomationId => NormalizeString(AutomationElement.Properties.AutomationId.ValueOrDefault);
 
-        public ControlType ControlType => AutomationElement.Properties.ControlType.Value;
+        public ControlType ControlType => AutomationElement.Properties.ControlType.TryGetValue(out ControlType value) ? value : ControlType.Custom;
 
         public ExtendedObservableCollection<ElementViewModel> Children { get; set; }
 
@@ -324,7 +324,7 @@ namespace FlaUInspect.ViewModels
                 };
                 detailGroups.Add(new DetailGroupViewModel("Window Pattern", patternDetails));
             }
-            
+
             return detailGroups;
         }
 
