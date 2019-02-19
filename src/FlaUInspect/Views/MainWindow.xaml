@@ -16,11 +16,15 @@
         </Style>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="F5" Command="{Binding RefreshCommand}"/>
+    </Window.InputBindings>
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_New Instance" Command="{Binding StartNewInstanceCommand}" />
+                    <MenuItem Header="_Refresh" Command="{Binding RefreshCommand}" InputGestureText="F5" />
                     <Separator />
                     <MenuItem Header="E_xit" Click="MenuItem_Click" />
                 </MenuItem>
