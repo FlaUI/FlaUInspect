@@ -89,7 +89,8 @@ namespace FlaUInspect.ViewModels
                 child.SelectionChanged -= SelectionChanged;
             }
             var childrenViewModels = new List<ElementViewModel>();
-            foreach (var child in AutomationElement.FindAll(TreeScope.Children, new TrueCondition(), TimeSpan.Zero))
+   
+            foreach (var child in AutomationElement.FindAll(TreeScope.Children, new BoolCondition(true), TimeSpan.Zero))
             {
                 var childViewModel = new ElementViewModel(child);
                 childViewModel.SelectionChanged += SelectionChanged;
@@ -122,7 +123,7 @@ namespace FlaUInspect.ViewModels
             cacheRequest.Add(AutomationElement.Automation.PropertyLibrary.Element.NativeWindowHandle);
             using (cacheRequest.Activate())
             {
-                var elementCached = AutomationElement.FindFirst(TreeScope.Element, new TrueCondition());
+                var elementCached = AutomationElement.FindFirst(TreeScope.Element, new BoolCondition(true));
                 // Element identification
                 var identification = new List<IDetailViewModel>
                 {
