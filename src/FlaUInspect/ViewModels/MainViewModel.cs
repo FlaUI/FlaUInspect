@@ -1,16 +1,15 @@
-﻿using System;
+﻿using FlaUI.Core;
+using FlaUI.Core.AutomationElements.Infrastructure;
+using FlaUI.UIA2;
+using FlaUI.UIA3;
+using FlaUInspect.Core;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
-using FlaUI.Core;
-using FlaUI.Core.AutomationElements.Infrastructure;
-using FlaUI.UIA2;
-using FlaUI.UIA3;
-using FlaUI.UIA3.EventHandlers;
-using FlaUInspect.Core;
 
 namespace FlaUInspect.ViewModels
 {
