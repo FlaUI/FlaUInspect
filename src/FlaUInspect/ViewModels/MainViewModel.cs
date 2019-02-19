@@ -9,6 +9,7 @@ using FlaUI.Core;
 using FlaUI.Core.AutomationElements.Infrastructure;
 using FlaUI.UIA2;
 using FlaUI.UIA3;
+using FlaUI.UIA3.EventHandlers;
 using FlaUInspect.Core;
 
 namespace FlaUInspect.ViewModels
@@ -28,6 +29,11 @@ namespace FlaUInspect.ViewModels
             {
                 var info = new ProcessStartInfo(Assembly.GetExecutingAssembly().Location);
                 Process.Start(info);
+            });
+
+            RefreshCommand = new RelayCommand(o =>
+            {
+                RefreshTree();
             });
         }
 
@@ -79,6 +85,8 @@ namespace FlaUInspect.ViewModels
 
         public ICommand StartNewInstanceCommand { get; private set; }
 
+        public ICommand RefreshCommand { get; private set; }
+
         public ObservableCollection<DetailGroupViewModel> SelectedItemDetails => SelectedItemInTree?.ItemDetails;
 
         public ElementViewModel SelectedItemInTree
@@ -98,10 +106,11 @@ namespace FlaUInspect.ViewModels
             desktopViewModel.SelectionChanged += DesktopViewModel_SelectionChanged;
             desktopViewModel.LoadChildren(false);
             Elements.Add(desktopViewModel);
+            Elements[0].IsExpanded = true;
 
             // Initialize TreeWalker
             _treeWalker = _automation.TreeWalkerFactory.GetControlViewWalker();
-
+            
             // Initialize hover
             _hoverMode = new HoverMode(_automation);
             _hoverMode.ElementHovered += ElementToSelectChanged;
@@ -176,6 +185,12 @@ namespace FlaUInspect.ViewModels
         {
             SelectedItemInTree = obj;
             OnPropertyChanged(() => SelectedItemDetails);
+        }
+
+        private void RefreshTree()
+        {
+            Elements.Clear();
+            Initialize(SelectedAutomationType);
         }
     }
 }
