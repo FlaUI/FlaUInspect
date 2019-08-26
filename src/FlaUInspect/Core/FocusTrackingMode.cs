@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using FlaUI.Core;
-using FlaUI.Core.AutomationElements.Infrastructure;
+using FlaUI.Core.AutomationElements;
 using FlaUI.Core.EventHandlers;
 
 namespace FlaUInspect.Core
@@ -10,7 +10,7 @@ namespace FlaUInspect.Core
     public class FocusTrackingMode
     {
         private readonly AutomationBase _automation;
-        private IAutomationFocusChangedEventHandler _eventHandler;
+        private FocusChangedEventHandlerBase _eventHandler;
         private AutomationElement _currentFocusedElement;
 
         public event Action<AutomationElement> ElementFocused;
@@ -29,7 +29,7 @@ namespace FlaUInspect.Core
 
         public void Stop()
         {
-            _automation.UnRegisterFocusChangedEvent(_eventHandler);
+            _automation.UnregisterFocusChangedEvent(_eventHandler);
         }
 
         private void OnFocusChanged(AutomationElement automationElement)

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
 using FlaUI.Core;
-using FlaUI.Core.AutomationElements.Infrastructure;
+using FlaUI.Core.AutomationElements;
 using FlaUI.UIA2;
 using FlaUI.UIA3;
 using FlaUInspect.Core;

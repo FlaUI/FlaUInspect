@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Media;
-using FlaUI.Core.AutomationElements.Infrastructure;
+﻿using System.Drawing;
+using System.Threading.Tasks;
+using FlaUI.Core.AutomationElements;
 
 namespace FlaUInspect.Core
 {
@@ -8,7 +8,7 @@ namespace FlaUInspect.Core
     {
         public static void HighlightElement(AutomationElement automationElement)
         {
-            Task.Run(() => automationElement.DrawHighlight(false, Colors.Red, 1000));
+            Task.Run(() => automationElement.DrawHighlight(false, Color.Red));
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using FlaUI.Core;
-using FlaUI.Core.AutomationElements.Infrastructure;
+using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
 using FlaUI.Core.Tools;
@@ -89,7 +89,7 @@ namespace FlaUInspect.ViewModels
                 child.SelectionChanged -= SelectionChanged;
             }
             var childrenViewModels = new List<ElementViewModel>();
-            foreach (var child in AutomationElement.FindAll(TreeScope.Children, new TrueCondition(), TimeSpan.Zero))
+            foreach (var child in AutomationElement.FindAll(TreeScope.Children, TrueCondition.Default))
             {
                 var childViewModel = new ElementViewModel(child);
                 childViewModel.SelectionChanged += SelectionChanged;
@@ -122,7 +122,7 @@ namespace FlaUInspect.ViewModels
             cacheRequest.Add(AutomationElement.Automation.PropertyLibrary.Element.NativeWindowHandle);
             using (cacheRequest.Activate())
             {
-                var elementCached = AutomationElement.FindFirst(TreeScope.Element, new TrueCondition());
+                var elementCached = AutomationElement.FindFirst(TreeScope.Element, TrueCondition.Default);
                 // Element identification
                 var identification = new List<IDetailViewModel>
                 {
@@ -158,7 +158,7 @@ namespace FlaUInspect.ViewModels
             }
 
             // Pattern details
-            var allSupportedPatterns = AutomationElement.BasicAutomationElement.GetSupportedPatterns();
+            var allSupportedPatterns = AutomationElement.GetSupportedPatterns();
             var allPatterns = AutomationElement.Automation.PatternLibrary.AllForCurrentFramework;
             var patterns = new List<DetailViewModel>();
             foreach (var pattern in allPatterns)
