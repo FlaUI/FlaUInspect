@@ -97,17 +97,29 @@ namespace FlaUInspect.ViewModels
             {
                 child.SelectionChanged -= SelectionChanged;
             }
+
             var childrenViewModels = new List<ElementViewModel>();
-            foreach (var child in AutomationElement.FindAll(TreeScope.Children, TrueCondition.Default))
+
+            try
             {
-                var childViewModel = new ElementViewModel(child);
-                childViewModel.SelectionChanged += SelectionChanged;
-                childrenViewModels.Add(childViewModel);
-                if (loadInnerChildren)
+
+                foreach (var child in AutomationElement.FindAllChildren())
                 {
-                    childViewModel.LoadChildren(false);
+                    var childViewModel = new ElementViewModel(child);
+                    childViewModel.SelectionChanged += SelectionChanged;
+                    childrenViewModels.Add(childViewModel);
+
+                    if (loadInnerChildren)
+                    {
+                        childViewModel.LoadChildren(false);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+
             Children.Reset(childrenViewModels);
         }
 
