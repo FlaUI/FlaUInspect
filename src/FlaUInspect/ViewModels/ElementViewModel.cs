@@ -30,29 +30,38 @@ namespace FlaUInspect.ViewModels
             get { return GetProperty<bool>(); }
             set
             {
-                SetProperty(value);
-                if (value)
+                try
                 {
-                    ElementHighlighter.HighlightElement(AutomationElement);
-                    // Async load details
-                    var unused = Task.Run(() =>
+                    if (value)
                     {
-                        var details = LoadDetails();
-                        return details;
-                    }).ContinueWith(items =>
-                    {
-                        if (items.IsFaulted)
-                        {
-                            if (items.Exception != null)
-                            {
-                                MessageBox.Show(items.Exception.ToString());
-                            }
-                        }
-                        ItemDetails.Reset(items.Result);
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
+                        ElementHighlighter.HighlightElement(AutomationElement);
 
-                    // Fire the selection event
-                    SelectionChanged?.Invoke(this);
+                        // Async load details
+                        var unused = Task.Run(() =>
+                        {
+                            var details = LoadDetails();
+                            return details;
+                        }).ContinueWith(items =>
+                        {
+                            if (items.IsFaulted)
+                            {
+                                if (items.Exception != null)
+                                {
+                                    MessageBox.Show(items.Exception.ToString());
+                                }
+                            }
+                            ItemDetails.Reset(items.Result);
+                        }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                        // Fire the selection event
+                        SelectionChanged?.Invoke(this);
+                    }
+
+                    SetProperty(value);
+                }
+                catch (Exception ex)
+                {
+                    Console.Write(ex.ToString());
                 }
             }
         }
