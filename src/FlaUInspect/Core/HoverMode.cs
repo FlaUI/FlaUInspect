@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Threading;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
@@ -40,21 +41,30 @@ namespace FlaUInspect.Core
             if (System.Windows.Input.Keyboard.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Control))
             {
                 var screenPos = Mouse.Position;
-                var hoveredElement = _automation.FromPoint(screenPos);
-                // Skip items in the current process
-                // Like Inspect itself or the overlay window
-                if (hoveredElement.Properties.ProcessId == Process.GetCurrentProcess().Id)
+                try
                 {
-                    return;
+                    var hoveredElement = _automation.FromPoint(screenPos);
+                    // Skip items in the current process
+                    // Like Inspect itself or the overlay window
+                    if (hoveredElement.Properties.ProcessId == Process.GetCurrentProcess().Id)
+                    {
+                        return;
+                    }
+                    if (!Equals(_currentHoveredElement, hoveredElement))
+                    {
+                        _currentHoveredElement = hoveredElement;
+                        ElementHovered?.Invoke(hoveredElement);
+                    }
+                    else
+                    {
+                        ElementHighlighter.HighlightElement(hoveredElement);
+                    }
                 }
-                if (!Equals(_currentHoveredElement, hoveredElement))
+                catch (UnauthorizedAccessException)
                 {
-                    _currentHoveredElement = hoveredElement;
-                    ElementHovered?.Invoke(hoveredElement);
-                }
-                else
-                {
-                    ElementHighlighter.HighlightElement(hoveredElement);
+                    string caption = "FlaUInspect - Unauthorized access exception";
+                    string message = "You are accessing a protected UI element in hover mode.\nTry to start FlaUInspect as administrator.";
+                    MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }
