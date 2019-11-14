@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using FlaUI.Core;
-using FlaUI.Core.AutomationElements.Infrastructure;
+using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
+using FlaUI.Core.Identifiers;
 using FlaUI.Core.Tools;
+using FlaUI.UIA3.Identifiers;
 using FlaUInspect.Core;
 
 namespace FlaUInspect.ViewModels
@@ -89,7 +91,8 @@ namespace FlaUInspect.ViewModels
                 child.SelectionChanged -= SelectionChanged;
             }
             var childrenViewModels = new List<ElementViewModel>();
-            foreach (var child in AutomationElement.FindAll(TreeScope.Children, new TrueCondition(), TimeSpan.Zero))
+            
+            foreach (var child in AutomationElement.FindAllChildren())
             {
                 var childViewModel = new ElementViewModel(child);
                 childViewModel.SelectionChanged += SelectionChanged;
@@ -122,7 +125,7 @@ namespace FlaUInspect.ViewModels
             cacheRequest.Add(AutomationElement.Automation.PropertyLibrary.Element.NativeWindowHandle);
             using (cacheRequest.Activate())
             {
-                var elementCached = AutomationElement.FindFirst(TreeScope.Element, new TrueCondition());
+                var elementCached = AutomationElement.FindFirst(TreeScope.Element, TrueCondition.Default);
                 // Element identification
                 var identification = new List<IDetailViewModel>
                 {
@@ -158,7 +161,7 @@ namespace FlaUInspect.ViewModels
             }
 
             // Pattern details
-            var allSupportedPatterns = AutomationElement.BasicAutomationElement.GetSupportedPatterns();
+            var allSupportedPatterns = AutomationElement.FrameworkAutomationElement.GetSupportedPatterns();
             var allPatterns = AutomationElement.Automation.PatternLibrary.AllForCurrentFramework;
             var patterns = new List<DetailViewModel>();
             foreach (var pattern in allPatterns)
@@ -287,6 +290,21 @@ namespace FlaUInspect.ViewModels
                     DetailViewModel.FromAutomationProperty("RowOrColumnMajor", pattern.RowOrColumnMajor)
                 };
                 detailGroups.Add(new DetailGroupViewModel("Table Pattern", patternDetails));
+            }
+            // TextPattern
+            if (allSupportedPatterns.Contains(AutomationElement.Automation.PatternLibrary.TextPattern))
+            {
+                var pattern = AutomationElement.Patterns.Text.Pattern;
+                var foreColor = (int)pattern.DocumentRange.GetAttributeValue(TextAttributes.ForegroundColor);
+                var backColor = (int)pattern.DocumentRange.GetAttributeValue(TextAttributes.BackgroundColor);
+                var patternDetails = new List<DetailViewModel>
+                {
+                    new DetailViewModel("ForeColor", $"{System.Drawing.Color.FromArgb(foreColor)} ({foreColor})"),
+                    new DetailViewModel("ForeColor", $"{System.Drawing.Color.FromArgb(backColor)} ({backColor})"),
+                };
+
+                var c = System.Drawing.Color.FromArgb(32768);
+                detailGroups.Add(new DetailGroupViewModel("Text Pattern", patternDetails));
             }
             // TogglePattern
             if (allSupportedPatterns.Contains(AutomationElement.Automation.PatternLibrary.TogglePattern))

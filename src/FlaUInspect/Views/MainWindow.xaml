@@ -21,6 +21,7 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_New Instance" Command="{Binding StartNewInstanceCommand}" />
+                    <MenuItem Header="_Capture selected item" Command="{Binding CaptureSelectedItemCommand}" />
                     <Separator />
                     <MenuItem Header="E_xit" Click="MenuItem_Click" />
                 </MenuItem>
