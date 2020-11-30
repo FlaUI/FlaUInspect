@@ -15,6 +15,8 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -41,14 +43,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
-    <Reference Include="FlaUI.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FlaUI.Core.2.0.0-rc1\lib\net45\FlaUI.Core.dll</HintPath>
+    <Reference Include="FlaUI.Core, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FlaUI.Core.3.2.0\lib\net45\FlaUI.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FlaUI.UIA2, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FlaUI.UIA2.2.0.0-rc1\lib\net471\FlaUI.UIA2.dll</HintPath>
+    <Reference Include="FlaUI.UIA2, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FlaUI.UIA2.3.2.0\lib\net471\FlaUI.UIA2.dll</HintPath>
     </Reference>
-    <Reference Include="FlaUI.UIA3, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FlaUI.UIA3.2.0.0-rc1\lib\net45\FlaUI.UIA3.dll</HintPath>
+    <Reference Include="FlaUI.UIA3, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FlaUI.UIA3.3.2.0\lib\net45\FlaUI.UIA3.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.UIAutomationClient, Version=10.0.19041.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Interop.UIAutomationClient.10.19041.0\lib\net45\Interop.UIAutomationClient.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
@@ -197,5 +202,12 @@
       <MoveToLibFolder Include="$(OutDir)*.dll ; $(OutDir)*.pdb ; $(OutDir)*.xml" />
     </ItemGroup>
     <Move SourceFiles="@(MoveToLibFolder)" DestinationFolder="$(OutDir)Libs" OverwriteReadOnlyFiles="true" />
+  </Target>
+  <Import Project="..\packages\Interop.UIAutomationClient.10.19041.0\build\Interop.UIAutomationClient.targets" Condition="Exists('..\packages\Interop.UIAutomationClient.10.19041.0\build\Interop.UIAutomationClient.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Interop.UIAutomationClient.10.19041.0\build\Interop.UIAutomationClient.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Interop.UIAutomationClient.10.19041.0\build\Interop.UIAutomationClient.targets'))" />
   </Target>
 </Project>
