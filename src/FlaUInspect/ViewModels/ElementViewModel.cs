@@ -91,7 +91,7 @@ namespace FlaUInspect.ViewModels
                 child.SelectionChanged -= SelectionChanged;
             }
             var childrenViewModels = new List<ElementViewModel>();
-            
+
             foreach (var child in AutomationElement.FindAllChildren())
             {
                 var childViewModel = new ElementViewModel(child);
@@ -126,38 +126,41 @@ namespace FlaUInspect.ViewModels
             using (cacheRequest.Activate())
             {
                 var elementCached = AutomationElement.FindFirst(TreeScope.Element, TrueCondition.Default);
-                // Element identification
-                var identification = new List<IDetailViewModel>
+                if (elementCached != null)
                 {
-                    DetailViewModel.FromAutomationProperty("AutomationId", elementCached.Properties.AutomationId),
-                    DetailViewModel.FromAutomationProperty("Name", elementCached.Properties.Name),
-                    DetailViewModel.FromAutomationProperty("ClassName", elementCached.Properties.ClassName),
-                    DetailViewModel.FromAutomationProperty("ControlType", elementCached.Properties.ControlType),
-                    DetailViewModel.FromAutomationProperty("LocalizedControlType", elementCached.Properties.LocalizedControlType),
-                    new DetailViewModel("FrameworkType", elementCached.FrameworkType.ToString()),
-                    DetailViewModel.FromAutomationProperty("FrameworkId", elementCached.Properties.FrameworkId),
-                    DetailViewModel.FromAutomationProperty("ProcessId", elementCached.Properties.ProcessId),
-                };
-                detailGroups.Add(new DetailGroupViewModel("Identification", identification));
+                    // Element identification
+                    var identification = new List<IDetailViewModel>
+                    {
+                        DetailViewModel.FromAutomationProperty("AutomationId", elementCached.Properties.AutomationId),
+                        DetailViewModel.FromAutomationProperty("Name", elementCached.Properties.Name),
+                        DetailViewModel.FromAutomationProperty("ClassName", elementCached.Properties.ClassName),
+                        DetailViewModel.FromAutomationProperty("ControlType", elementCached.Properties.ControlType),
+                        DetailViewModel.FromAutomationProperty("LocalizedControlType", elementCached.Properties.LocalizedControlType),
+                        new DetailViewModel("FrameworkType", elementCached.FrameworkType.ToString()),
+                        DetailViewModel.FromAutomationProperty("FrameworkId", elementCached.Properties.FrameworkId),
+                        DetailViewModel.FromAutomationProperty("ProcessId", elementCached.Properties.ProcessId),
+                    };
+                    detailGroups.Add(new DetailGroupViewModel("Identification", identification));
 
-                // Element details
-                var details = new List<DetailViewModel>
-                {
-                    DetailViewModel.FromAutomationProperty("IsEnabled", elementCached.Properties.IsEnabled),
-                    DetailViewModel.FromAutomationProperty("IsOffscreen", elementCached.Properties.IsOffscreen),
-                    DetailViewModel.FromAutomationProperty("BoundingRectangle", elementCached.Properties.BoundingRectangle),
-                    DetailViewModel.FromAutomationProperty("HelpText", elementCached.Properties.HelpText),
-                    DetailViewModel.FromAutomationProperty("IsPassword", elementCached.Properties.IsPassword)
-                };
-                // Special handling for NativeWindowHandle
-                var nativeWindowHandle = elementCached.Properties.NativeWindowHandle.ValueOrDefault;
-                var nativeWindowHandleString = "Not Supported";
-                if (nativeWindowHandle != default(IntPtr))
-                {
-                    nativeWindowHandleString = String.Format("{0} ({0:X8})", nativeWindowHandle.ToInt32());
+                    // Element details
+                    var details = new List<DetailViewModel>
+                    {
+                        DetailViewModel.FromAutomationProperty("IsEnabled", elementCached.Properties.IsEnabled),
+                        DetailViewModel.FromAutomationProperty("IsOffscreen", elementCached.Properties.IsOffscreen),
+                        DetailViewModel.FromAutomationProperty("BoundingRectangle", elementCached.Properties.BoundingRectangle),
+                        DetailViewModel.FromAutomationProperty("HelpText", elementCached.Properties.HelpText),
+                        DetailViewModel.FromAutomationProperty("IsPassword", elementCached.Properties.IsPassword)
+                    };
+                    // Special handling for NativeWindowHandle
+                    var nativeWindowHandle = elementCached.Properties.NativeWindowHandle.ValueOrDefault;
+                    var nativeWindowHandleString = "Not Supported";
+                    if (nativeWindowHandle != default(IntPtr))
+                    {
+                        nativeWindowHandleString = String.Format("{0} ({0:X8})", nativeWindowHandle.ToInt32());
+                    }
+                    details.Add(new DetailViewModel("NativeWindowHandle", nativeWindowHandleString));
+                    detailGroups.Add(new DetailGroupViewModel("Details", details));
                 }
-                details.Add(new DetailViewModel("NativeWindowHandle", nativeWindowHandleString));
-                detailGroups.Add(new DetailGroupViewModel("Details", details));
             }
 
             // Pattern details
@@ -295,16 +298,23 @@ namespace FlaUInspect.ViewModels
             if (allSupportedPatterns.Contains(AutomationElement.Automation.PatternLibrary.TextPattern))
             {
                 var pattern = AutomationElement.Patterns.Text.Pattern;
-                var foreColor = (int)pattern.DocumentRange.GetAttributeValue(TextAttributes.ForegroundColor);
-                var backColor = (int)pattern.DocumentRange.GetAttributeValue(TextAttributes.BackgroundColor);
-                var patternDetails = new List<DetailViewModel>
+                try
                 {
-                    new DetailViewModel("ForeColor", $"{System.Drawing.Color.FromArgb(foreColor)} ({foreColor})"),
-                    new DetailViewModel("ForeColor", $"{System.Drawing.Color.FromArgb(backColor)} ({backColor})"),
-                };
+                    var foreColor = (int)pattern.DocumentRange.GetAttributeValue(TextAttributes.ForegroundColor);
+                    var backColor = (int)pattern.DocumentRange.GetAttributeValue(TextAttributes.BackgroundColor);
+                    var patternDetails = new List<DetailViewModel>
+                    {
+                        new DetailViewModel("ForeColor", $"{System.Drawing.Color.FromArgb(foreColor)} ({foreColor})"),
+                        new DetailViewModel("ForeColor", $"{System.Drawing.Color.FromArgb(backColor)} ({backColor})"),
+                    };
 
-                var c = System.Drawing.Color.FromArgb(32768);
-                detailGroups.Add(new DetailGroupViewModel("Text Pattern", patternDetails));
+                    var c = System.Drawing.Color.FromArgb(32768);
+                    detailGroups.Add(new DetailGroupViewModel("Text Pattern", patternDetails));
+                }
+                catch (InvalidCastException ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                }
             }
             // TogglePattern
             if (allSupportedPatterns.Contains(AutomationElement.Automation.PatternLibrary.TogglePattern))

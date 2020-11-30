@@ -40,21 +40,28 @@ namespace FlaUInspect.Core
             if (System.Windows.Input.Keyboard.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Control))
             {
                 var screenPos = Mouse.Position;
-                var hoveredElement = _automation.FromPoint(screenPos);
-                // Skip items in the current process
-                // Like Inspect itself or the overlay window
-                if (hoveredElement.Properties.ProcessId == Process.GetCurrentProcess().Id)
+                try
                 {
-                    return;
+                    var hoveredElement = _automation.FromPoint(screenPos);
+                    // Skip items in the current process
+                    // Like Inspect itself or the overlay window
+                    if (hoveredElement.Properties.ProcessId == Process.GetCurrentProcess().Id)
+                    {
+                        return;
+                    }
+                    if (!Equals(_currentHoveredElement, hoveredElement))
+                    {
+                        _currentHoveredElement = hoveredElement;
+                        ElementHovered?.Invoke(hoveredElement);
+                    }
+                    else
+                    {
+                        ElementHighlighter.HighlightElement(hoveredElement);
+                    }
                 }
-                if (!Equals(_currentHoveredElement, hoveredElement))
+                catch(System.IO.FileNotFoundException ex)
                 {
-                    _currentHoveredElement = hoveredElement;
-                    ElementHovered?.Invoke(hoveredElement);
-                }
-                else
-                {
-                    ElementHighlighter.HighlightElement(hoveredElement);
+                    Console.WriteLine($"Exception: {ex.Message}");
                 }
             }
         }
