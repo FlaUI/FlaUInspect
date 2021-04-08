@@ -7,9 +7,15 @@ namespace FlaUInspect.Core
     {
         public static string ToDisplayText<T>(this IAutomationProperty<T> automationProperty)
         {
-            T value;
-            var success = automationProperty.TryGetValue(out value);
-            return success ? (value == null ? String.Empty : value.ToString()) : "Not Supported";
+            try
+            {
+                var success = automationProperty.TryGetValue(out T value);
+                return success ? (value == null ? String.Empty : value.ToString()) : "Not Supported";
+            }
+            catch (Exception ex)
+            {
+                return $"Exception getting value ({ex.HResult})";
+            }
         }
     }
 }
