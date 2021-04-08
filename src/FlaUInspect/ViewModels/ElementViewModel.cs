@@ -8,6 +8,7 @@ using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
 using FlaUI.Core.Identifiers;
+using FlaUI.Core.Patterns;
 using FlaUI.Core.Tools;
 using FlaUI.UIA3.Identifiers;
 using FlaUInspect.Core;
@@ -316,23 +317,42 @@ namespace FlaUInspect.ViewModels
             if (allSupportedPatterns.Contains(AutomationElement.Automation.PatternLibrary.TextPattern))
             {
                 var pattern = AutomationElement.Patterns.Text.Pattern;
-                try
-                {
-                    var foreColor = (int)pattern.DocumentRange.GetAttributeValue(TextAttributes.ForegroundColor);
-                    var backColor = (int)pattern.DocumentRange.GetAttributeValue(TextAttributes.BackgroundColor);
-                    var patternDetails = new List<DetailViewModel>
-                    {
-                        new DetailViewModel("ForeColor", $"{System.Drawing.Color.FromArgb(foreColor)} ({foreColor})"),
-                        new DetailViewModel("ForeColor", $"{System.Drawing.Color.FromArgb(backColor)} ({backColor})"),
-                    };
 
-                    var c = System.Drawing.Color.FromArgb(32768);
-                    detailGroups.Add(new DetailGroupViewModel("Text Pattern", patternDetails));
-                }
-                catch (InvalidCastException ex)
+                // TODO: This can in the future be replaced with automation.MixedAttributeValue
+                object mixedValue = AutomationElement.AutomationType == AutomationType.UIA2
+                    ? System.Windows.Automation.TextPattern.MixedAttributeValue
+                    : ((FlaUI.UIA3.UIA3Automation)AutomationElement.Automation).NativeAutomation.ReservedMixedAttributeValue;
+
+                var foreColor = GetTextAttribute<int>(pattern, TextAttributes.ForegroundColor, mixedValue, (x) =>
                 {
-                    Console.WriteLine($"Exception: {ex.Message}");
-                }
+                    return $"{System.Drawing.Color.FromArgb(x)} ({x})";
+                });
+                var backColor = GetTextAttribute<int>(pattern, TextAttributes.BackgroundColor, mixedValue, (x) =>
+                {
+                    return $"{System.Drawing.Color.FromArgb(x)} ({x})";
+                });
+                var fontName = GetTextAttribute<string>(pattern, TextAttributes.FontName, mixedValue, (x) =>
+                {
+                    return $"{x}";
+                });
+                var fontSize = GetTextAttribute<double>(pattern, TextAttributes.FontSize, mixedValue, (x) =>
+                {
+                    return $"{x}";
+                });
+                var fontWeight = GetTextAttribute<int>(pattern, TextAttributes.FontWeight, mixedValue, (x) =>
+                {
+                    return $"{x}";
+                });
+
+                var patternDetails = new List<DetailViewModel>
+                {
+                    new DetailViewModel("ForeColor", foreColor),
+                    new DetailViewModel("BackgroundColor", backColor),
+                    new DetailViewModel("FontName", fontName),
+                    new DetailViewModel("FontSize", fontSize),
+                    new DetailViewModel("FontWeight", fontWeight),
+                };
+                detailGroups.Add(new DetailGroupViewModel("Text Pattern", patternDetails));
             }
             // TogglePattern
             if (allSupportedPatterns.Contains(AutomationElement.Automation.PatternLibrary.TogglePattern))
@@ -372,6 +392,32 @@ namespace FlaUInspect.ViewModels
             }
 
             return detailGroups;
+        }
+
+        private string GetTextAttribute<T>(ITextPattern pattern, TextAttributeId textAttribute, object mixedValue, Func<T, string> func)
+        {
+            var value = pattern.DocumentRange.GetAttributeValue(textAttribute);
+
+            if (value == mixedValue)
+            {
+                return "Mixed";
+            }
+            else if (value == AutomationElement.Automation.NotSupportedValue)
+            {
+                return "Not supported";
+            }
+            else
+            {
+                try
+                {
+                    var converted = (T)value;
+                    return func(converted);
+                }
+                catch
+                {
+                    return $"Conversion to ${typeof(T)} failed";
+                }
+            }
         }
 
         private string NormalizeString(string value)
