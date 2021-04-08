@@ -5,6 +5,7 @@ obj/
 # Cake Build
 .cake/*
 !.cake/packages.config
+.chocoapikey
 
 # Visual Studio cache/options directory
 .vs/

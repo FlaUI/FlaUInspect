@@ -105,6 +105,20 @@ Task("Package")
     ChocolateyPack(chocolateyPackSettings);
 });
 
+Task("Push-Package")
+    .Does(() =>
+{
+    var apiKey = System.IO.File.ReadAllText(".chocoapikey");
+
+    var files = GetFiles($"{artifactDir}/*.nupkg");
+    foreach (var package in files) {
+        Information($"Pushing {package}");
+        ChocolateyPush(package, new ChocolateyPushSettings {
+            ApiKey = apiKey
+        });
+    }
+});
+
 Task("Default")
 .Does(() => {
     Information("Hello Cake!");
