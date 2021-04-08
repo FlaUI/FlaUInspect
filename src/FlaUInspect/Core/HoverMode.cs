@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Threading;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
@@ -58,6 +59,12 @@ namespace FlaUInspect.Core
                     {
                         ElementHighlighter.HighlightElement(hoveredElement);
                     }
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    string caption = "FlaUInspect - Unauthorized access exception";
+                    string message = "You are accessing a protected UI element in hover mode.\nTry to start FlaUInspect as administrator.";
+                    MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 catch(System.IO.FileNotFoundException ex)
                 {

@@ -32,29 +32,38 @@ namespace FlaUInspect.ViewModels
             get { return GetProperty<bool>(); }
             set
             {
-                SetProperty(value);
-                if (value)
+                try
                 {
-                    ElementHighlighter.HighlightElement(AutomationElement);
-                    // Async load details
-                    var unused = Task.Run(() =>
+                    if (value)
                     {
-                        var details = LoadDetails();
-                        return details;
-                    }).ContinueWith(items =>
-                    {
-                        if (items.IsFaulted)
-                        {
-                            if (items.Exception != null)
-                            {
-                                MessageBox.Show(items.Exception.ToString());
-                            }
-                        }
-                        ItemDetails.Reset(items.Result);
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
+                        ElementHighlighter.HighlightElement(AutomationElement);
 
-                    // Fire the selection event
-                    SelectionChanged?.Invoke(this);
+                        // Async load details
+                        var unused = Task.Run(() =>
+                        {
+                            var details = LoadDetails();
+                            return details;
+                        }).ContinueWith(items =>
+                        {
+                            if (items.IsFaulted)
+                            {
+                                if (items.Exception != null)
+                                {
+                                    MessageBox.Show(items.Exception.ToString());
+                                }
+                            }
+                            ItemDetails.Reset(items.Result);
+                        }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                        // Fire the selection event
+                        SelectionChanged?.Invoke(this);
+                    }
+
+                    SetProperty(value);
+                }
+                catch (Exception ex)
+                {
+                    Console.Write(ex.ToString());
                 }
             }
         }
@@ -90,18 +99,27 @@ namespace FlaUInspect.ViewModels
             {
                 child.SelectionChanged -= SelectionChanged;
             }
-            var childrenViewModels = new List<ElementViewModel>();
 
-            foreach (var child in AutomationElement.FindAllChildren())
+            var childrenViewModels = new List<ElementViewModel>();
+            try
             {
-                var childViewModel = new ElementViewModel(child);
-                childViewModel.SelectionChanged += SelectionChanged;
-                childrenViewModels.Add(childViewModel);
-                if (loadInnerChildren)
+                foreach (var child in AutomationElement.FindAllChildren())
                 {
-                    childViewModel.LoadChildren(false);
+                    var childViewModel = new ElementViewModel(child);
+                    childViewModel.SelectionChanged += SelectionChanged;
+                    childrenViewModels.Add(childViewModel);
+
+                    if (loadInnerChildren)
+                    {
+                        childViewModel.LoadChildren(false);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+
             Children.Reset(childrenViewModels);
         }
 
@@ -164,7 +182,7 @@ namespace FlaUInspect.ViewModels
             }
 
             // Pattern details
-            var allSupportedPatterns = AutomationElement.FrameworkAutomationElement.GetSupportedPatterns();
+            var allSupportedPatterns = AutomationElement.GetSupportedPatterns();
             var allPatterns = AutomationElement.Automation.PatternLibrary.AllForCurrentFramework;
             var patterns = new List<DetailViewModel>();
             foreach (var pattern in allPatterns)

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Threading.Tasks;
 using FlaUI.Core.AutomationElements;
+using FlaUI.Core.Exceptions;
 
 namespace FlaUInspect.Core
 {
@@ -9,16 +10,14 @@ namespace FlaUInspect.Core
     {
         public static void HighlightElement(AutomationElement automationElement)
         {
-            Task.Run(() => {
-                try
-                {
-                    automationElement.DrawHighlight(false, Color.Red, TimeSpan.FromSeconds(1));
-                }
-                catch(FlaUI.Core.Exceptions.PropertyNotSupportedException ex)
-                {
-                    Console.WriteLine($"Exception: {ex.Message}");
-                }
-            });
+            try
+            {
+                Task.Run(() => automationElement.DrawHighlight(false, Color.Red, TimeSpan.FromSeconds(1)));
+            }
+            catch (PropertyNotSupportedException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
         }
     }
 }
