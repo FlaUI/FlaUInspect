@@ -66,6 +66,10 @@ namespace FlaUInspect.Core
                     string message = "You are accessing a protected UI element in hover mode.\nTry to start FlaUInspect as administrator.";
                     MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
+                catch(System.IO.FileNotFoundException ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                }
             }
         }
     }
