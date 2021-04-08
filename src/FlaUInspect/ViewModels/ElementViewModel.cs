@@ -91,7 +91,6 @@ namespace FlaUInspect.ViewModels
                 child.SelectionChanged -= SelectionChanged;
             }
             var childrenViewModels = new List<ElementViewModel>();
-            
             foreach (var child in AutomationElement.FindAllChildren())
             {
                 var childViewModel = new ElementViewModel(child);

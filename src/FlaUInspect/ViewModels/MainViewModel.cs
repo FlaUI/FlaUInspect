@@ -46,6 +46,10 @@ namespace FlaUInspect.ViewModels
                 }
                 capturedImage.Dispose();
             });
+            RefreshCommand = new RelayCommand(o =>
+            {
+                RefreshTree();
+            });
         }
 
         public bool IsInitialized
@@ -97,6 +101,8 @@ namespace FlaUInspect.ViewModels
         public ICommand StartNewInstanceCommand { get; private set; }
 
         public ICommand CaptureSelectedItemCommand { get; private set; }
+        
+        public ICommand RefreshCommand { get; private set; }
 
         public ObservableCollection<DetailGroupViewModel> SelectedItemDetails => SelectedItemInTree?.ItemDetails;
 
@@ -117,6 +123,7 @@ namespace FlaUInspect.ViewModels
             desktopViewModel.SelectionChanged += DesktopViewModel_SelectionChanged;
             desktopViewModel.LoadChildren(false);
             Elements.Add(desktopViewModel);
+            Elements[0].IsExpanded = true;
 
             // Initialize TreeWalker
             _treeWalker = _automation.TreeWalkerFactory.GetControlViewWalker();
@@ -195,6 +202,12 @@ namespace FlaUInspect.ViewModels
         {
             SelectedItemInTree = obj;
             OnPropertyChanged(() => SelectedItemDetails);
+        }
+        
+        private void RefreshTree()
+        {
+            Elements.Clear();
+            Initialize(SelectedAutomationType);
         }
     }
 }
