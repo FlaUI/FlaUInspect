@@ -1,15 +1,17 @@
-﻿using FlaUI.Core;
-using FlaUI.Core.AutomationElements.Infrastructure;
-using FlaUI.UIA2;
-using FlaUI.UIA3;
-using FlaUInspect.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
+using FlaUI.Core;
+using FlaUI.Core.AutomationElements;
+using FlaUI.UIA2;
+using FlaUI.UIA3;
+using FlaUInspect.Core;
+using Microsoft.Win32;
 
 namespace FlaUInspect.ViewModels
 {
@@ -29,7 +31,21 @@ namespace FlaUInspect.ViewModels
                 var info = new ProcessStartInfo(Assembly.GetExecutingAssembly().Location);
                 Process.Start(info);
             });
-
+            CaptureSelectedItemCommand = new RelayCommand(o =>
+            {
+                if (SelectedItemInTree == null)
+                {
+                    return;
+                }
+                var capturedImage = SelectedItemInTree.AutomationElement.Capture();
+                var saveDialog = new SaveFileDialog();
+                saveDialog.Filter = "Png file (*.png)|*.png";
+                if (saveDialog.ShowDialog() == true)
+                {
+                    capturedImage.Save(saveDialog.FileName, ImageFormat.Png);
+                }
+                capturedImage.Dispose();
+            });
             RefreshCommand = new RelayCommand(o =>
             {
                 RefreshTree();
@@ -84,6 +100,8 @@ namespace FlaUInspect.ViewModels
 
         public ICommand StartNewInstanceCommand { get; private set; }
 
+        public ICommand CaptureSelectedItemCommand { get; private set; }
+        
         public ICommand RefreshCommand { get; private set; }
 
         public ObservableCollection<DetailGroupViewModel> SelectedItemDetails => SelectedItemInTree?.ItemDetails;
@@ -109,7 +127,7 @@ namespace FlaUInspect.ViewModels
 
             // Initialize TreeWalker
             _treeWalker = _automation.TreeWalkerFactory.GetControlViewWalker();
-            
+
             // Initialize hover
             _hoverMode = new HoverMode(_automation);
             _hoverMode.ElementHovered += ElementToSelectChanged;
@@ -185,7 +203,7 @@ namespace FlaUInspect.ViewModels
             SelectedItemInTree = obj;
             OnPropertyChanged(() => SelectedItemDetails);
         }
-
+        
         private void RefreshTree()
         {
             Elements.Clear();
