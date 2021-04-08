@@ -101,7 +101,7 @@ namespace FlaUInspect.ViewModels
         public ICommand StartNewInstanceCommand { get; private set; }
 
         public ICommand CaptureSelectedItemCommand { get; private set; }
-        
+
         public ICommand RefreshCommand { get; private set; }
 
         public ObservableCollection<DetailGroupViewModel> SelectedItemDetails => SelectedItemInTree?.ItemDetails;
@@ -203,7 +203,7 @@ namespace FlaUInspect.ViewModels
             SelectedItemInTree = obj;
             OnPropertyChanged(() => SelectedItemDetails);
         }
-        
+
         private void RefreshTree()
         {
             Elements.Clear();
