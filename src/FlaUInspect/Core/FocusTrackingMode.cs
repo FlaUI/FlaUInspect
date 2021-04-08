@@ -29,8 +29,7 @@ namespace FlaUInspect.Core
 
         public void Stop()
         {
-            _eventHandler.Dispose();
-            _eventHandler = null;
+            _automation.UnregisterFocusChangedEvent(_eventHandler);
         }
 
         private void OnFocusChanged(AutomationElement automationElement)
