@@ -7,6 +7,9 @@
 | *FlaUInspect* | [![FlaUInspect](https://img.shields.io/badge/FlaUInspect-choco-brightgreen.svg)](https://chocolatey.org/packages/flauinspect)<br />`choco install flauinspect` |
 | *CI Artefacts* | [FlauInspect CI](https://ci.appveyor.com/project/RomanBaeriswyl/flauinspect/build/artifacts) |
 
+### Installation
+To install FlaUInspect, either build it yourself, get it from chocolatey (https://community.chocolatey.org/packages/flauinspect) or get the zip from the releases page here on GitHub.
+
 ### Description
 There are various tools around which help inspecting application that should be ui tested or automated. Some of them are:
 * VisualUIAVerify
