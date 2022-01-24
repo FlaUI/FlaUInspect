@@ -24,6 +24,8 @@ On startup, you can choose if you want to use UIA2 or UIA3 (see [FAQ](https://gi
 ###### Choose Version Dialog
 ![Choose Version](https://raw.githubusercontent.com/wiki/FlauTech/FlaUInspect/images/choose_version.png)
 
+Version could also specified in appsettings.json file. If you do this, the application will start silently, i.e. 'Choose Version Dialog' will not pop up
+
 ###### Main Screen
 ![Main Screen](https://raw.githubusercontent.com/wiki/FlauTech/FlaUInspect/images/main_screen.png)
 

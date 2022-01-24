@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using FlaUI.Core;
 using FlaUInspect.ViewModels;
 
 namespace FlaUInspect.Views
@@ -36,14 +37,20 @@ namespace FlaUInspect.Views
         {
             if (!_vm.IsInitialized)
             {
-                var dlg = new ChooseVersionWindow { Owner = this };
-                if (dlg.ShowDialog() != true)
-                {
-                    Close();
-                }
-                _vm.Initialize(dlg.SelectedAutomationType);
+                _vm.Initialize(ChoseVersion);
                 Loaded -= MainWindow_Loaded;
             }
+        }
+
+        private AutomationType ChoseVersion()
+        {
+            var dlg = new ChooseVersionWindow { Owner = this };
+            if (dlg.ShowDialog() != true)
+            {
+                Close();
+            }
+
+            return dlg.SelectedAutomationType;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
