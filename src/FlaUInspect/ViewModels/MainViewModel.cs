@@ -112,12 +112,18 @@ namespace FlaUInspect.ViewModels
             private set { SetProperty(value); }
         }
 
+        public void Initialize(Func<AutomationType> selectAutomationType)
+        {
+            var automationType = App.Current.Configuration.AutomationType ?? selectAutomationType();
+            Initialize(automationType);
+        }
+
         public void Initialize(AutomationType selectedAutomationType)
         {
             SelectedAutomationType = selectedAutomationType;
             IsInitialized = true;
 
-            _automation = selectedAutomationType == AutomationType.UIA2 ? (AutomationBase)new UIA2Automation() : new UIA3Automation();
+            _automation = SelectedAutomationType == AutomationType.UIA2 ? (AutomationBase)new UIA2Automation() : new UIA3Automation();
             _rootElement = _automation.GetDesktop();
             var desktopViewModel = new ElementViewModel(_rootElement);
             desktopViewModel.SelectionChanged += DesktopViewModel_SelectionChanged;
