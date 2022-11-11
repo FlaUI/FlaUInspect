@@ -71,6 +71,18 @@ namespace FlaUInspect.ViewModels
             }
         }
 
+        public bool ComExceptionDetected
+        {
+            get
+            {
+                return GetProperty<bool>();
+            }
+            set
+            {
+                SetProperty(value);
+            }
+        }
+
         public bool EnableFocusTrackingMode
         {
             get { return GetProperty<bool>(); }
@@ -129,7 +141,7 @@ namespace FlaUInspect.ViewModels
             _treeWalker = _automation.TreeWalkerFactory.GetControlViewWalker();
 
             // Initialize hover
-            _hoverMode = new HoverMode(_automation);
+            _hoverMode = new HoverMode(_automation, this);
             _hoverMode.ElementHovered += ElementToSelectChanged;
 
             // Initialize focus tracking
