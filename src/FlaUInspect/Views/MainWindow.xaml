@@ -24,6 +24,7 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_New Instance" Command="{Binding StartNewInstanceCommand}" />
+                    <MenuItem Header="_New Instance with version selection" Command="{Binding StartNewInstanceWithVersionSelectionCommand}" />
                     <MenuItem Header="_Capture selected item" Command="{Binding CaptureSelectedItemCommand}" />
                     <MenuItem Header="_Refresh" Command="{Binding RefreshCommand}" InputGestureText="F5" />
                     <Separator />

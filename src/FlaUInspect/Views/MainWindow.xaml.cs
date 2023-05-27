@@ -1,6 +1,8 @@
-﻿using System.Reflection;
+﻿using System.Configuration;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using FlaUI.Core;
 using FlaUInspect.ViewModels;
 
 namespace FlaUInspect.Views
@@ -36,12 +38,35 @@ namespace FlaUInspect.Views
         {
             if (!_vm.IsInitialized)
             {
-                var dlg = new ChooseVersionWindow { Owner = this };
-                if (dlg.ShowDialog() != true)
+                // Start application if version is saved
+                var version = ConfigurationManager.AppSettings["version"];
+                if (version == "2")
                 {
-                    Close();
+                    _vm.Initialize(AutomationType.UIA2);
                 }
-                _vm.Initialize(dlg.SelectedAutomationType);
+                else if (version == "3")
+                {
+                    _vm.Initialize(AutomationType.UIA3);
+                }
+                else
+                {
+                    var dlg = new ChooseVersionWindow { Owner = this };
+                    if (dlg.ShowDialog() != true)
+                    {
+                        Close();
+                    }
+                    // Save selected UIA version if dialog is not closed
+                    else if (dlg.SelectedAutomationType == AutomationType.UIA2 
+                                || dlg.SelectedAutomationType == AutomationType.UIA3)
+                    {
+                        Configuration config = ConfigurationManager.OpenExeConfiguration(System.Windows.Forms.Application.ExecutablePath);
+                        config.AppSettings.Settings.Remove("version");
+                        config.AppSettings.Settings.Add("version", dlg.SelectedAutomationType == AutomationType.UIA2 ? "2" : "3");
+                        config.Save(ConfigurationSaveMode.Minimal);
+                    }
+
+                    _vm.Initialize(dlg.SelectedAutomationType);
+                }
                 Loaded -= MainWindow_Loaded;
             }
         }
