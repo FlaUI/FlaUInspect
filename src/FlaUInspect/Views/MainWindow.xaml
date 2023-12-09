@@ -266,6 +266,18 @@
                                                                 </Style>
                                                             </TextBox.Style>
                                                         </TextBox>
+                                                        <Button Grid.Column="1" Click="InvokePatternActionHandler" Content="{Binding Value}">
+                                                            <Button.Style>
+                                                                <Style TargetType="{x:Type Button}">
+                                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding HasExecutableAction}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

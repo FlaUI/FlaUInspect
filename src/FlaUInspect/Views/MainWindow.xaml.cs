@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using FlaUI.Core;
@@ -83,6 +84,17 @@ namespace FlaUInspect.Views
             {
                 item.BringIntoView();
                 e.Handled = true;
+            }
+        }
+        private void InvokePatternActionHandler(object sender, RoutedEventArgs e)
+        {
+            DetailViewModel vm = (DetailViewModel)((Button)sender).DataContext;
+            if (vm.ActionToExecute != null)
+            {
+                Task.Run(() =>
+                {
+                    vm.ActionToExecute();
+                });
             }
         }
     }

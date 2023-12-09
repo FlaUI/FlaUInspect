@@ -374,6 +374,18 @@ namespace FlaUInspect.ViewModels
                 };
                 detailGroups.Add(new DetailGroupViewModel("Toggle Pattern", patternDetails));
             }
+
+            //InvokePattern 
+            if (allSupportedPatterns.Contains(AutomationElement.Automation.PatternLibrary.InvokePattern))
+            {
+                var pattern = AutomationElement.Patterns.Invoke.Pattern;
+                var patternDetails = new List<DetailViewModel>
+                {
+                    new DetailViewModel("Invokable", "Invoke", AutomationElement.Patterns.Invoke.Pattern.Invoke)
+                };
+                detailGroups.Add(new DetailGroupViewModel("Invoke Pattern", patternDetails));
+            }
+
             // ValuePattern
             if (allSupportedPatterns.Contains(AutomationElement.Automation.PatternLibrary.ValuePattern))
             {
