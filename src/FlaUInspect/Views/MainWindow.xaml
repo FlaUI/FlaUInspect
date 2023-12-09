@@ -22,6 +22,18 @@
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
+                <Menu.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ComExceptionDetected}" Value="True">
+                                <Setter Property="ContextMenu.Background" Value="Red"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ComExceptionDetected}" Value="False">
+                                <Setter Property="ContextMenu.Background" Value="#f0f0f0"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Menu.Style>
                 <MenuItem Header="_File">
                     <MenuItem Header="_New Instance" Command="{Binding StartNewInstanceCommand}" />
                     <MenuItem Header="_New Instance with version selection" Command="{Binding StartNewInstanceWithVersionSelectionCommand}" />
@@ -31,7 +43,7 @@
                     <MenuItem Header="E_xit" Click="MenuItem_Click" />
                 </MenuItem>
                 <MenuItem Header="_Mode">
-                    <MenuItem Header="H_over Mode (use Ctrl)" IsCheckable="True" IsChecked="{Binding EnableHoverMode}" />
+                    <MenuItem Header="H_over Mode (use Ctrl + LWin)" IsCheckable="True" IsChecked="{Binding EnableHoverMode}" />
                     <MenuItem Header="_Focus Tracking" IsCheckable="True" IsChecked="{Binding EnableFocusTrackingMode}" />
                     <MenuItem Header="Show _XPath" IsCheckable="True" IsChecked="{Binding EnableXPath}" />
                 </MenuItem>
