@@ -71,6 +71,18 @@ namespace FlaUInspect.ViewModels
             }
         }
 
+        public bool ComExceptionDetected
+        {
+            get
+            {
+                return GetProperty<bool>();
+            }
+            set
+            {
+                SetProperty(value);
+            }
+        }
+
         public bool EnableFocusTrackingMode
         {
             get { return GetProperty<bool>(); }
@@ -129,12 +141,16 @@ namespace FlaUInspect.ViewModels
             _treeWalker = _automation.TreeWalkerFactory.GetControlViewWalker();
 
             // Initialize hover
-            _hoverMode = new HoverMode(_automation);
+            _hoverMode = new HoverMode(_automation, this);
             _hoverMode.ElementHovered += ElementToSelectChanged;
+            _hoverMode.Start();
+            EnableHoverMode = true;
 
             // Initialize focus tracking
             _focusTrackingMode = new FocusTrackingMode(_automation);
             _focusTrackingMode.ElementFocused += ElementToSelectChanged;
+
+            ComExceptionDetected = false;
         }
 
         private void ElementToSelectChanged(AutomationElement obj)
@@ -208,6 +224,7 @@ namespace FlaUInspect.ViewModels
         {
             Elements.Clear();
             Initialize(SelectedAutomationType);
+            ComExceptionDetected = false;
         }
     }
 }

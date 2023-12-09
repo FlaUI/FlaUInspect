@@ -183,7 +183,17 @@ namespace FlaUInspect.ViewModels
             }
 
             // Pattern details
-            var allSupportedPatterns = AutomationElement.GetSupportedPatterns();
+            //It is here, at GetSupportedPatterns, it crashes if the selected element in inspector, is no longer present.
+            PatternId[] allSupportedPatterns = new PatternId[0];
+            try
+            {
+                allSupportedPatterns = AutomationElement.GetSupportedPatterns();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Caught '{ex.GetType()}': {ex.Message}");
+                //Handling exception. Details will show something is wrong. Would be great to show the red menu line aswell.
+            }
             var allPatterns = AutomationElement.Automation.PatternLibrary.AllForCurrentFramework;
             var patterns = new List<DetailViewModel>();
             foreach (var pattern in allPatterns)
