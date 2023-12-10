@@ -1,0 +1,22 @@
+﻿  on:
+    push:
+      branches:
+        - master
+      tags:
+        - '*'
+  jobs:
+    build:
+      runs-on: windows-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: '8.0.x'
+        - run: |
+            dotnet restore
+            dotnet build
+          working-directory: src
+        - uses: actions/upload-artifact@v3
+          with:
+            name: build-artifact
+            path: src/FlaUInspect/bin
