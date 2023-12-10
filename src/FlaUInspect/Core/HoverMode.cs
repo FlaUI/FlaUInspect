@@ -5,6 +5,8 @@ using System.Windows.Threading;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Input;
+using System.Runtime.InteropServices;
+using FlaUInspect.ViewModels;
 
 namespace FlaUInspect.Core
 {
@@ -13,15 +15,17 @@ namespace FlaUInspect.Core
         private readonly AutomationBase _automation;
         private readonly DispatcherTimer _dispatcherTimer;
         private AutomationElement _currentHoveredElement;
+        private MainViewModel _mv;
 
         public event Action<AutomationElement> ElementHovered;
 
-        public HoverMode(AutomationBase automation)
+        public HoverMode(AutomationBase automation, MainViewModel mv)
         {
             _automation = automation;
             _dispatcherTimer = new DispatcherTimer();
             _dispatcherTimer.Tick += DispatcherTimerTick;
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(500);
+            _mv = mv;
         }
 
         public void Start()
@@ -38,7 +42,7 @@ namespace FlaUInspect.Core
 
         private void DispatcherTimerTick(object sender, EventArgs e)
         {
-            if (System.Windows.Input.Keyboard.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Control))
+            if (System.Windows.Input.Keyboard.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Control) && System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LWin))
             {
                 var screenPos = Mouse.Position;
                 try
@@ -69,6 +73,11 @@ namespace FlaUInspect.Core
                 catch(System.IO.FileNotFoundException ex)
                 {
                     Console.WriteLine($"Exception: {ex.Message}");
+                }
+                catch (COMException cex)
+                {
+                    _mv.ComExceptionDetected = true;
+                    //MessageBox.Show(cex.Message, "DispatcherTimeTick caught COM exception. Please refresh inspector", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
         }
