@@ -50,6 +50,7 @@ namespace FlaUInspect.Views
                 _vm.Initialize(dlg.SelectedAutomationType);
                 Loaded -= MainWindow_Loaded;
 #endif
+                Title += " - " + _vm.SelectedAutomationType.ToString();
             }
         }
 

@@ -41,10 +41,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UIA2|AnyCPU' ">
     <OutputPath>bin\UIA2\</OutputPath>
     <DefineConstants>DEBUG;TRACE;AUTOMATION_UIA2</DefineConstants>
+    <AssemblyName>FlaUInspect.UIA2</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UIA3|AnyCPU' ">
     <OutputPath>bin\UIA3\</OutputPath>
     <DefineConstants>DEBUG;TRACE;AUTOMATION_UIA3</DefineConstants>
+    <AssemblyName>FlaUInspect.UIA3</AssemblyName>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Inspect.ico</ApplicationIcon>
