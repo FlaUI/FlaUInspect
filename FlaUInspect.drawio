@@ -1,0 +1,25 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" version="26.1.1">
+  <diagram name="Page-1" id="Nq6npYWVKBa-1FM0mFB6">
+    <mxGraphModel dx="1154" dy="1106" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="85rmfjVDJS7jIwPpMAB0-1" value="&lt;p style=&quot;line-height: 75%; font-size: 160px;&quot;&gt;&lt;/p&gt;&lt;pre style=&quot;line-height: 75%; font-size: 160px;&quot;&gt;FLA&lt;br style=&quot;font-size: 160px;&quot;&gt;UI&lt;/pre&gt;&lt;p style=&quot;font-size: 160px;&quot;&gt;&lt;/p&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;rounded=1;strokeWidth=16;fontSize=160;fontStyle=1;fillColor=#0070C0;strokeColor=#000000;fontColor=#ffffff;perimeterSpacing=1;dashed=1;fontFamily=Lucida Console;horizontal=1;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="77.5" y="160" width="300" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="85rmfjVDJS7jIwPpMAB0-2" value="" style="whiteSpace=wrap;html=1;aspect=fixed;rounded=1;strokeWidth=16;fontSize=160;fontStyle=1;fillColor=#0070C0;strokeColor=#000000;fontColor=#ffffff;perimeterSpacing=1;dashed=1;fontFamily=Lucida Console;horizontal=1;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="447.5" y="160" width="300" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="85rmfjVDJS7jIwPpMAB0-3" value="&lt;p style=&quot;line-height: 75% ; font-size: 160px&quot;&gt;&lt;/p&gt;&lt;pre style=&quot;line-height: 75% ; font-size: 160px&quot;&gt;&lt;br&gt;&lt;/pre&gt;&lt;p style=&quot;font-size: 160px&quot;&gt;&lt;/p&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;rounded=1;strokeWidth=16;fontSize=160;fontStyle=1;fillColor=#0070C0;strokeColor=#000000;fontColor=#ffffff;perimeterSpacing=1;dashed=1;fontFamily=Lucida Console;horizontal=1;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="77.5" y="510" width="300" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="85rmfjVDJS7jIwPpMAB0-4" value="" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.concepts.search;strokeWidth=6;perimeterSpacing=0;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="477.5" y="190" width="240" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="85rmfjVDJS7jIwPpMAB0-5" value="" style="pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=#FFFFFF;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.devices.video_camera;strokeWidth=6;" vertex="1" parent="1">
+          <mxGeometry x="108" y="602.5" width="239" height="115" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
