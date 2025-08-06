@@ -1,0 +1,713 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Canvas x:Key="ErrorIcon"
+            Width="24.0"
+            Height="24.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,24.0,24.0" />
+        </Canvas.Clip>
+        <Path Fill="#00ffffff"
+              Stroke="#FFff0000">
+            <Path.Data>
+                <PathGeometry Figures="M 12 22 c 5.523 0 10 -4.477 10 -10 S 17.523 2 12 2 S 2 6.477 2 12 s 4.477 10 10 10 z m -1.5 -5.009 c 0 -0.867 0.659 -1.491 1.491 -1.491 c 0.85 0 1.509 0.624 1.509 1.491 c 0 0.867 -0.659 1.509 -1.509 1.509 c -0.832 0 -1.491 -0.642 -1.491 -1.509 z M 11.172 6 a 0.5 0.5 0 0 0 -0.499 0.522 l 0.306 7 a 0.5 0.5 0 0 0 0.5 0.478 h 1.043 a 0.5 0.5 0 0 0 0.5 -0.478 l 0.305 -7 a 0.5 0.5 0 0 0 -0.5 -0.522 h -1.655 z" />
+            </Path.Data>
+        </Path>
+    </Canvas>
+
+
+    <Canvas x:Key="Details"
+            Width="85.333336"
+            Height="85.333336"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,85.333336,85.333336" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="m 47.2636 70.7198 l 0.899756 -6 H 29.015 c -13.1154 0 -19.6525 -0.504103 -20.7484 -1.6 c -2.25545 -2.25544 -2.25545 -50.5446 0 -52.8 c 2.27514 -2.27514 66.5249 -2.27514 68.8 0 c 2.25544 2.25544 2.25544 50.5446 0 52.8 c -0.88 0.88 -4.5343 1.6 -8.12068 1.6 c -5.79887 0 -7.2981 0.664175 -13.5438 6 c -3.86269 3.3 -7.47651 6 -8.03072 6 c -0.554202 0 -0.60275 -2.7 -0.107885 -6 z M 46.6667 43.298 v -9.4219 l -3.66667 0.421896 c -3.55051 0.408531 -3.67916 0.707016 -4.06092 9.4219 l -0.394253 9 h 4.06092 h 4.06092 z M 46.6135 26.7839 C 48.6863 24.2863 47.9623 20.7351 45 18.8696 c -4.61986 -2.90937 -9.82212 3.64654 -6.28017 7.91432 c 2.05948 2.48152 5.8342 2.48152 7.89368 0 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Button"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 11 12.941 C 11 12.3585 10.55 12.1601 10 12.5 L 9 13.118 V 9.3847 V 5.65137 L 11.575 8.07042 L 14.1499 10.4895 L 13.825 6.49473 L 13.5 2.5 H 8 H 2.5 v 3.49018 v 3.49018 l 3 0.682667 l 3 0.682667 L 5 10.6728 L 1.5 10.5 V 6 V 1.5 H 8 H 14.5 l 0.307945 4.25915 l 0.307945 4.25915 l -1.4948 0.573609 l -1.4948 0.57361 l 0.543846 1.41724 C 12.9692 13.3622 12.7158 14 12.107 14 C 11.4981 14 11 13.5234 11 12.941 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures=""
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures=""
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Calendar"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 2.08 8.56 V 3.04 H 3.04 H 4 V 4.08 V 5.12 H 5.52 H 7.04 V 4.08 V 3.04 H 8.08 H 9.12 V 4.08 V 5.12 H 10.56 H 12 V 4.08 V 3.04 h 1.04 h 1.04 v 5.52 v 5.52 h -6 h -6 z m 11.04 1.52 V 7.04 H 8.08 H 3.04 v 3.04 v 3.04 h 5.04 h 5.04 z M 6.08 10.56 V 9.12 H 5.6 C 5.1581 9.12 5.12 9.07556 5.12 8.56 V 8 h 0.96 h 0.96 v 2 v 2 H 6.56 H 6.08 Z M 8 11.04 v -0.96 h 0.56 c 0.515556 0 0.56 -0.0381 0.56 -0.48 C 9.12 9.1581 9.07556 9.12 8.56 9.12 C 8.02667 9.12 8 9.09333 8 8.56 V 8 h 1.04 h 1.04 v 1.04 v 1.04 H 9.6 c -0.426667 0 -0.48 0.05333 -0.48 0.48 c 0 0.426667 0.053333 0.48 0.48 0.48 c 0.426667 0 0.48 0.05333 0.48 0.48 V 12 H 9.04 H 8 Z m -2.88 -8 V 2.08 H 5.6 H 6.08 V 3.04 V 4 H 5.6 H 5.12 Z m 4.96 0 V 2.08 h 0.48 h 0.48 V 3.04 V 4 h -0.48 h -0.48 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="CheckBox"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1 8 V 1 h 7 h 7 v 7 v 7 H 8 H 1 Z M 14 8 V 2 H 8 H 2 v 6 v 6 h 6 h 6 z M 5.58345 10.3569 C 5.23666 9.45315 5.18852 8.47815 5.47646 8.19021 C 5.76441 7.90226 6 8.19167 6 8.83333 C 6 11.0711 7.76673 9.97738 9.01328 6.96794 C 9.70404 5.3003 10.4529 4.11959 10.6775 4.34413 C 11.2537 4.92039 7.78073 12 6.92178 12 C 6.53249 12 5.93024 11.2606 5.58345 10.3569 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="ComboBox"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="m 3.04 11.04 v -4 H 2.02667 H 1.01333 V 4.02667 V 1.01333 H 8.02667 H 15.04 V 8.02667 V 15.04 h -6 h -6 z M 14.0267 10.5333 V 7.04 H 9.01333 H 4 v 3.49333 v 3.49333 H 9.01333 H 14.0267 Z M 6.02667 12.5067 V 12 H 7.52 H 9.01333 v 0.506667 v 0.506666 H 7.52 H 6.02667 Z m 0 -1.97333 V 10.0267 H 9.01333 H 12 V 10.5333 V 11.04 H 9.01333 H 6.02667 Z m 0 -2.02667 V 8 H 7.52 H 9.01333 V 8.50667 V 9.01333 H 7.52 H 6.02667 Z M 9.01333 4.53333 V 3.04 H 6.02667 H 3.04 V 4.53333 V 6.02667 H 6.02667 H 9.01333 Z M 13.0133 4.50667 V 4 H 13.52 H 14.0267 V 3.52 V 3.04 h -2 h -2 V 3.52 V 4 H 10.5333 H 11.04 v 0.506667 v 0.506667 h 0.986667 h 0.986666 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Custom"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 5.01333 10.0267 V 5.01333 H 10.0267 H 15.04 V 10.0267 V 15.04 H 10.0267 H 5.01333 Z m 8 0 V 7.04 H 10.0267 H 7.04 v 2.98667 v 2.98667 h 2.98667 h 2.98667 z m -10.9867 2.48 V 12 H 1.52 H 1.01333 V 11.0133 V 10.0267 H 2.50667 H 4 V 11.0133 V 12 H 3.52 H 3.04 v 0.506667 v 0.506666 H 2.53333 H 2.02667 Z M 1.01333 6.50667 V 4 H 2.50667 H 4 V 6.50667 V 9.01333 H 2.50667 H 1.01333 Z m 0 -4.48 V 1.01333 h 2 h 2 V 2.02667 V 3.04 h -2 h -2 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="DataGrid"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 2.02667 14.5333 V 14.0267 H 1.52 H 1.01333 v -4 v -4 H 1.52 H 2.02667 V 5.52 V 5.01333 H 5.01333 H 8 V 5.52 V 6.02667 H 8.50667 H 9.01333 V 5.52 V 5.01333 H 10.0267 H 11.04 V 6.50667 V 8 H 10.5333 H 10.0267 V 7.01333 V 6.02667 H 9.52 H 9.01333 v 4 v 4 H 8.50667 H 8 V 14.5333 V 15.04 H 5.01333 H 2.02667 Z M 8 7.01333 V 6.02667 H 5.01333 H 2.02667 V 7.01333 V 8 H 5.01333 H 8 Z m 2.02667 3.49333 V 9.01333 H 10.5333 H 11.04 V 10.5067 V 12 h -0.506667 h -0.506666 z m 1.97333 0 V 9.01333 h 1.52 h 1.52 V 10.5067 V 12 H 13.52 H 12 Z M 12 6.50667 V 5.01333 h 1.52 h 1.52 V 6.50667 V 8 H 13.52 H 12 Z m -8 -4 V 1.01333 H 5.52 H 7.04 V 2.50667 V 4 H 5.52 H 4 Z m 4 0 V 1.01333 h 1.52 h 1.52 V 2.50667 V 4 H 9.52 H 8 Z m 4 0 V 1.01333 h 1.52 h 1.52 V 2.50667 V 4 H 13.52 H 12 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Document"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="m 3.04 8.02667 v -6 H 6.53333 H 10.0267 V 2.53333 V 3.04 H 10.5333 H 11.04 V 3.52 V 4 H 11.52 H 12 v 0.506667 v 0.506667 h 0.506667 h 0.506666 V 9.52 V 14.0267 H 8.02667 H 3.04 Z M 12 9.52 V 6.02667 H 10.5067 H 9.01333 V 4.53333 V 3.04 H 6.50667 H 4 v 4.98667 v 4.98667 h 4 h 4 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Edit"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="m 2.02667 8.02667 v -6 H 8.53333 H 15.04 v 6 v 6 H 8.53333 H 2.02667 Z m 12 0 V 3.04 H 8.53333 H 3.04 V 8.02667 V 13.0133 H 8.53333 H 14.0267 Z M 4 9.01333 V 8 H 4.50667 H 5.01333 V 7.52 V 7.04 H 4.50667 H 4 V 6.53333 V 6.02667 h 1.52 h 1.52 v 2 v 2 H 5.52 H 4 Z M 6.02667 8.50667 V 8 H 5.52 H 5.01333 V 8.50667 V 9.01333 H 5.52 H 6.02667 Z M 8 7.52 V 5.01333 H 8.50667 H 9.01333 V 5.52 V 6.02667 H 10.0267 H 11.04 v 2 v 2 H 9.52 H 8 Z m 2.02667 0.506667 V 7.04 H 9.52 H 9.01333 V 8.02667 V 9.01333 H 9.52 H 10.0267 Z M 12 7.52 V 5.01333 h 0.506667 h 0.506666 V 7.52 V 10.0267 H 12.5067 H 12 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Group"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="m 1.01333 9.04 v -6 H 2.02667 H 3.04 V 3.52 V 4 H 2.53333 H 2.02667 v 5.01333 v 5.01333 h 6 h 6 V 9.01333 V 4 H 13.0133 H 12 V 3.52 V 3.04 h 1.52 h 1.52 v 6 v 6 H 8.02667 H 1.01333 Z M 4 5.01333 V 4 H 4.50667 H 5.01333 V 3.52 V 3.04 H 4.50667 H 4 V 2.02667 V 1.01333 H 4.50667 H 5.01333 V 1.52 V 2.02667 H 5.52 H 6.02667 V 1.52 V 1.01333 H 6.53333 H 7.04 V 2.02667 V 3.04 H 6.53333 H 6.02667 V 3.52 V 4 H 6.53333 H 7.04 V 5.01333 V 6.02667 H 6.53333 H 6.02667 V 5.52 V 5.01333 H 5.52 H 5.01333 V 5.52 V 6.02667 H 4.50667 H 4 Z m 5.01333 -0.48 V 3.04 H 8.50667 H 8 V 2.02667 V 1.01333 H 8.50667 H 9.01333 V 1.52 V 2.02667 H 9.52 H 10.0267 V 1.52 V 1.01333 H 10.5333 H 11.04 V 2.02667 V 3.04 H 10.5333 H 10.0267 V 4.53333 V 6.02667 H 9.52 H 9.01333 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Header"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 2.02667 7.52 V 1.01333 H 8.53333 H 15.04 V 7.52 V 14.0267 H 8.53333 H 2.02667 Z M 8 10.5067 V 8 H 5.52 H 3.04 v 2.50667 v 2.50667 H 5.52 H 8 Z m 6.02667 0 V 8 H 11.52 H 9.01333 v 2.50667 v 2.50667 H 11.52 H 14.0267 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="HeaderItem"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 2 7.5 V 1 H 8.5 H 15 V 7.5 V 14 H 8.5 H 2 Z M 14 10 C 14 7.0303 13.9444 7 8.5 7 C 3.05556 7 3 7.0303 3 10 c 0 2.9697 0.055556 3 5.5 3 c 5.44444 0 5.5 -0.0303 5.5 -3 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="HyperLink"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 3.04 14.5333 V 14.0267 H 8.02667 H 13.0133 V 14.5333 V 15.04 H 8.02667 H 3.04 Z m 0 -2.02667 V 12 H 3.52 H 4 V 10.5067 V 9.01333 H 4.50667 H 5.01333 V 7.52 V 6.02667 H 5.52 H 6.02667 V 4.53333 V 3.04 H 6.53333 H 7.04 V 2.02667 V 1.01333 H 8.02667 H 9.01333 V 2.02667 V 3.04 H 9.52 H 10.0267 V 4.53333 V 6.02667 H 10.5333 H 11.04 V 7.52 V 9.01333 H 11.52 H 12 V 10.5067 V 12 h 0.506667 h 0.506666 v 0.506667 v 0.506666 H 12.0267 H 11.04 V 12.0267 V 11.04 h -0.506667 h -0.506666 v -0.506667 v -0.506666 h -2 h -2 V 10.5333 V 11.04 H 5.52 H 5.01333 v 0.986667 v 0.986666 H 4.02667 H 3.04 Z M 9.01333 6.50667 V 5.01333 H 8.02667 H 7.04 V 6.50667 V 8 h 0.986667 h 0.986667 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Image"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.01333 7.52 V 1.01333 H 8.02667 H 15.04 V 7.52 V 14.0267 H 8.02667 H 1.01333 Z m 13.0133 4 V 10.0267 H 13.52 H 13.0133 V 9.52 V 9.01333 H 13.52 H 14.0267 V 5.52 V 2.02667 h -6 h -6 V 5.52 V 9.01333 H 2.53333 H 3.04 V 9.52 V 10.0267 H 2.53333 H 2.02667 V 11.52 V 13.0133 h 6 h 6 z M 8 9.52 V 9.01333 H 7.52 H 7.04 V 8.50667 V 8 H 6.53333 H 6.02667 V 7.52 V 7.04 H 5.01333 H 4 V 7.52 V 8 H 3.52 H 3.04 V 7.52 V 7.04 H 3.52 H 4 V 6.53333 V 6.02667 H 5.01333 H 6.02667 V 6.53333 V 7.04 H 6.53333 H 7.04 V 7.52 V 8 H 7.52 H 8 V 8.50667 V 9.01333 H 9.01333 H 10.0267 V 8.50667 V 8 H 11.52 H 13.0133 V 8.50667 V 9.01333 H 12.0267 H 11.04 V 9.52 V 10.0267 H 9.52 H 8 Z m 1.01333 -4 V 5.01333 H 8.50667 H 8 V 4.50667 V 4 H 8.50667 H 9.01333 V 3.52 V 3.04 H 9.52 H 10.0267 V 3.52 V 4 H 10.5333 H 11.04 V 4.50667 V 5.01333 H 10.5333 H 10.0267 V 5.52 V 6.02667 H 9.52 H 9.01333 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Item"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.01333 7.52 V 3.04 H 8.02667 H 15.04 V 7.52 V 12 H 8.02667 H 1.01333 Z m 13.0133 0 V 4 h -6 h -6 v 3.52 v 3.52 h 6 h 6 z M 4 7.52 V 7.04 h 4 h 4 V 7.52 V 8 H 8 H 4 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="List"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.01333 7.52 V 1.01333 H 8.02667 H 15.04 V 3.52 V 6.02667 h -2.50667 h -2.50667 v -2 v -2 h -4 h -4 V 7.52 V 13.0133 h 4 h 4 v -2 v -2 H 12.5333 H 15.04 V 11.52 V 14.0267 H 8.02667 H 1.01333 Z m 12 4 V 11.04 H 13.52 H 14.0267 V 10.5333 V 10.0267 H 12.5333 H 11.04 V 10.5333 V 11.04 H 11.52 H 12 V 11.52 V 12 h 0.506667 h 0.506666 z M 14.0267 4.50667 V 4 H 13.52 H 13.0133 V 3.52 V 3.04 H 12.5067 H 12 V 3.52 V 4 h -0.48 h -0.48 v 0.506667 v 0.506667 h 1.49333 h 1.49333 z M 3.04 10.5333 V 10.0267 H 5.52 H 8 V 10.5333 V 11.04 H 5.52 H 3.04 Z m 0 -2.02667 V 8 h 2 h 2 v 0.506667 v 0.506667 h -2 h -2 z M 10.0267 7.52 V 7.04 H 12.5333 H 15.04 V 7.52 V 8 H 12.5333 H 10.0267 Z M 3.04 6.53333 V 6.02667 H 6.02667 H 9.01333 V 6.53333 V 7.04 H 6.02667 H 3.04 Z m 0 -2.02667 V 4 h 2 h 2 v 0.506667 v 0.506667 h -2 h -2 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Menu"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.01333 10.0267 V 5.01333 H 8.02667 H 15.04 V 10.0267 V 15.04 H 8.02667 H 1.01333 Z m 13.0133 0 V 6.02667 h -6 h -6 v 4 v 4 h 6 h 6 z M 3.04 11.52 V 11.04 H 6.02667 H 9.01333 V 11.52 V 12 H 6.02667 H 3.04 Z m 0 -2 V 9.01333 h 4 h 4 V 9.52 V 10.0267 h -4 h -4 z m 0 -2 V 7.04 H 6.02667 H 9.01333 V 7.52 V 8 H 6.02667 H 3.04 Z M 1.01333 2.50667 V 1.01333 H 5.52 H 10.0267 V 2.50667 V 4 H 5.52 H 1.01333 Z m 8 0.026667 V 2.02667 H 5.52 H 2.02667 V 2.53333 V 3.04 H 5.52 H 9.01333 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="MenuItem"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.01333 8.02667 V 1.01333 h 4 h 4 V 2.50667 V 4 H 12.0267 H 15.04 v 5.52 v 5.52 H 8.02667 H 1.01333 Z M 14.0267 12.5333 V 11.04 h -6 h -6 v 1.49333 v 1.49333 h 6 h 6 z M 3.04 12.5067 V 12 h 4 h 4 v 0.506667 v 0.506666 h -4 h -4 z M 13.0133 9.52 V 9.01333 H 8.02667 H 3.04 V 9.52 V 10.0267 H 8.02667 H 13.0133 Z M 14.0267 6.50667 V 5.01333 h -6 h -6 V 6.50667 V 8 h 6 h 6 z M 3.04 6.53333 V 6.02667 H 6.53333 H 10.0267 V 6.53333 V 7.04 H 6.53333 H 3.04 Z m 4.96 -3.52 V 2.02667 H 5.01333 H 2.02667 V 3.01333 V 4 H 5.01333 H 8 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Pane"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="m 2.02667 8.02667 v -6 h 6 h 6 v 6 v 6 h -6 h -6 z m 6.98667 0 V 3.04 H 6.02667 H 3.04 v 4.98667 v 4.98667 h 2.98667 h 2.98667 z m 4 0 V 3.04 H 11.52 H 10.0267 V 8.02667 V 13.0133 H 11.52 H 13.0133 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="ProgressBar"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.01333 7.52 V 4 H 8.02667 H 15.04 v 3.52 v 3.52 H 8.02667 H 1.01333 Z m 13.0133 0 V 5.01333 h -6 h -6 V 7.52 V 10.0267 h 6 h 6 z M 3.04 7.52 V 6.02667 H 6.02667 H 9.01333 V 7.52 V 9.01333 H 6.02667 H 3.04 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="RadioButton"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 6.02667 13.52 V 13.0133 H 5.01333 H 4 V 12.5067 V 12 H 3.52 H 3.04 V 11.0133 V 10.0267 H 2.53333 H 2.02667 v -2 v -2 H 2.53333 H 3.04 V 5.01333 V 4 H 3.52 H 4 V 3.52 V 3.04 H 5.01333 H 6.02667 V 2.53333 V 2.02667 h 2 h 2 V 2.53333 V 3.04 H 11.0133 H 12 V 3.52 V 4 h 0.506667 h 0.506666 V 5.01333 V 6.02667 H 13.52 H 14.0267 v 2 v 2 H 13.52 H 13.0133 V 11.0133 V 12 H 12.5067 H 12 v 0.506667 v 0.506666 H 11.0133 H 10.0267 V 13.52 V 14.0267 h -2 h -2 z M 11.04 11.52 V 11.04 H 11.52 H 12 V 8.02667 V 5.01333 H 11.52 H 11.04 V 4.50667 V 4 H 8.02667 H 5.01333 V 4.50667 V 5.01333 H 4.50667 H 4 V 8.02667 V 11.04 H 4.50667 H 5.01333 V 11.52 V 12 H 8.02667 H 11.04 Z m -4 -3.49333 V 7.04 H 8.02667 H 9.01333 V 8.02667 V 9.01333 H 8.02667 H 7.04 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="ScrollBar"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 6.02667 12.5333 V 10.0267 H 8.53333 H 11.04 V 12.5333 V 15.04 H 8.53333 H 6.02667 Z M 9.01333 13.52 V 13.0133 H 9.52 H 10.0267 V 12.0267 V 11.04 H 8.53333 H 7.04 v 0.986667 v 0.986666 H 7.52 H 8 V 13.52 V 14.0267 H 8.50667 H 9.01333 Z M 6.02667 8.02667 V 7.04 H 8.53333 H 11.04 V 8.02667 V 9.01333 H 8.53333 H 6.02667 Z m 0 -4.50667 V 1.01333 H 8.53333 H 11.04 V 3.52 V 6.02667 H 8.53333 H 6.02667 Z M 10.0267 4.02667 V 3.04 H 9.52 H 9.01333 V 2.53333 V 2.02667 H 8.50667 H 8 V 2.53333 V 3.04 H 7.52 H 7.04 v 0.986667 v 0.986667 h 1.49333 h 1.49333 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Slider"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 3.04 11.52 V 11.04 H 2.53333 H 2.02667 V 10.5333 V 10.0267 H 1.52 H 1.01333 v -4 v -4 H 4.02667 H 7.04 v 2 v 2 h 4 h 4 V 7.01333 V 8 h -4 h -4 V 9.01333 V 10.0267 H 6.53333 H 6.02667 V 10.5333 V 11.04 H 5.52 H 5.01333 V 11.52 V 12 H 4.02667 H 3.04 Z M 5.01333 10.5333 V 10.0267 H 5.52 H 6.02667 V 7.52 V 5.01333 h -2 h -2 V 7.52 V 10.0267 H 2.53333 H 3.04 V 10.5333 V 11.04 h 0.986667 h 0.986667 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Spinner"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 5.01333 11.0133 V 8 H 8.02667 H 11.04 v 3.01333 v 3.01333 H 8.02667 H 5.01333 Z m 4 1.01333 V 11.04 H 9.52 H 10.0267 v -0.506667 v -0.506666 h -2 h -2 V 10.5333 V 11.04 H 6.53333 H 7.04 v 0.986667 v 0.986666 h 0.986667 h 0.986667 z m -4 -8 V 1.01333 H 8.02667 H 11.04 V 4.02667 V 7.04 H 8.02667 H 5.01333 Z m 5.01333 0.48 V 4 H 9.52 H 9.01333 V 3.01333 V 2.02667 H 8.02667 H 7.04 V 3.01333 V 4 H 6.53333 H 6.02667 v 0.506667 v 0.506667 h 2 h 2 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="SplitButton"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 3.04 12.5067 V 12 H 2.53333 H 2.02667 V 11.52 V 11.04 H 1.52 H 1.01333 V 8.02667 V 5.01333 H 1.52 H 2.02667 V 4.50667 V 4 H 2.53333 H 3.04 V 3.52 V 3.04 H 8.02667 H 13.0133 V 3.52 V 4 H 13.52 H 14.0267 V 4.50667 V 5.01333 H 14.5333 H 15.04 V 8.02667 V 11.04 H 14.5333 H 14.0267 V 11.52 V 12 H 13.52 H 13.0133 v 0.506667 v 0.506666 H 8.02667 H 3.04 Z M 7.04 8 V 4 h -2 h -2 V 4.50667 V 5.01333 H 2.53333 H 2.02667 V 8.02667 V 11.04 H 2.53333 H 3.04 V 11.52 V 12 h 2 h 2 z m 5.97333 3.52 V 11.04 H 13.52 H 14.0267 V 8.02667 V 5.01333 H 13.52 H 13.0133 V 4.50667 V 4 H 10.5067 H 8 v 4 v 4 h 2.50667 h 2.50667 z m -2.98667 -4 V 7.04 H 11.0133 H 12 V 7.52 V 8 h -0.986667 h -0.986666 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="StatusBar"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.024 8.016 V 1.024 H 1.52 H 2.016 v 4 v 4 h 6.496 h 6.496 v 0.496 v 0.496 h -2 h -2 v 1.504 v 1.504 h 2 h 2 v 0.992 v 0.992 H 8.016 H 1.024 Z m 8 3.504 V 10.016 H 6.016 H 3.008 v 1.504 v 1.504 h 3.008 h 3.008 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Tab"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="m 1.024 8.016 v -2 H 4.512 H 8 v 0.496 v 0.496 h 2.512 h 2.512 v 1.008 v 1.008 h 0.992 h 0.992 V 9.52 V 10.016 H 8.016 H 1.024 Z M 12 8.512 V 8 H 10.512 H 9.024 V 8.512 V 9.024 H 10.512 H 12 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Text"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 3.008 13.504 V 12 H 3.504 H 4 V 10.512 V 9.024 H 4.512 H 5.024 V 7.52 V 6.016 H 5.52 H 6.016 V 4.512 V 3.008 H 6.512 H 7.008 V 2.016 V 1.024 h 1.008 h 1.008 v 0.992 v 0.992 h 0.496 h 0.496 v 1.504 v 1.504 h 0.496 h 0.496 V 7.52 V 9.024 H 11.504 H 12 V 10.512 V 12 h 0.512 h 0.512 v 1.504 v 1.504 H 12.512 H 12 V 14.512 V 14.016 H 11.504 H 11.008 V 13.008 V 12 H 8.016 H 5.024 v 1.008 v 1.008 H 4.512 H 4 v 0.496 v 0.496 H 3.504 H 3.008 Z M 10.016 9.008 V 8 H 9.52 H 9.024 V 6.512 V 5.024 H 8.016 H 7.008 V 6.512 V 8 H 6.512 H 6.016 v 1.008 v 1.008 h 2 h 2 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Thumb"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 7.008 14.512 V 14.016 H 6.512 H 6.016 V 13.52 V 13.024 H 5.52 H 5.024 V 12.512 V 12 H 5.52 H 6.016 v 0.512 v 0.512 H 6.512 H 7.008 V 11.52 V 10.016 h 1.008 h 1.008 v 1.504 v 1.504 H 9.52 H 10.016 V 12.512 V 12 h 0.496 h 0.496 v 0.512 v 0.512 h -0.496 h -0.496 v 0.496 v 0.496 H 9.52 H 9.024 v 0.496 v 0.496 H 8.016 H 7.008 Z m -4 -4 V 10.016 H 2.512 H 2.016 V 9.52 V 9.024 H 1.52 H 1.024 V 8.016 V 7.008 H 1.52 H 2.016 V 6.512 V 6.016 H 2.512 H 3.008 V 5.52 V 5.024 H 3.504 H 4 V 5.52 V 6.016 H 3.504 H 3.008 V 6.512 V 7.008 H 4.512 H 6.016 V 8.016 V 9.024 H 4.512 H 3.008 V 9.52 V 10.016 H 3.504 H 4 v 0.496 v 0.496 H 3.504 H 3.008 Z m 8.992 0 v -0.496 h 0.512 h 0.512 V 9.52 V 9.024 H 11.52 H 10.016 V 8.016 V 7.008 h 1.504 h 1.504 V 6.512 V 6.016 H 12.512 H 12 V 5.52 V 5.024 h 0.512 h 0.512 V 5.52 V 6.016 h 0.496 h 0.496 v 0.496 v 0.496 h 0.496 h 0.496 V 8.016 V 9.024 H 14.512 H 14.016 V 9.52 V 10.016 H 13.52 H 13.024 v 0.496 v 0.496 H 12.512 H 12 Z M 7.008 8.016 V 7.008 H 8.016 H 9.024 V 8.016 V 9.024 H 8.016 H 7.008 Z m 0 -3.504 V 3.008 H 6.512 H 6.016 V 3.504 V 4 H 5.52 H 5.024 V 3.504 V 3.008 H 5.52 H 6.016 V 2.512 V 2.016 H 6.512 H 7.008 V 1.52 V 1.024 H 8.016 H 9.024 V 1.52 V 2.016 h 0.496 h 0.496 v 0.496 v 0.496 h 0.496 h 0.496 V 3.504 V 4 H 10.512 H 10.016 V 3.504 V 3.008 H 9.52 H 9.024 V 4.512 V 6.016 H 8.016 H 7.008 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="TitleBar"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.024 8.016 V 5.024 h 6.992 h 6.992 v 2.992 v 2.992 H 8.016 H 1.024 Z m 4 1.504 V 9.024 H 6.016 H 7.008 V 9.52 V 10.016 H 8.016 H 9.024 V 9.52 V 9.024 h 0.992 h 0.992 v 0.496 v 0.496 h 1.008 h 1.008 V 9.52 V 9.024 h 0.496 h 0.496 V 8.016 V 7.008 H 13.52 H 13.024 V 6.512 V 6.016 H 12.016 H 11.008 V 6.512 V 7.008 H 10.016 H 9.024 V 6.512 V 6.016 H 8.016 H 7.008 V 6.512 V 7.008 H 6.016 H 5.024 V 6.512 V 6.016 H 4.016 H 3.008 V 6.512 V 7.008 H 2.512 H 2.016 v 1.008 v 1.008 h 0.496 h 0.496 v 0.496 v 0.496 h 1.008 h 1.008 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="ToolBar"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 1.024 7.504 V 3.008 h 6.992 h 6.992 V 3.504 V 4 H 9.504 H 4 v 3.504 v 3.504 h 5.504 h 5.504 V 11.504 V 12 H 8.016 H 1.024 Z M 3.008 9.52 V 9.024 H 2.512 H 2.016 v 0.496 v 0.496 h 0.496 h 0.496 z m 0 -2.016 V 7.008 H 2.512 H 2.016 V 7.504 V 8 h 0.496 h 0.496 z m 0 -1.984 V 5.024 H 2.512 H 2.016 V 5.52 V 6.016 h 0.496 h 0.496 z m 2.016 2 V 5.024 H 6.512 H 8 V 5.52 V 6.016 h 0.512 h 0.512 v 2 v 2 h -2 h -2 z M 8 8.016 V 7.008 H 7.504 H 7.008 V 6.512 V 6.016 H 6.512 H 6.016 V 7.52 V 9.024 H 7.008 H 8 Z M 10.016 7.52 V 5.024 h 0.496 h 0.496 V 6.016 V 7.008 H 11.504 H 12 V 6.016 V 5.024 h 0.512 h 0.512 V 5.52 V 6.016 h 0.496 h 0.496 v 2 v 2 h -2 h -2 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="ToolTip"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 3.008 11.008 V 8 H 2.512 H 2.016 V 4.512 V 1.024 H 2.512 H 3.008 V 1.52 V 2.016 H 3.504 H 4 V 2.512 V 3.008 H 4.512 H 5.024 V 3.504 V 4 H 5.52 H 6.016 V 4.512 V 5.024 H 6.512 H 7.008 V 5.52 V 6.016 H 6.016 H 5.024 v 0.496 v 0.496 h 4.992 h 4.992 v 3.504 v 3.504 h -6 h -6 z M 14.016 10.512 V 8 h -4 h -4 V 8.512 V 9.024 H 5.008 H 4 v 2 v 2 h 5.008 h 5.008 z m -8 0 V 10.016 H 9.008 H 12 v 0.496 v 0.496 H 9.008 H 6.016 Z M 4 7.504 V 7.008 H 3.504 H 3.008 V 7.504 V 8 H 3.504 H 4 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Tree"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="M 4 13.504 V 12 h 1.504 h 1.504 v 1.504 v 1.504 H 5.504 H 4 Z m 5.024 0.016 v -0.496 h 2.992 h 2.992 v 0.496 v 0.496 H 12.016 H 9.024 Z M 4 8.512 V 7.008 h 1.504 h 1.504 v 1.504 v 1.504 H 5.504 H 4 Z m 5.024 0 V 8 h 2.992 h 2.992 V 8.512 V 9.024 H 12.016 H 9.024 Z m -8 -6 V 1.024 H 2.512 H 4 V 2.512 V 4 H 2.512 H 1.024 Z m 4.992 0 V 2.016 H 9.52 H 13.024 V 2.512 V 3.008 H 9.52 H 6.016 Z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+    <Canvas x:Key="Window"
+            Width="16.0"
+            Height="16.0"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Canvas.Clip>
+            <RectangleGeometry Rect="0.0,0.0,16.0,16.0" />
+        </Canvas.Clip>
+        <Canvas UseLayoutRounding="False">
+            <Path Fill="#ff000000">
+                <Path.Data>
+                    <PathGeometry Figures="m 1.024 8.016 v -6 h 6.992 h 6.992 v 6 v 6 H 8.016 H 1.024 Z m 12.992 1.008 v -4 h -6 h -6 v 4 v 4 h 6 h 6 z"
+                                  FillRule="Nonzero" />
+                </Path.Data>
+            </Path>
+        </Canvas>
+    </Canvas>
+
+
+
+
+</ResourceDictionary>

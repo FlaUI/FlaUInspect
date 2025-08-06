@@ -3,23 +3,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        Title="Choose UIA Version" Height="150" Width="270"
-        ResizeMode="NoResize" WindowStartupLocation="CenterOwner" WindowStyle="ToolWindow" ShowInTaskbar="False">
+        Title="Choose UIA Version"
+        Width="270"
+        Height="230"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="ToolWindow"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/ChooseVersionIcons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
+    </Window.Resources>
     <Grid>
-        <StackPanel HorizontalAlignment="Center" Margin="10">
+        <StackPanel Margin="10"
+                    HorizontalAlignment="Center">
             <Label>Chose which UIA version you want to use:</Label>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center"
+                        Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="Margin" Value="10"/>
+                        <Setter Property="Margin" Value="10" />
                     </Style>
                 </StackPanel.Resources>
-                <Button Padding="10" Click="UIA2ButtonClick">
-                    <TextBlock TextAlignment="Center">UIA2<LineBreak/>Managed</TextBlock>
+                <Button Padding="10"
+                        Click="Uia2ButtonClick">
+                    <StackPanel Orientation="Vertical">
+                        <Viewbox Width="48"
+                                 Height="48"
+                                 Stretch="Uniform">
+                            <ContentControl Content="{StaticResource Uia2Icon}" />
+                        </Viewbox>
+                        <TextBlock TextAlignment="Center">
+                            UIA2<LineBreak />
+                            Uia2Icon</TextBlock>
+                    </StackPanel>
                 </Button>
-                <Button Padding="10" Click="UIA3ButtonClick">
-                    <TextBlock TextAlignment="Center">UIA3<LineBreak/>Interop</TextBlock>
+                <Button Padding="10"
+                        Click="Uia3ButtonClick">
+                    <StackPanel Orientation="Vertical">
+                        <Viewbox Width="48"
+                                 Height="48"
+                                 Stretch="Uniform">
+                            <ContentControl Content="{StaticResource Uia3Icon}" />
+                        </Viewbox>
+                        <TextBlock TextAlignment="Center">
+                            UIA3<LineBreak />
+                            Uia3Icon</TextBlock>
+                    </StackPanel>
                 </Button>
             </StackPanel>
         </StackPanel>

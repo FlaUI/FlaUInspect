@@ -1,0 +1,387 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:flauidef="clr-namespace:FlaUI.Core.Definitions;assembly=FlaUI.Core">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Resources/DetailsIcons.xaml" />
+        <ResourceDictionary Source="../Resources/Icons.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--  Style for TreeView item images based on ControlType  -->
+    <Style x:Key="TreeItemResourceStyle"
+           TargetType="{x:Type ContentControl}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Button}">
+                <Setter Property="Content" Value="{StaticResource Button}" />
+                <Setter Property="ToolTip" Value="Button" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Calendar}">
+                <Setter Property="Content" Value="{StaticResource Calendar}" />
+                <Setter Property="ToolTip" Value="Calendar" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.CheckBox}">
+                <Setter Property="Content" Value="{StaticResource CheckBox}" />
+                <Setter Property="ToolTip" Value="CheckBox" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.ComboBox}">
+                <Setter Property="Content" Value="{StaticResource ComboBox}" />
+                <Setter Property="ToolTip" Value="ComboBox" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Custom}">
+                <Setter Property="Content" Value="{StaticResource Custom}" />
+                <Setter Property="ToolTip" Value="Custom" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.DataGrid}">
+                <Setter Property="Content" Value="{StaticResource DataGrid}" />
+                <Setter Property="ToolTip" Value="DataGrid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.DataItem}">
+                <Setter Property="Content" Value="{StaticResource Item}" />
+                <Setter Property="ToolTip" Value="DataItem" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Document}">
+                <Setter Property="Content" Value="{StaticResource Document}" />
+                <Setter Property="ToolTip" Value="Document" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Edit}">
+                <Setter Property="Content" Value="{StaticResource Edit}" />
+                <Setter Property="ToolTip" Value="Edit" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Group}">
+                <Setter Property="Content" Value="{StaticResource Group}" />
+                <Setter Property="ToolTip" Value="Group" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Header}">
+                <Setter Property="Content" Value="{StaticResource Header}" />
+                <Setter Property="ToolTip" Value="Header" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.HeaderItem}">
+                <Setter Property="Content" Value="{StaticResource HeaderItem}" />
+                <Setter Property="ToolTip" Value="HeaderItem" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Hyperlink}">
+                <Setter Property="Content" Value="{StaticResource HyperLink}" />
+                <Setter Property="ToolTip" Value="Hyperlink" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Image}">
+                <Setter Property="Content" Value="{StaticResource Image}" />
+                <Setter Property="ToolTip" Value="Image" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.List}">
+                <Setter Property="Content" Value="{StaticResource List}" />
+                <Setter Property="ToolTip" Value="List" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.ListItem}">
+                <Setter Property="Content" Value="{StaticResource Item}" />
+                <Setter Property="ToolTip" Value="ListItem" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Menu}">
+                <Setter Property="Content" Value="{StaticResource Menu}" />
+                <Setter Property="ToolTip" Value="Menu" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.MenuBar}">
+                <Setter Property="Content" Value="{StaticResource Menu}" />
+                <Setter Property="ToolTip" Value="MenuBar" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.MenuItem}">
+                <Setter Property="Content" Value="{StaticResource MenuItem}" />
+                <Setter Property="ToolTip" Value="MenuItem" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Pane}">
+                <Setter Property="Content" Value="{StaticResource Pane}" />
+                <Setter Property="ToolTip" Value="Pane" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.ProgressBar}">
+                <Setter Property="Content" Value="{StaticResource ProgressBar}" />
+                <Setter Property="ToolTip" Value="ProgressBar" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.RadioButton}">
+                <Setter Property="Content" Value="{StaticResource RadioButton}" />
+                <Setter Property="ToolTip" Value="RadioButton" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.ScrollBar}">
+                <Setter Property="Content" Value="{StaticResource ScrollBar}" />
+                <Setter Property="ToolTip" Value="ScrollBar" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Slider}">
+                <Setter Property="Content" Value="{StaticResource Slider}" />
+                <Setter Property="ToolTip" Value="Slider" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Spinner}">
+                <Setter Property="Content" Value="{StaticResource Spinner}" />
+                <Setter Property="ToolTip" Value="Spinner" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.SplitButton}">
+                <Setter Property="Content" Value="{StaticResource SplitButton}" />
+                <Setter Property="ToolTip" Value="SplitButton" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.StatusBar}">
+                <Setter Property="Content" Value="{StaticResource StatusBar}" />
+                <Setter Property="ToolTip" Value="StatusBar" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Tab}">
+                <Setter Property="Content" Value="{StaticResource Tab}" />
+                <Setter Property="ToolTip" Value="Tab" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.TabItem}">
+                <Setter Property="Content" Value="{StaticResource Item}" />
+                <Setter Property="ToolTip" Value="TabItem" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Text}">
+                <Setter Property="Content" Value="{StaticResource Text}" />
+                <Setter Property="ToolTip" Value="Text" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Thumb}">
+                <Setter Property="Content" Value="{StaticResource Thumb}" />
+                <Setter Property="ToolTip" Value="Thumb" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.TitleBar}">
+                <Setter Property="Content" Value="{StaticResource TitleBar}" />
+                <Setter Property="ToolTip" Value="TitleBar" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.ToolBar}">
+                <Setter Property="Content" Value="{StaticResource ToolBar}" />
+                <Setter Property="ToolTip" Value="ToolBar" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.ToolTip}">
+                <Setter Property="Content" Value="{StaticResource ToolTip}" />
+                <Setter Property="ToolTip" Value="ToolTip" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Tree}">
+                <Setter Property="Content" Value="{StaticResource Tree}" />
+                <Setter Property="ToolTip" Value="Tree" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.TreeItem}">
+                <Setter Property="Content" Value="{StaticResource Item}" />
+                <Setter Property="ToolTip" Value="TreeItem" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ControlType}"
+                         Value="{x:Static flauidef:ControlType.Window}">
+                <Setter Property="Content" Value="{StaticResource Window}" />
+                <Setter Property="ToolTip" Value="Window" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  This style is used for displaying images in the details view based on the PatternName property.  -->
+    <Style x:Key="DetailsResourceStyle"
+           TargetType="{x:Type ContentControl}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Identification">
+                <Setter Property="Content" Value="{StaticResource Identification}" />
+                <Setter Property="ToolTip" Value="Identification" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Details">
+                <Setter Property="Content" Value="{StaticResource Details}" />
+                <Setter Property="ToolTip" Value="Details" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Pattern Support">
+                <Setter Property="Content" Value="{StaticResource Pattern}" />
+                <Setter Property="ToolTip" Value="Pattern Support" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="GridItem">
+                <Setter Property="Content" Value="{StaticResource GridItem}" />
+                <Setter Property="ToolTip" Value="Grid Item" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Grid">
+                <Setter Property="Content" Value="{StaticResource Grid}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="LegacyIAccessible">
+                <Setter Property="Content" Value="{StaticResource Legacy}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Window">
+                <Setter Property="Content" Value="{StaticResource Windows}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Annotation">
+                <Setter Property="Content" Value="{StaticResource Annotation}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Dock">
+                <Setter Property="Content" Value="{StaticResource Dock}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Drag">
+                <Setter Property="Content" Value="{StaticResource Drag}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="DropTarget">
+                <Setter Property="Content" Value="{StaticResource DropTarget}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="ExpandCollapse">
+                <Setter Property="Content" Value="{StaticResource Expand}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Invoke">
+                <Setter Property="Content" Value="{StaticResource Invoke}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="ItemContainer">
+                <Setter Property="Content" Value="{StaticResource ItemContainer}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="MultipleView">
+                <Setter Property="Content" Value="{StaticResource MultipleView}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="RangeValue">
+                <Setter Property="Content" Value="{StaticResource Range}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Scroll">
+                <Setter Property="Content" Value="{StaticResource Scroll}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="ScrollItem">
+                <Setter Property="Content" Value="{StaticResource Scroll}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Selection">
+                <Setter Property="Content" Value="{StaticResource Selection}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="SelectionItem">
+                <Setter Property="Content" Value="{StaticResource SelectItem}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="SpreadsheetItem">
+                <Setter Property="Content" Value="{StaticResource SpreadSheet}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Spreadsheet">
+                <Setter Property="Content" Value="{StaticResource SpreadSheetItem}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Styles">
+                <Setter Property="Content" Value="{StaticResource Style}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="SynchronizedInput">
+                <Setter Property="Content" Value="{StaticResource SynchronizedInput}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Text">
+                <Setter Property="Content" Value="{StaticResource Text}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="TextChild">
+                <Setter Property="Content" Value="{StaticResource Text}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="TextEdit">
+                <Setter Property="Content" Value="{StaticResource Text}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Text2">
+                <Setter Property="Content" Value="{StaticResource Text}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Toggle">
+                <Setter Property="Content" Value="{StaticResource Toggle}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Transform">
+                <Setter Property="Content" Value="{StaticResource Transform}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Transform2">
+                <Setter Property="Content" Value="{StaticResource Transform}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Value">
+                <Setter Property="Content" Value="{StaticResource Value}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="VirtualizedItem">
+                <Setter Property="Content" Value="{StaticResource VirtualizedItem}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="Table">
+                <Setter Property="Content" Value="{StaticResource Table}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="TableItem">
+                <Setter Property="Content" Value="{StaticResource TabItem}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PatternName}"
+                         Value="ObjectModel">
+                <Setter Property="Content" Value="{StaticResource ObjectModel}" />
+                <Setter Property="ToolTip" Value="Grid" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>
