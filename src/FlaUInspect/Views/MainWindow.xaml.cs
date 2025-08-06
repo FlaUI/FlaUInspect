@@ -1,61 +1,26 @@
-﻿using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using FlaUInspect.ViewModels;
 
-namespace FlaUInspect.Views
-{
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow
-    {
-        private readonly MainViewModel _vm;
+namespace FlaUInspect.Views;
 
-        public MainWindow()
-        {
-            InitializeComponent();
-            AppendVersionToTitle();
-            Height = 550;
-            Width = 700;
-            Loaded += MainWindow_Loaded;
-            _vm = new MainViewModel();
-            DataContext = _vm;
+public partial class MainWindow {
+    public MainWindow() {
+        InitializeComponent();
+        Loaded += MainWindow_Loaded;
+    }
+
+    private void MainWindow_Loaded(object sender, EventArgs e) {
+        if (DataContext is MainViewModel mainViewModel) {
+            mainViewModel.Initialize();
         }
+    }
 
-        private void AppendVersionToTitle()
-        {
-            var attr = Assembly.GetEntryAssembly().GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
-            if (attr != null)
-            {
-                Title += " v" + attr.InformationalVersion;
-            }
-        }
+    private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
+        if (DataContext is MainViewModel mainViewModel) {
+            mainViewModel.SelectedItem = e.NewValue as ElementViewModel;
 
-        private void MainWindow_Loaded(object sender, System.EventArgs e)
-        {
-            if (!_vm.IsInitialized)
-            {
-                var dlg = new ChooseVersionWindow { Owner = this };
-                if (dlg.ShowDialog() != true)
-                {
-                    Close();
-                }
-                _vm.Initialize(dlg.SelectedAutomationType);
-                Loaded -= MainWindow_Loaded;
-            }
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void TreeViewSelectedHandler(object sender, RoutedEventArgs e)
-        {
-            var item = sender as TreeViewItem;
-            if (item != null)
-            {
+            if (sender is TreeViewItem item) {
                 item.BringIntoView();
                 e.Handled = true;
             }
