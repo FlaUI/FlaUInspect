@@ -30,4 +30,4 @@ jobs:
       run: dotnet tool restore
     
     - name: Execute unit tests
-      run: dotnet-cake --target "Test"
+      run: dotnet cake --target "Test"
