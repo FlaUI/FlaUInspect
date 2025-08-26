@@ -20,7 +20,6 @@ using Application = System.Windows.Application;
 
 namespace FlaUInspect.ViewModels;
 
-[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class MainViewModel : ObservableObject {
 
     private readonly object _itemsLock = new();
@@ -162,7 +161,7 @@ public class MainViewModel : ObservableObject {
         }
 
         try {
-            HashSet<PatternId> supportedPatterns = selectedItemAutomationElement.GetSupportedPatterns().ToHashSet();
+            HashSet<PatternId> supportedPatterns = [.. selectedItemAutomationElement.GetSupportedPatterns()];
             IDictionary<string, PatternItem[]> patternItemsForElement = _patternItemsFactory.CreatePatternItemsForElement(selectedItemAutomationElement, supportedPatterns);
 
             foreach (ElementPatternItem elementPattern in ElementPatterns) {

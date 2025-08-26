@@ -1,14 +1,12 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace FlaUInspect.Core;
 
-[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
 public abstract class ObservableObject : INotifyPropertyChanged {
 
-    private readonly Dictionary<string, object?> _backingFieldValues = new ();
+    private readonly Dictionary<string, object?> _backingFieldValues = [];
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>

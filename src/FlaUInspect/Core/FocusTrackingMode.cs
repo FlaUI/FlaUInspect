@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using FlaUI.Core;
+﻿using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.EventHandlers;
 using Application = System.Windows.Application;

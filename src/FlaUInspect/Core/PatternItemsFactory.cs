@@ -24,7 +24,6 @@ using WindowPattern = FlaUI.UIA2.Patterns.WindowPattern;
 
 namespace FlaUInspect.Core;
 
-[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class PatternItemsFactory(AutomationBase? automationBase) {
     public const string Identification = "Identification";
     public const string Details = "Details";

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Threading;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
@@ -36,7 +34,6 @@ public class HoverMode {
         _dispatcherTimer.Stop();
     }
 
-    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
     private void DispatcherTimerTick(object? sender, EventArgs e) {
         if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
             Point screenPos = Mouse.Position;
@@ -46,7 +43,7 @@ public class HoverMode {
 
                 // Skip items in the current process
                 // Like Inspect itself or the overlay window
-                if (hoveredElement?.Properties.ProcessId == Process.GetCurrentProcess().Id) {
+                if (hoveredElement?.Properties.ProcessId == Environment.ProcessId) {
                     return;
                 }
 
