@@ -40,67 +40,12 @@
 
             <Style x:Key="BorderedHeaderExpander"
                    TargetType="Expander">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Expander">
-                            <Border BorderBrush="Gray"
-                                    BorderThickness="1"
-                                    CornerRadius="0">
-                                <DockPanel>
-                                    <!--  ToggleButton for header with border  -->
-                                    <ToggleButton Name="ExpanderToggle"
-                                                  Padding="4"
-                                                  HorizontalContentAlignment="Left"
-                                                  Background="#ffeeeeee"
-                                                  BorderBrush="#ffaaaaaa"
-                                                  BorderThickness="1"
-                                                  Content="{TemplateBinding Header}"
-                                                  DockPanel.Dock="Top"
-                                                  Focusable="False"
-                                                  FontWeight="Bold"
-                                                  Foreground="Black"
-                                                  IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
-                                        <!--  Add arrow if desired  -->
-                                        <ToggleButton.Template>
-                                            <ControlTemplate TargetType="ToggleButton">
-                                                <Border Background="{TemplateBinding Background}">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <ContentPresenter Margin="4,2"
-                                                                          VerticalAlignment="Center" />
-                                                        <!--<TextBlock Text=" ▼"
-                                                                   VerticalAlignment="Center"
-                                                                   Margin="5,0,0,0"
-                                                                   RenderTransformOrigin="0.5,0.5">
-                                                            <TextBlock.RenderTransform>
-                                                                <RotateTransform Angle="0" />
-                                                            </TextBlock.RenderTransform>
-                                                        </TextBlock>-->
-                                                    </StackPanel>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </ToggleButton.Template>
-                                    </ToggleButton>
-
-                                    <!--  Content of the Expander  -->
-                                    <ContentPresenter Name="ExpandSite"
-                                                      Margin="2"
-                                                      ContentSource="Content"
-                                                      Visibility="Collapsed" />
-                                </DockPanel>
-                            </Border>
-
-                            <!--  Toggle collapse behavior  -->
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsExpanded" Value="True">
-                                    <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="Foreground" Value="#202020"/>
+                <Setter Property="Background" Value="#D0D0D0"/>
             </Style>
         </ResourceDictionary>
-
 
     </Window.Resources>
     <Window.InputBindings>
