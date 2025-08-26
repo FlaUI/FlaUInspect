@@ -64,7 +64,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     ];
 
     public IDictionary<string, PatternItem[]> CreatePatternItemsForElement(AutomationElement element, HashSet<PatternId> allSupportedPatterns) {
-        Dictionary<string, PatternItem[]> patternItems = new ()
+        Dictionary<string, PatternItem[]> patternItems = new()
         {
             { Identification, AddIdentificationDetails(element).ToArray() },
             { Details, AddDetailsDetails(element).ToArray() },
@@ -82,7 +82,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddPatternSupportDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         PatternId[] allSupportedPatterns = element.GetSupportedPatterns();
@@ -100,7 +100,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddTogglePatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         ITogglePattern pattern = element.Patterns.Toggle.Pattern;
@@ -108,7 +108,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddTextPatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         ITextPattern pattern = element.Patterns.Text.Pattern;
@@ -132,7 +132,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddTablePatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         ITablePattern pattern = element.Patterns.Table.Pattern;
@@ -142,7 +142,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddTableItemPatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         ITableItemPattern pattern = element.Patterns.TableItem.Pattern;
@@ -151,7 +151,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddSelectionPatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         ISelectionPattern pattern = element.Patterns.Selection.Pattern;
@@ -161,7 +161,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddSelectionItemPatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         ISelectionItemPattern pattern = element.Patterns.SelectionItem.Pattern;
@@ -170,7 +170,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddScrollPatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         IScrollPattern pattern = element.Patterns.Scroll.Pattern;
@@ -183,7 +183,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddRangeValuePatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         IRangeValuePattern pattern = element.Patterns.RangeValue.Pattern;
@@ -196,7 +196,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddLegacyIAccessiblePatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         ILegacyIAccessiblePattern pattern = element.Patterns.LegacyIAccessible.Pattern;
@@ -216,7 +216,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddGridPatternPatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
         IGridPattern pattern = element.Patterns.Grid.Pattern;
@@ -225,10 +225,10 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddDetailsDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
-        
+
         // Element details
         yield return PatternItem.FromAutomationProperty("IsEnabled", element.Properties.IsEnabled);
         yield return PatternItem.FromAutomationProperty("IsOffscreen", element.Properties.IsOffscreen);
@@ -246,10 +246,10 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddIdentificationDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
-        
+
         yield return PatternItem.FromAutomationProperty("AutomationId", element.Properties.AutomationId);
         yield return PatternItem.FromAutomationProperty("Name", element.Properties.Name);
         yield return PatternItem.FromAutomationProperty("ClassName", element.Properties.ClassName);
@@ -261,7 +261,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddWindowPatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
 
@@ -275,7 +275,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static IEnumerable<PatternItem> AddGridItemPatternDetails(AutomationElement? element) {
-        if(element==null) {
+        if (element == null) {
             yield break;
         }
 
@@ -302,8 +302,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         try {
             T converted = (T)value;
             return func(converted);
-        }
-        catch {
+        } catch {
             return $"Conversion to ${typeof(T)} failed";
         }
     }

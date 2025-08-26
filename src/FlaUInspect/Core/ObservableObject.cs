@@ -15,9 +15,7 @@ public abstract class ObservableObject : INotifyPropertyChanged {
     /// Gets a property value from the internal backing field
     /// </summary>
     protected T? GetProperty<T>([CallerMemberName] string? propertyName = null) {
-        if (propertyName == null) {
-            throw new ArgumentNullException(nameof(propertyName));
-        }
+        ArgumentNullException.ThrowIfNull(propertyName);
 
         if (_backingFieldValues.TryGetValue(propertyName, out object? value)) {
             return (T)value!;
@@ -29,9 +27,7 @@ public abstract class ObservableObject : INotifyPropertyChanged {
     /// Saves a property value to the internal backing field
     /// </summary>
     protected bool SetProperty<T>(T? newValue, [CallerMemberName] string? propertyName = null) {
-        if (propertyName == null) {
-            throw new ArgumentNullException(nameof(propertyName));
-        }
+        ArgumentNullException.ThrowIfNull(propertyName);
 
         if (IsEqualInternal(GetProperty<T>(propertyName), newValue)) {
             return false;

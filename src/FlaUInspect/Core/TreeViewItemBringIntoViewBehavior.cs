@@ -23,8 +23,7 @@ public static class TreeViewItemBringIntoViewBehavior {
         if (d is TreeViewItem tvi && e.NewValue is bool value) {
             if (value) {
                 tvi.Selected += TreeViewItem_Selected;
-            }
-            else {
+            } else {
                 tvi.Selected -= TreeViewItem_Selected;
             }
         }

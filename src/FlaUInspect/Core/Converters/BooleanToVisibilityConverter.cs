@@ -13,7 +13,6 @@ public class BooleanToVisibilityConverter : IValueConverter {
         if (value is bool boolValue) {
             return boolValue ? TrueVisibility : FalseVisibility;
         }
-
         throw new ArgumentException("Value must be a boolean or nullable boolean", nameof(value));
     }
 

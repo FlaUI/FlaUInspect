@@ -27,7 +27,7 @@ public class FocusTrackingMode(AutomationBase? automation) {
     private void OnFocusChanged(AutomationElement? automationElement) {
         // Skip items in the current process
         // Like Inspect itself or the overlay window
-        if (automationElement?.Properties.ProcessId == Process.GetCurrentProcess().Id) {
+        if (automationElement?.Properties.ProcessId == Environment.ProcessId) {
             return;
         }
 

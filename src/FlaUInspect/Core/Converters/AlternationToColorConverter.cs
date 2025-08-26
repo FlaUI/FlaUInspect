@@ -12,7 +12,6 @@ public class AlternationToColorConverter : IMultiValueConverter {
         if (values.Length > 0 && values[0] is int and > 0) {
             return AlternativeBrush;
         }
-
         return Brush;
     }
 

@@ -23,7 +23,7 @@ namespace FlaUInspect.ViewModels;
 [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class MainViewModel : ObservableObject {
 
-    private readonly object _itemsLock = new ();
+    private readonly object _itemsLock = new();
     private readonly InternalLogger _logger;
     private AutomationBase? _automation;
     private RelayCommand? _captureSelectedItemCommand;
@@ -51,12 +51,11 @@ public class MainViewModel : ObservableObject {
 
     public ICommand OpenErrorListCommand =>
         _openErrorListCommand ??= new RelayCommand(_ => {
-                                                       if (!_logger.Messages.IsEmpty) {
-                                                           ErrorListWindow errorListWindow = new (_logger);
-                                                           errorListWindow.ShowDialog();
-                                                       }
-                                                   },
-                                                   _ => !_logger.Messages.IsEmpty);
+            if (!_logger.Messages.IsEmpty) {
+                ErrorListWindow errorListWindow = new(_logger);
+                errorListWindow.ShowDialog();
+            }
+        }, _ => !_logger.Messages.IsEmpty);
 
     public int ErrorCount {
         get => GetProperty<int>();
@@ -69,8 +68,7 @@ public class MainViewModel : ObservableObject {
             if (SetProperty(value)) {
                 if (value) {
                     _hoverMode?.Start();
-                }
-                else {
+                } else {
                     _hoverMode?.Stop();
                 }
             }
@@ -83,8 +81,7 @@ public class MainViewModel : ObservableObject {
             if (SetProperty(value)) {
                 if (value) {
                     _focusTrackingMode?.Start();
-                }
-                else {
+                } else {
                     _focusTrackingMode?.Stop();
                 }
             }
@@ -105,7 +102,7 @@ public class MainViewModel : ObservableObject {
 
     public ICommand StartNewInstanceCommand =>
         _startNewInstanceCommand ??= new RelayCommand(_ => {
-            ProcessStartInfo info = new (Assembly.GetExecutingAssembly().Location);
+            ProcessStartInfo info = new(Assembly.GetExecutingAssembly().Location);
             Process.Start(info);
         });
 
@@ -115,8 +112,7 @@ public class MainViewModel : ObservableObject {
                 return;
             }
             Bitmap capturedImage = SelectedItem.AutomationElement.Capture();
-            SaveFileDialog saveDialog = new ()
-            {
+            SaveFileDialog saveDialog = new() {
                 Filter = "Png file (*.png)|*.png"
             };
 
@@ -186,8 +182,7 @@ public class MainViewModel : ObservableObject {
                     elementPattern.IsVisible = false;
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             _logger.LogError(e.ToString());
         }
     }
@@ -196,7 +191,7 @@ public class MainViewModel : ObservableObject {
         _automation = (SelectedAutomationType == AutomationType.UIA2 ? (AutomationBase?)new UIA2Automation() : new UIA3Automation()) ?? new UIA3Automation();
         _patternItemsFactory = new PatternItemsFactory(_automation);
         _rootElement = _automation.GetDesktop();
-        ElementViewModel desktopViewModel = new (_rootElement, _logger);
+        ElementViewModel desktopViewModel = new(_rootElement, _logger);
 
         desktopViewModel.SelectionChanged += obj => {
             SelectedItem = obj;
@@ -227,27 +222,24 @@ public class MainViewModel : ObservableObject {
     }
 
     private ObservableCollection<ElementPatternItem> GetDefaultPatternList() {
-        return new ObservableCollection<ElementPatternItem>(
-            new[]
-                {
-                    new ElementPatternItem("Identification", PatternItemsFactory.Identification, true, true),
-                    new ElementPatternItem("Details", PatternItemsFactory.Details, true, true),
-                    new ElementPatternItem("Pattern Support", PatternItemsFactory.PatternSupport, true, true)
-                }
-                .Concat(
-                    (_automation?.PatternLibrary.AllForCurrentFramework ?? [])
-                    .Select(x => {
-                        ElementPatternItem patternItem = new (x.Name, x.Name)
-                        {
-                            IsVisible = true
-                        };
-                        return patternItem;
-                    })));
+        return new ObservableCollection<ElementPatternItem>(new[] {
+            new ElementPatternItem("Identification", PatternItemsFactory.Identification, true, true),
+            new ElementPatternItem("Details", PatternItemsFactory.Details, true, true),
+            new ElementPatternItem("Pattern Support", PatternItemsFactory.PatternSupport, true, true)
+        }
+        .Concat(
+            (_automation?.PatternLibrary.AllForCurrentFramework ?? [])
+            .Select(x => {
+                ElementPatternItem patternItem = new(x.Name, x.Name) {
+                    IsVisible = true
+                };
+                return patternItem;
+            })));
     }
 
     private void ElementToSelectChanged(AutomationElement? obj) {
         // Build a stack from the root to the hovered item
-        Stack<AutomationElement> pathToRoot = new ();
+        Stack<AutomationElement> pathToRoot = new();
 
         while (obj != null) {
             // Break on circular relationship (should not happen?)
@@ -259,8 +251,7 @@ public class MainViewModel : ObservableObject {
 
             try {
                 obj = _treeWalker?.GetParent(obj);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 _logger.LogError($"Exception: {ex.Message}");
             }
         }
