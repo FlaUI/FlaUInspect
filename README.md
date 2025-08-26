@@ -3,9 +3,8 @@
 ### Build
 | What | Info / Link |
 | ---- | ----- |
-| *Build* | [![Build status](https://ci.appveyor.com/api/projects/status/q2poa5bpenso8eyv?svg=true)](https://ci.appveyor.com/project/RomanBaeriswyl/flauinspect) |
+| *Build* | ![Build status](https://github.com/FlaUI/FlaUInspect/actions/workflows/ci.yml/badge.svg) |
 | *FlaUInspect* | [![FlaUInspect](https://img.shields.io/badge/FlaUInspect-choco-brightgreen.svg)](https://chocolatey.org/packages/flauinspect)<br />`choco install flauinspect` |
-| *CI Artefacts* | [FlauInspect CI](https://ci.appveyor.com/project/RomanBaeriswyl/flauinspect/build/artifacts) |
 
 ### Installation
 To install FlaUInspect, either build it yourself, get it from chocolatey (https://community.chocolatey.org/packages/flauinspect) or get the zip from the releases page here on GitHub.
