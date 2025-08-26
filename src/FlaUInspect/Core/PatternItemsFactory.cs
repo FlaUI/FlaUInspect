@@ -42,7 +42,8 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         new (TextPattern.Pattern, AddTextPatternDetails),
         new (TogglePattern.Pattern, AddTogglePatternDetails),
         new (ValuePattern.Pattern, AddValuePatternDetails),
-        new (WindowPattern.Pattern, AddWindowPatternDetails)
+        new (WindowPattern.Pattern, AddWindowPatternDetails),
+        new (InvokePattern.Pattern, AddInvokePatternDetails)
     ];
 
     private readonly KeyValuePair<PatternId, Func<AutomationElement, IEnumerable<PatternItem>>>[] _patternsUia3Func =
@@ -59,7 +60,8 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         new (FlaUI.UIA3.Patterns.TextPattern.Pattern, AddTextPatternDetails),
         new (FlaUI.UIA3.Patterns.TogglePattern.Pattern, AddTogglePatternDetails),
         new (FlaUI.UIA3.Patterns.ValuePattern.Pattern, AddValuePatternDetails),
-        new (FlaUI.UIA3.Patterns.WindowPattern.Pattern, AddWindowPatternDetails)
+        new (FlaUI.UIA3.Patterns.WindowPattern.Pattern, AddWindowPatternDetails),
+        new (FlaUI.UIA3.Patterns.InvokePattern.Pattern, AddInvokePatternDetails)
     ];
 
     public IDictionary<string, PatternItem[]> CreatePatternItemsForElement(AutomationElement element, HashSet<PatternId> allSupportedPatterns) {
@@ -284,6 +286,15 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         yield return new PatternItem("Row", pattern.Row.ToString());
         yield return new PatternItem("RowSpan", pattern.RowSpan.ToString());
         yield return new PatternItem("ContainingGrid", pattern.ContainingGrid.ToString());
+    }
+
+    private static IEnumerable<PatternItem> AddInvokePatternDetails(AutomationElement? element) {
+        if (element == null) {
+            yield break;
+        }
+
+        IInvokePattern pattern = element.Patterns.Invoke.Pattern;
+        yield return new PatternItem("Invoke", "Invoke", pattern.Invoke);
     }
 
     private static string GetTextAttribute<T>(AutomationElement element, ITextPattern pattern,

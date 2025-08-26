@@ -322,8 +322,7 @@
                                                           ItemsSource="{Binding Children}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border Margin="0"
-                                                                Padding="0">
+                                                        <Border Margin="0" Padding="0">
                                                             <Border.Background>
                                                                 <MultiBinding Converter="{StaticResource AlternationToColorConverter}">
                                                                     <Binding Path="(ItemsControl.AlternationIndex)"
@@ -371,6 +370,18 @@
                                                                         </Style>
                                                                     </TextBox.Style>
                                                                 </TextBox>
+                                                                <Button Grid.Column="1" Click="InvokePatternActionHandler" Content="{Binding Value}">
+                                                                    <Button.Style>
+                                                                        <Style TargetType="{x:Type Button}">
+                                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding HasExecutableAction}" Value="True">
+                                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Button.Style>
+                                                                </Button>
                                                             </Grid>
                                                         </Border>
                                                     </DataTemplate>
