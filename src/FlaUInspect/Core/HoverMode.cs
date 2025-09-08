@@ -11,10 +11,10 @@ namespace FlaUInspect.Core;
 public class HoverMode {
     private readonly AutomationBase? _automation;
     private readonly DispatcherTimer _dispatcherTimer;
-    private readonly ILogger _logger;
+    private readonly ILogger? _logger;
     private AutomationElement? _currentHoveredElement;
 
-    public HoverMode(AutomationBase? automation, ILogger logger) {
+    public HoverMode(AutomationBase? automation, ILogger? logger) {
         _automation = automation;
         _logger = logger;
         _dispatcherTimer = new DispatcherTimer();
@@ -56,10 +56,10 @@ public class HoverMode {
                 }
             }
             catch (UnauthorizedAccessException) {
-                _logger.LogError("You are accessing a protected UI element in hover mode.\nTry to start FlaUInspect as administrator.");
+                _logger?.LogError("You are accessing a protected UI element in hover mode.\nTry to start FlaUInspect as administrator.");
             }
             catch (Exception ex) {
-                _logger.LogError($"Exception: {ex.Message}");
+                _logger?.LogError($"Exception: {ex.Message}");
             }
         }
     }

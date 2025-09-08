@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
@@ -23,7 +22,7 @@ namespace FlaUInspect.ViewModels;
 public class MainViewModel : ObservableObject {
 
     private readonly object _itemsLock = new();
-    private readonly InternalLogger _logger;
+    private readonly InternalLogger? _logger;
     private AutomationBase? _automation;
     private RelayCommand? _captureSelectedItemCommand;
     private ObservableCollection<ElementPatternItem>? _elementPatterns = [];
@@ -36,8 +35,8 @@ public class MainViewModel : ObservableObject {
     private AutomationElement? _rootElement;
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
-    private RelayCommand _infoCommand;
-    private RelayCommand _closeInfoCommand;
+    private RelayCommand? _infoCommand;
+    private RelayCommand? _closeInfoCommand;
 
     public MainViewModel(AutomationType automationType, string applicationVersion, InternalLogger logger) {
         _logger = logger;
@@ -54,11 +53,11 @@ public class MainViewModel : ObservableObject {
 
     public ICommand OpenErrorListCommand =>
         _openErrorListCommand ??= new RelayCommand(_ => {
-            if (!_logger.Messages.IsEmpty) {
+            if (_logger is { Messages.IsEmpty: false }) {
                 ErrorListWindow errorListWindow = new(_logger);
                 errorListWindow.ShowDialog();
             }
-        }, _ => !_logger.Messages.IsEmpty);
+        }, _ => (!_logger?.Messages.IsEmpty)??false);
 
     public int ErrorCount {
         get => GetProperty<int>();
@@ -210,7 +209,7 @@ public class MainViewModel : ObservableObject {
                 }
             }
         } catch (Exception e) {
-            _logger.LogError(e.ToString());
+            _logger?.LogError(e.ToString());
         }
     }
 
@@ -279,7 +278,7 @@ public class MainViewModel : ObservableObject {
             try {
                 obj = _treeWalker?.GetParent(obj);
             } catch (Exception ex) {
-                _logger.LogError($"Exception: {ex.Message}");
+                _logger?.LogError($"Exception: {ex.Message}");
             }
         }
 
@@ -302,7 +301,7 @@ public class MainViewModel : ObservableObject {
 
                 if (nextElementVm == null) {
                     // The next element is still not found, exit the loop
-                    _logger.LogError("Could not find the next element!");
+                    _logger?.LogError("Could not find the next element!");
                     break;
                 }
             }
@@ -326,7 +325,7 @@ public class MainViewModel : ObservableObject {
             try {
                 return child.AutomationElement.Equals(element);
             } catch (Exception e) {
-                _logger.LogError(e.ToString());
+                _logger?.LogError(e.ToString());
             }
 
             return false;

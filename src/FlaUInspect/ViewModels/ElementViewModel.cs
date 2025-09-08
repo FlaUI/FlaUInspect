@@ -7,7 +7,7 @@ using FlaUInspect.Core.Logger;
 
 namespace FlaUInspect.ViewModels;
 
-public class ElementViewModel(AutomationElement? automationElement, ILogger logger) : ObservableObject {
+public class ElementViewModel(AutomationElement? automationElement, ILogger? logger) : ObservableObject {
     private readonly object _lockObject = new();
     public AutomationElement? AutomationElement { get; } = automationElement;
 
@@ -67,7 +67,7 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger logg
                     }
                 }
             } catch (Exception ex) {
-                logger.LogError($"Exception: {ex.Message}");
+                logger?.LogError($"Exception: {ex.Message}");
             }
 
             Children.Reset(childrenViewModels);
