@@ -50,15 +50,12 @@ public class HoverMode {
                 if (!Equals(_currentHoveredElement, hoveredElement)) {
                     _currentHoveredElement = hoveredElement;
                     ElementHovered?.Invoke(hoveredElement);
-                }
-                else {
+                } else {
                     ElementHighlighter.HighlightElement(hoveredElement, _logger);
                 }
-            }
-            catch (UnauthorizedAccessException) {
+            } catch (UnauthorizedAccessException) {
                 _logger?.LogError("You are accessing a protected UI element in hover mode.\nTry to start FlaUInspect as administrator.");
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 _logger?.LogError($"Exception: {ex.Message}");
             }
         }

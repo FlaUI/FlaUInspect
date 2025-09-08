@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace FlaUInspect.Core.Converters;
 
-public class CountToVisibilityConverter  : IValueConverter {
+public class CountToVisibilityConverter : IValueConverter {
     public Visibility ZeroCountVisibility { get; set; } = Visibility.Collapsed;
     public Visibility MultipleCountVisibility { get; set; } = Visibility.Visible;
 

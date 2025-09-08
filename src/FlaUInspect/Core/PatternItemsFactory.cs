@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
@@ -29,8 +28,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     public const string Details = "Details";
     public const string PatternSupport = "Pattern Support";
 
-    private readonly KeyValuePair<PatternId, Func<AutomationElement, IEnumerable<PatternItem>>>[] _patternsUia2Func =
-    [
+    private readonly KeyValuePair<PatternId, Func<AutomationElement, IEnumerable<PatternItem>>>[] _patternsUia2Func = [
         new (GridItemPattern.Pattern, AddGridItemPatternDetails),
         new (GridPattern.Pattern, AddGridPatternPatternDetails),
         new (RangeValuePattern.Pattern, AddRangeValuePatternDetails),
@@ -46,8 +44,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         new (InvokePattern.Pattern, AddInvokePatternDetails)
     ];
 
-    private readonly KeyValuePair<PatternId, Func<AutomationElement, IEnumerable<PatternItem>>>[] _patternsUia3Func =
-    [
+    private readonly KeyValuePair<PatternId, Func<AutomationElement, IEnumerable<PatternItem>>>[] _patternsUia3Func = [
         new (FlaUI.UIA3.Patterns.GridItemPattern.Pattern, AddGridItemPatternDetails),
         new (FlaUI.UIA3.Patterns.GridPattern.Pattern, AddGridPatternPatternDetails),
         new (LegacyIAccessiblePattern.Pattern, AddLegacyIAccessiblePatternDetails),
@@ -61,12 +58,11 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         new (FlaUI.UIA3.Patterns.TogglePattern.Pattern, AddTogglePatternDetails),
         new (FlaUI.UIA3.Patterns.ValuePattern.Pattern, AddValuePatternDetails),
         new (FlaUI.UIA3.Patterns.WindowPattern.Pattern, AddWindowPatternDetails),
-        new (FlaUI.UIA3.Patterns.InvokePattern.Pattern, AddInvokePatternDetails)
+        new (InvokePattern.Pattern, AddInvokePatternDetails)
     ];
 
     public IDictionary<string, PatternItem[]> CreatePatternItemsForElement(AutomationElement element, HashSet<PatternId> allSupportedPatterns) {
-        Dictionary<string, PatternItem[]> patternItems = new()
-        {
+        Dictionary<string, PatternItem[]> patternItems = new () {
             { Identification, AddIdentificationDetails(element).ToArray() },
             { Details, AddDetailsDetails(element).ToArray() },
             { PatternSupport, AddPatternSupportDetails(element).ToArray() }
@@ -76,7 +72,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
             automationBase is UIA3Automation ? _patternsUia3Func : _patternsUia2Func;
 
         foreach ((PatternId key, Func<AutomationElement, IEnumerable<PatternItem>> value) in patternsFactory.Where(kvp => allSupportedPatterns.Contains(kvp.Key))) {
-            patternItems.Add(key.Name, (value.Invoke(element)).ToArray());
+            patternItems.Add(key.Name, value.Invoke(element).ToArray());
         }
 
         return patternItems;

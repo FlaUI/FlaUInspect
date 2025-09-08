@@ -21,13 +21,15 @@ namespace FlaUInspect.ViewModels;
 
 public class MainViewModel : ObservableObject {
 
-    private readonly object _itemsLock = new();
+    private readonly object _itemsLock = new ();
     private readonly InternalLogger? _logger;
     private AutomationBase? _automation;
     private RelayCommand? _captureSelectedItemCommand;
+    private RelayCommand? _closeInfoCommand;
     private ObservableCollection<ElementPatternItem>? _elementPatterns = [];
     private FocusTrackingMode? _focusTrackingMode;
     private HoverMode? _hoverMode;
+    private RelayCommand? _infoCommand;
     private RelayCommand? _openErrorListCommand;
     private PatternItemsFactory? _patternItemsFactory;
     private RelayCommand? _refreshCommand;
@@ -35,8 +37,6 @@ public class MainViewModel : ObservableObject {
     private AutomationElement? _rootElement;
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
-    private RelayCommand? _infoCommand;
-    private RelayCommand? _closeInfoCommand;
 
     public MainViewModel(AutomationType automationType, string applicationVersion, InternalLogger logger) {
         _logger = logger;
@@ -48,16 +48,17 @@ public class MainViewModel : ObservableObject {
         SelectedAutomationType = automationType;
         Elements = [];
         BindingOperations.EnableCollectionSynchronization(Elements, _itemsLock);
-        
+
     }
 
     public ICommand OpenErrorListCommand =>
         _openErrorListCommand ??= new RelayCommand(_ => {
-            if (_logger is { Messages.IsEmpty: false }) {
-                ErrorListWindow errorListWindow = new(_logger);
-                errorListWindow.ShowDialog();
-            }
-        }, _ => (!_logger?.Messages.IsEmpty)??false);
+                                                       if (_logger is { Messages.IsEmpty: false }) {
+                                                           ErrorListWindow errorListWindow = new (_logger);
+                                                           errorListWindow.ShowDialog();
+                                                       }
+                                                   },
+                                                   _ => !_logger?.Messages.IsEmpty ?? false);
 
     public int ErrorCount {
         get => GetProperty<int>();
@@ -109,7 +110,7 @@ public class MainViewModel : ObservableObject {
 
     public ICommand StartNewInstanceCommand =>
         _startNewInstanceCommand ??= new RelayCommand(_ => {
-            ProcessStartInfo info = new(Assembly.GetExecutingAssembly().Location);
+            ProcessStartInfo info = new (Assembly.GetExecutingAssembly().Location);
             Process.Start(info);
         });
 
@@ -119,7 +120,7 @@ public class MainViewModel : ObservableObject {
                 return;
             }
             Bitmap capturedImage = SelectedItem.AutomationElement.Capture();
-            SaveFileDialog saveDialog = new() {
+            SaveFileDialog saveDialog = new () {
                 Filter = "Png file (*.png)|*.png"
             };
 
@@ -158,10 +159,11 @@ public class MainViewModel : ObservableObject {
         get => _elementPatterns ?? Enumerable.Empty<ElementPatternItem>();
         private set => SetProperty(ref _elementPatterns, value as ObservableCollection<ElementPatternItem>);
     }
+
     public ICommand InfoCommand => _infoCommand ??= new RelayCommand(_ => {
         IsInfoVisible = !IsInfoVisible;
     });
-    
+
     public bool IsInfoVisible {
         get => GetProperty<bool>();
         set => SetProperty(value);
@@ -170,6 +172,7 @@ public class MainViewModel : ObservableObject {
         get => GetProperty<string>();
         set => SetProperty(value);
     }
+
     public ICommand CloseInfoCommand => _closeInfoCommand ??= new RelayCommand(_ => {
         IsInfoVisible = false;
     });
@@ -217,7 +220,7 @@ public class MainViewModel : ObservableObject {
         _automation = (SelectedAutomationType == AutomationType.UIA2 ? (AutomationBase?)new UIA2Automation() : new UIA3Automation()) ?? new UIA3Automation();
         _patternItemsFactory = new PatternItemsFactory(_automation);
         _rootElement = _automation.GetDesktop();
-        ElementViewModel desktopViewModel = new(_rootElement, _logger);
+        ElementViewModel desktopViewModel = new (_rootElement, _logger);
 
         desktopViewModel.SelectionChanged += obj => {
             SelectedItem = obj;
@@ -249,23 +252,23 @@ public class MainViewModel : ObservableObject {
 
     private ObservableCollection<ElementPatternItem> GetDefaultPatternList() {
         return new ObservableCollection<ElementPatternItem>(new[] {
-            new ElementPatternItem("Identification", PatternItemsFactory.Identification, true, true),
-            new ElementPatternItem("Details", PatternItemsFactory.Details, true, true),
-            new ElementPatternItem("Pattern Support", PatternItemsFactory.PatternSupport, true, true)
-        }
-        .Concat(
-            (_automation?.PatternLibrary.AllForCurrentFramework ?? [])
-            .Select(x => {
-                ElementPatternItem patternItem = new(x.Name, x.Name) {
-                    IsVisible = true
-                };
-                return patternItem;
-            })));
+                                                                    new ElementPatternItem("Identification", PatternItemsFactory.Identification, true, true),
+                                                                    new ElementPatternItem("Details", PatternItemsFactory.Details, true, true),
+                                                                    new ElementPatternItem("Pattern Support", PatternItemsFactory.PatternSupport, true, true)
+                                                                }
+                                                                .Concat(
+                                                                    (_automation?.PatternLibrary.AllForCurrentFramework ?? [])
+                                                                    .Select(x => {
+                                                                        ElementPatternItem patternItem = new (x.Name, x.Name) {
+                                                                            IsVisible = true
+                                                                        };
+                                                                        return patternItem;
+                                                                    })));
     }
 
     private void ElementToSelectChanged(AutomationElement? obj) {
         // Build a stack from the root to the hovered item
-        Stack<AutomationElement> pathToRoot = new();
+        Stack<AutomationElement> pathToRoot = new ();
 
         while (obj != null) {
             // Break on circular relationship (should not happen?)

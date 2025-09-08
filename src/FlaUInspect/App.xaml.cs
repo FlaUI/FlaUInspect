@@ -8,7 +8,7 @@ namespace FlaUInspect;
 
 public partial class App {
     private void ApplicationStart(object sender, StartupEventArgs e) {
-        var versionAttribute = Assembly.GetEntryAssembly()?.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
+        AssemblyFileVersionAttribute? versionAttribute = Assembly.GetEntryAssembly()?.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
         string applicationVersion = versionAttribute?.Version ?? "N/A";
         InternalLogger logger = new ();
 
@@ -33,11 +33,11 @@ public partial class App {
         ChooseVersionWindow dialog = new ();
 
         if (dialog.ShowDialog() == true) {
-            
-            MainViewModel mainViewModel = new (dialog.SelectedAutomationType, applicationVersion, logger);
-            MainWindow mainWindow = new() { DataContext = mainViewModel };
 
-           //Re-enable normal shutdown mode.
+            MainViewModel mainViewModel = new (dialog.SelectedAutomationType, applicationVersion, logger);
+            MainWindow mainWindow = new () { DataContext = mainViewModel };
+
+            //Re-enable normal shutdown mode.
             Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
             Current.MainWindow = mainWindow;
             mainWindow.Show();

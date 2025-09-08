@@ -7,8 +7,7 @@ public static class AutomationPropertyExtensions {
         try {
             bool success = automationProperty.TryGetValue(out T? value);
             return success ? value == null ? string.Empty : value.ToString() : "Not Supported";
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return $"Exception getting value ({ex.HResult})";
         }
     }
