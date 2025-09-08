@@ -36,9 +36,12 @@ public class MainViewModel : ObservableObject {
     private AutomationElement? _rootElement;
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
+    private RelayCommand _infoCommand;
+    private RelayCommand _closeInfoCommand;
 
-    public MainViewModel(AutomationType automationType, InternalLogger logger) {
+    public MainViewModel(AutomationType automationType, string applicationVersion, InternalLogger logger) {
         _logger = logger;
+        ApplicationVersion = applicationVersion;
         _logger.LogEvent += (_, _) => {
             Application.Current.Dispatcher.Invoke(() => ErrorCount = _logger.Messages.Count);
         };
@@ -46,6 +49,7 @@ public class MainViewModel : ObservableObject {
         SelectedAutomationType = automationType;
         Elements = [];
         BindingOperations.EnableCollectionSynchronization(Elements, _itemsLock);
+        
     }
 
     public ICommand OpenErrorListCommand =>
@@ -72,6 +76,11 @@ public class MainViewModel : ObservableObject {
                 }
             }
         }
+    }
+
+    public bool EnableHighLightSelectionMode {
+        get => GetProperty<bool>();
+        set => SetProperty(value);
     }
 
     public bool EnableFocusTrackingMode {
@@ -150,6 +159,21 @@ public class MainViewModel : ObservableObject {
         get => _elementPatterns ?? Enumerable.Empty<ElementPatternItem>();
         private set => SetProperty(ref _elementPatterns, value as ObservableCollection<ElementPatternItem>);
     }
+    public ICommand InfoCommand => _infoCommand ??= new RelayCommand(_ => {
+        IsInfoVisible = !IsInfoVisible;
+    });
+    
+    public bool IsInfoVisible {
+        get => GetProperty<bool>();
+        set => SetProperty(value);
+    }
+    public string? ApplicationVersion {
+        get => GetProperty<string>();
+        set => SetProperty(value);
+    }
+    public ICommand CloseInfoCommand => _closeInfoCommand ??= new RelayCommand(_ => {
+        IsInfoVisible = false;
+    });
 
     private void ReadPatternsForSelectedItem(AutomationElement? selectedItemAutomationElement) {
         if (SelectedItem?.AutomationElement == null || selectedItemAutomationElement == null) {
@@ -158,6 +182,10 @@ public class MainViewModel : ObservableObject {
 
         if (_patternItemsFactory == null) {
             return;
+        }
+
+        if (EnableHighLightSelectionMode) {
+            ElementHighlighter.HighlightElement(SelectedItem.AutomationElement, _logger);
         }
 
         try {
@@ -289,7 +317,19 @@ public class MainViewModel : ObservableObject {
         SelectedItem.IsSelected = true;
     }
 
-    private static ElementViewModel? FindElement(ElementViewModel parent, AutomationElement element) {
-        return parent.Children.FirstOrDefault(child => child?.AutomationElement?.Equals(element) ?? false);
+    private ElementViewModel? FindElement(ElementViewModel parent, AutomationElement element) {
+        return parent.Children.FirstOrDefault(child => {
+            if (child?.AutomationElement == null) {
+                return false;
+            }
+
+            try {
+                return child.AutomationElement.Equals(element);
+            } catch (Exception e) {
+                _logger.LogError(e.ToString());
+            }
+
+            return false;
+        });
     }
 }
