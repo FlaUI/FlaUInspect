@@ -437,7 +437,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom">
                             <TextBlock Text="by Roman Roemer" HorizontalAlignment="Right" FontSize="16" />
-                            <TextBlock Text="by Kostiantyn Usenko" HorizontalAlignment="Right" FontSize="16" />
+                            <TextBlock Text="by Kostiantyn Usenko {kDg}" HorizontalAlignment="Right" FontSize="16" />
                             <TextBlock Text="copyright FlaUI, 2025" HorizontalAlignment="Right" FontSize="14"
                                        Margin="0 8 0 0" />
                         </StackPanel>
