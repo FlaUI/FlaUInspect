@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Windows;
+using FlaUI.Core;
 using FlaUInspect.Core.Logger;
 using FlaUInspect.ViewModels;
 using FlaUInspect.Views;
