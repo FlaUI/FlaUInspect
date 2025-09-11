@@ -132,6 +132,9 @@ public class MainViewModel : ObservableObject {
 
     public ICommand RefreshCommand =>
         _refreshCommand ??= new RelayCommand(_ => {
+            EnableHoverMode = false;
+            EnableFocusTrackingMode = false;
+            EnableHighLightSelectionMode = false;
             Elements.Clear();
             Initialize();
         });

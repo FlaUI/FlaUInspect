@@ -110,7 +110,9 @@
 
                     </Style>
                 </Grid.Resources>
-                <StackPanel HorizontalAlignment="Left"
+                <StackPanel Height="40"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
                             Orientation="Horizontal">
                     <Button Command="{Binding CaptureSelectedItemCommand}"
                             Style="{StaticResource RibbonButtonStyle}"
@@ -412,7 +414,8 @@
                 </GroupBox>
             </Grid>
         </DockPanel>
-        <Grid Background="#d0000000"
+        <Grid d:Visibility="Collapsed"
+              Background="#d0000000"
               Visibility="{Binding IsInfoVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border Width="600"
                     Height="400"
