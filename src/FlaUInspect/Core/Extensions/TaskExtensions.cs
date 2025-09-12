@@ -11,8 +11,7 @@ public static class TaskExtensions {
                 return result;
             }
             return defaultValue;
-        }
-        catch (Exception) {
+        } catch (Exception) {
             return defaultValue;
         }
     }

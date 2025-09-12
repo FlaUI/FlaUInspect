@@ -16,9 +16,7 @@ public class PatternItem(string key, string? value, Action? action = null) : Obs
         get => _value;
         set => SetProperty(ref _value, value);
     }
-    public bool HasExecutableAction {
-        get => Action != null;
-    }
+    public bool HasExecutableAction => Action != null;
     public Action? Action { get; } = action;
 
     public static PatternItem FromAutomationProperty<T>(string key, IAutomationProperty<T> value) {

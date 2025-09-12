@@ -20,60 +20,60 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <OutputPath>bin\Debug\</OutputPath>
-      <AssemblyName>FlaUInspect</AssemblyName>
+        <OutputPath>bin\Debug\</OutputPath>
+        <AssemblyName>FlaUInspect</AssemblyName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'UIA2' ">
-      <DefineConstants>TRACE;AUTOMATION_UIA2</DefineConstants>
-      <OutputPath>bin\UIA2\</OutputPath>
-      <AssemblyName>FlaUInspect.UIA2</AssemblyName>
+        <DefineConstants>TRACE;AUTOMATION_UIA2</DefineConstants>
+        <OutputPath>bin\UIA2\</OutputPath>
+        <AssemblyName>FlaUInspect.UIA2</AssemblyName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'UIA3' ">
-      <DefineConstants>TRACE;AUTOMATION_UIA3</DefineConstants>
-      <OutputPath>bin\UIA3\</OutputPath>
-      <AssemblyName>FlaUInspect.UIA3</AssemblyName>
+        <DefineConstants>TRACE;AUTOMATION_UIA3</DefineConstants>
+        <OutputPath>bin\UIA3\</OutputPath>
+        <AssemblyName>FlaUInspect.UIA3</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FlaUI.Core" Version="5.0.0" />
-        <PackageReference Include="FlaUI.UIA2" Version="5.0.0" />
-        <PackageReference Include="FlaUI.UIA3" Version="5.0.0" />
+        <PackageReference Include="FlaUI.Core" Version="5.0.0"/>
+        <PackageReference Include="FlaUI.UIA2" Version="5.0.0"/>
+        <PackageReference Include="FlaUI.UIA3" Version="5.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Page Update="Resources\Icons.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Resources\RibbonIcons.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Resources\DetailsIcons.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-      <Page Update="Resources\ChooseVersionIcons.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
+        <Page Update="Resources\Icons.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Resources\RibbonIcons.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Resources\DetailsIcons.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Resources\ChooseVersionIcons.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="FlaUInspect.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
+        <None Update="FlaUInspect.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="LICENSE" />
+        <None Remove="LICENSE"/>
     </ItemGroup>
 
 </Project>

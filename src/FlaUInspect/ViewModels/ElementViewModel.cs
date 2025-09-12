@@ -7,8 +7,8 @@ using FlaUInspect.Core.Logger;
 
 namespace FlaUInspect.ViewModels;
 
-public class ElementViewModel(AutomationElement? automationElement, ILogger logger) : ObservableObject {
-    private readonly object _lockObject = new();
+public class ElementViewModel(AutomationElement? automationElement, ILogger? logger) : ObservableObject {
+    private readonly object _lockObject = new ();
     public AutomationElement? AutomationElement { get; } = automationElement;
 
     public bool IsExpanded {
@@ -54,7 +54,7 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger logg
             try {
                 if (AutomationElement != null) {
                     foreach (AutomationElement child in AutomationElement.FindAllChildren()) {
-                        ElementViewModel childViewModel = new(child, logger);
+                        ElementViewModel childViewModel = new (child, logger);
                         childViewModel.Children.Add(null);
 
                         childViewModel.SelectionChanged += SelectionChanged;
@@ -67,7 +67,7 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger logg
                     }
                 }
             } catch (Exception ex) {
-                logger.LogError($"Exception: {ex.Message}");
+                logger?.LogError($"Exception: {ex.Message}");
             }
 
             Children.Reset(childrenViewModels);

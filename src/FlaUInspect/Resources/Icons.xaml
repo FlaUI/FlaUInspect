@@ -36,7 +36,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Button"
             Width="16.0"
             Height="16.0"
@@ -68,7 +67,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Calendar"
             Width="16.0"
             Height="16.0"
@@ -86,7 +84,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="CheckBox"
@@ -108,7 +105,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="ComboBox"
             Width="16.0"
             Height="16.0"
@@ -126,7 +122,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="Custom"
@@ -148,7 +143,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="DataGrid"
             Width="16.0"
             Height="16.0"
@@ -166,7 +160,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="Document"
@@ -188,7 +181,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Edit"
             Width="16.0"
             Height="16.0"
@@ -206,7 +198,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="Group"
@@ -228,7 +219,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Header"
             Width="16.0"
             Height="16.0"
@@ -246,7 +236,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="HeaderItem"
@@ -268,7 +257,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="HyperLink"
             Width="16.0"
             Height="16.0"
@@ -286,7 +274,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="Image"
@@ -308,7 +295,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Item"
             Width="16.0"
             Height="16.0"
@@ -326,7 +312,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="List"
@@ -348,7 +333,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Menu"
             Width="16.0"
             Height="16.0"
@@ -366,7 +350,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="MenuItem"
@@ -388,7 +371,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Pane"
             Width="16.0"
             Height="16.0"
@@ -406,7 +388,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="ProgressBar"
@@ -428,7 +409,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="RadioButton"
             Width="16.0"
             Height="16.0"
@@ -446,7 +426,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="ScrollBar"
@@ -468,7 +447,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Slider"
             Width="16.0"
             Height="16.0"
@@ -486,7 +464,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="Spinner"
@@ -508,7 +485,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="SplitButton"
             Width="16.0"
             Height="16.0"
@@ -526,7 +502,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="StatusBar"
@@ -548,7 +523,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Tab"
             Width="16.0"
             Height="16.0"
@@ -566,7 +540,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="Text"
@@ -588,7 +561,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Thumb"
             Width="16.0"
             Height="16.0"
@@ -606,7 +578,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="TitleBar"
@@ -628,7 +599,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="ToolBar"
             Width="16.0"
             Height="16.0"
@@ -646,7 +616,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
 
 
     <Canvas x:Key="ToolTip"
@@ -668,7 +637,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Tree"
             Width="16.0"
             Height="16.0"
@@ -688,7 +656,6 @@
     </Canvas>
 
 
-
     <Canvas x:Key="Window"
             Width="16.0"
             Height="16.0"
@@ -706,8 +673,6 @@
             </Path>
         </Canvas>
     </Canvas>
-
-
 
 
 </ResourceDictionary>

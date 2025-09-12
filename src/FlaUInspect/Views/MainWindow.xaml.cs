@@ -28,10 +28,10 @@ public partial class MainWindow {
     }
 
     private void InvokePatternActionHandler(object sender, RoutedEventArgs e) {
-        var vm = (PatternItem)((Button)sender).DataContext;
+        PatternItem? vm = (PatternItem)((Button)sender).DataContext;
+
         if (vm.Action != null) {
-            Task.Run(() =>
-            {
+            Task.Run(() => {
                 vm.Action();
             });
         }

@@ -14,7 +14,7 @@ public class RelayCommand(Action<object?> methodToExecute, Func<object, bool>? c
         if (parameter == null) {
             return true;
         }
-        return (canExecuteEvaluator == null || canExecuteEvaluator.Invoke(parameter));
+        return canExecuteEvaluator == null || canExecuteEvaluator.Invoke(parameter);
     }
 
     public event EventHandler? CanExecuteChanged {
