@@ -3,8 +3,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Xml.Linq;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Identifiers;
@@ -37,6 +39,7 @@ public class MainViewModel : ObservableObject {
     private AutomationElement? _rootElement;
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
+    private RelayCommand? _currentElementSaveStateCommand;
 
     public MainViewModel(AutomationType automationType, string applicationVersion, InternalLogger logger) {
         _logger = logger;
@@ -178,6 +181,52 @@ public class MainViewModel : ObservableObject {
 
     public ICommand CloseInfoCommand => _closeInfoCommand ??= new RelayCommand(_ => {
         IsInfoVisible = false;
+    });
+    
+    public event Action? CopiedNotificationRequested;
+
+    public ICommand CurrentElementSaveStateCommand => _currentElementSaveStateCommand ??= new RelayCommand(_ => {
+        if (SelectedItem?.AutomationElement == null) {
+            return;
+        }
+
+        try {
+            XDocument document = new ();
+            document.Add(new XElement("Root"));
+
+            foreach (ElementPatternItem elementPatternItem in ElementPatterns) {
+                XElement patternNode = new ("Pattern",
+                                            new XAttribute("Name", elementPatternItem.PatternName),
+                                            new XAttribute("Id", elementPatternItem.PatternIdName));
+
+                foreach (PatternItem patternItem in elementPatternItem.Children) {
+                    XElement itemNode = new ("Item",
+                                             new XAttribute("Key", patternItem.Key),
+                                             new XAttribute("Value", patternItem.Value ?? string.Empty));
+                    patternNode.Add(itemNode);
+                }
+
+                if (patternNode.HasElements) {
+                    document.Root!.Add(patternNode);
+                }
+            }
+            Clipboard.SetText(document.ToString());
+            CopiedNotificationRequested?.Invoke();
+        } catch (Exception e) {
+            _logger?.LogError(e.ToString());
+        }
+    });
+
+    public ICommand CollapseAllDetailsCommand => new RelayCommand(_ => {
+        foreach (ElementPatternItem pattern in ElementPatterns) {
+            pattern.IsExpanded = false;
+        }
+    });
+
+    public ICommand ExpandAllDetailsCommand => new RelayCommand(_ => {
+        foreach (ElementPatternItem pattern in ElementPatterns) {
+            pattern.IsExpanded = true;
+        }
     });
 
     private void ReadPatternsForSelectedItem(AutomationElement? selectedItemAutomationElement) {
