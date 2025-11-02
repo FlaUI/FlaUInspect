@@ -114,17 +114,27 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Orientation="Horizontal">
-                    <Button Command="{Binding CurrentElementSaveStateCommand}"
-                            Style="{StaticResource RibbonButtonStyle}"
-                            ToolTip="Get current element state">
-                        <StackPanel Orientation="Vertical">
-                            <Viewbox Width="20"
-                                     Height="20"
-                                     Stretch="Uniform">
-                                <ContentControl Content="{StaticResource TreeIcon}" />
-                            </Viewbox>
-                        </StackPanel>
-                    </Button>
+                    <Grid>
+                        <Button Command="{Binding CurrentElementSaveStateCommand}"
+                                Style="{StaticResource RibbonButtonStyle}"
+                                ToolTip="Get current element state">
+                            <StackPanel Orientation="Vertical">
+                                <Viewbox Width="20"
+                                         Height="20"
+                                         Stretch="Uniform">
+                                    <ContentControl Content="{StaticResource TreeIcon}" />
+                                </Viewbox>
+                            </StackPanel>
+                        </Button>
+                        <Grid Background="DarkBlue"
+                              x:Name="CopiedNotificationCurrentElementSaveStateGrid"
+                              Visibility="Collapsed">
+                            <TextBlock Text="Copied."
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </Grid>
 
                     <Button Command="{Binding CaptureSelectedItemCommand}"
                             Style="{StaticResource RibbonButtonStyle}"
@@ -339,7 +349,7 @@
                                 </Style>
                             </StackPanel.Resources>
                             <Grid>
-                                <Button Command="{Binding CurrentElementSaveStateCommand}"
+                                <Button Command="{Binding CopyDetailsToClipboardCommand}"
                                         Style="{StaticResource RibbonButtonStyle}"
                                         ToolTip="Copy current element state to clipboard">
                                     <StackPanel Orientation="Vertical">

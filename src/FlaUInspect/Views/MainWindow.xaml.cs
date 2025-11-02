@@ -15,7 +15,16 @@ public partial class MainWindow {
         if (DataContext is MainViewModel mainViewModel) {
             mainViewModel.Initialize();
             mainViewModel.CopiedNotificationRequested += ShowCopiedNotification;
+            mainViewModel.CopiedNotificationCurrentElementSaveStateRequested += ShowCopiedNotificationCurrentElementSaveStateRequested;
         }
+    }
+
+    private async void ShowCopiedNotificationCurrentElementSaveStateRequested() {
+        CopiedNotificationCurrentElementSaveStateGrid.Visibility = Visibility.Visible;
+        var animation = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(1));
+        CopiedNotificationCurrentElementSaveStateGrid.BeginAnimation(UIElement.OpacityProperty, animation);
+        await Task.Delay(1000);
+        CopiedNotificationCurrentElementSaveStateGrid.Visibility = Visibility.Collapsed;
     }
 
     private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
