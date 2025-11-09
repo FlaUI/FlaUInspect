@@ -3,8 +3,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Xml.Linq;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Identifiers;
@@ -26,6 +28,8 @@ public class MainViewModel : ObservableObject {
     private AutomationBase? _automation;
     private RelayCommand? _captureSelectedItemCommand;
     private RelayCommand? _closeInfoCommand;
+    private RelayCommand? _copyDetailsToClipboardCommand;
+    private RelayCommand? _currentElementSaveStateCommand;
     private ObservableCollection<ElementPatternItem>? _elementPatterns = [];
     private FocusTrackingMode? _focusTrackingMode;
     private HoverMode? _hoverMode;
@@ -179,6 +183,111 @@ public class MainViewModel : ObservableObject {
     public ICommand CloseInfoCommand => _closeInfoCommand ??= new RelayCommand(_ => {
         IsInfoVisible = false;
     });
+
+    public ICommand CurrentElementSaveStateCommand => _currentElementSaveStateCommand ??= new RelayCommand(_ => {
+        if (SelectedItem?.AutomationElement == null) {
+            return;
+        }
+
+        try {
+            XDocument document = new ();
+            document.Add(new XElement("Root"));
+            ExportElement(document.Root!, SelectedItem);
+
+            Clipboard.SetText(document.ToString());
+            CopiedNotificationCurrentElementSaveStateRequested?.Invoke();
+        } catch (Exception e) {
+            _logger?.LogError(e.ToString());
+        }
+    });
+
+    public ICommand CollapseAllDetailsCommand => new RelayCommand(_ => {
+        foreach (ElementPatternItem pattern in ElementPatterns) {
+            pattern.IsExpanded = false;
+        }
+    });
+
+    public ICommand ExpandAllDetailsCommand => new RelayCommand(_ => {
+        foreach (ElementPatternItem pattern in ElementPatterns) {
+            pattern.IsExpanded = true;
+        }
+    });
+
+    public ICommand CopyDetailsToClipboardCommand => _copyDetailsToClipboardCommand ??= new RelayCommand(_ => {
+        if (SelectedItem?.AutomationElement == null) {
+            return;
+        }
+
+        try {
+            XDocument document = new ();
+            document.Add(new XElement("Root"));
+
+            foreach (ElementPatternItem elementPatternItem in ElementPatterns) {
+                XElement patternNode = new ("Pattern",
+                                            new XAttribute("Name", elementPatternItem.PatternName),
+                                            new XAttribute("Id", elementPatternItem.PatternIdName));
+
+                foreach (PatternItem patternItem in elementPatternItem.Children) {
+                    XElement itemNode = new ("Item",
+                                             new XAttribute("Key", patternItem.Key),
+                                             new XAttribute("Value", patternItem.Value ?? string.Empty));
+                    patternNode.Add(itemNode);
+                }
+
+                if (patternNode.HasElements) {
+                    document.Root!.Add(patternNode);
+                }
+            }
+            Clipboard.SetText(document.ToString());
+            CopiedNotificationRequested?.Invoke();
+        } catch (Exception e) {
+            _logger?.LogError(e.ToString());
+        }
+    });
+
+    public event Action? CopiedNotificationRequested;
+    public event Action? CopiedNotificationCurrentElementSaveStateRequested;
+
+    private void ExportElement(XElement parent, ElementViewModel element) {
+        XElement xElement = CreateXElement(element);
+        parent.Add(xElement);
+
+        try {
+            foreach (ElementViewModel children in element.Children!) {
+                try {
+                    xElement.Add(CreateXElement(children!));
+                } catch {
+                    // ignored
+                }
+            }
+
+            foreach (ElementViewModel children in element.Children.Where(x => x is { IsExpanded: true }).Where(x => x != null)!) {
+                try {
+                    ExportElement(xElement, children!);
+                } catch {
+                    // ignored
+                }
+            }
+        } catch {
+            // ignored
+        }
+    }
+
+    private XElement CreateXElement(ElementViewModel element) {
+
+        List<XAttribute> attrs = [
+            new ("Name", element.Name),
+            new ("AutomationId", element.AutomationId),
+            new ("ControlType", element.ControlType)
+        ];
+
+        if (EnableXPath) {
+            attrs.Add(new XAttribute("XPath", element.XPath));
+        }
+
+        XElement xElement = new ("Element", attrs);
+        return xElement;
+    }
 
     private void ReadPatternsForSelectedItem(AutomationElement? selectedItemAutomationElement) {
         if (SelectedItem?.AutomationElement == null || selectedItemAutomationElement == null) {
