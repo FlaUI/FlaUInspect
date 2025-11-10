@@ -43,6 +43,8 @@ public class MainViewModel : ObservableObject {
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
     private RelayCommand? _expandAllTreeItems;
+    private RelayCommand? _recordStartCommand;
+    private RelayCommand? _recordStopCommand;
 
     public MainViewModel(AutomationType automationType, string applicationVersion, string? applicationName, InternalLogger logger) {
         _applicationName = applicationName;
@@ -261,6 +263,50 @@ public class MainViewModel : ObservableObject {
             element.ExpandAll();
         }
     });
+
+    private Task _recordingTask = Task.CompletedTask;
+    private CancellationTokenSource _recordingCts = new ();
+    private Dictionary<TimeSpan, ElementViewModel[]> _records = new ();
+
+    public ICommand RecordStartCommand => _recordStartCommand ??= new RelayCommand(_ => {
+        _recordingTask.Dispose();
+        _recordingCts = new CancellationTokenSource();
+        _recordingTask = Task.Run(async () => await Recording(_recordingCts.Token));
+    });
+
+    public ICommand RecordStopCommand => _recordStopCommand ??= new RelayCommand(_ => {
+        _recordingCts.Cancel();
+    });
+    
+    class UiNode
+    {
+        public string ControlType { get; set; }
+        public string Name { get; set; }
+        public List<UiNode> Children { get; set; } = new();
+    }
+
+    private async Task Recording(CancellationToken token) {
+        AutomationElement? desktop = _automation.GetDesktop();
+        _records = new ();
+
+        if (!string.IsNullOrEmpty(_applicationName)) {
+            desktop = desktop?.FindFirstChild(cf => cf.ByName(_applicationName)) ?? desktop;
+        }
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        while (token.IsCancellationRequested == false) {
+            //AutomationElement[] elements = desktop.FindAllDescendants();
+            List<ElementViewModel> elements = [];
+            foreach (AutomationElement child in desktop.FindAllChildren()) {
+                ElementViewModel item = new (child, null, _logger);
+                item.LoadChildren(9999);
+                elements.Add(item);
+            }
+            _records.Add(stopwatch.Elapsed, elements.ToArray());
+            await Task.Delay(100);
+        }
+    }
 
     public event Action? CopiedNotificationRequested;
     public event Action? CopiedNotificationCurrentElementSaveStateRequested;

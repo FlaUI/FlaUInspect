@@ -60,10 +60,10 @@ public class ElementViewModel(AutomationElement? automationElement, ElementViewM
 
             try {
                 if (AutomationElement != null) {
-                    IUIAutomationElementArray? uiAutomationElementArray = (AutomationElement.FrameworkAutomationElement as UIA3FrameworkAutomationElement)
-                                                                          ?.NativeElement.FindAll(TreeScope.TreeScope_Children,
-                                                                                                  new UIA3Automation().NativeAutomation.CreateTrueCondition());
-                    AutomationElement[] nativeArrayToManaged = AutomationElementConverter.NativeArrayToManaged(new UIA3Automation(), uiAutomationElementArray);
+                    // IUIAutomationElementArray? uiAutomationElementArray = (AutomationElement.FrameworkAutomationElement as UIA3FrameworkAutomationElement)
+                    //                                                       ?.NativeElement.FindAll(TreeScope.TreeScope_Children,
+                    //                                                                               new UIA3Automation().NativeAutomation.CreateTrueCondition());
+                    // AutomationElement[] nativeArrayToManaged = AutomationElementConverter.NativeArrayToManaged(new UIA3Automation(), uiAutomationElementArray);
 
                     using (CacheRequest.ForceNoCache()) {
                         AutomationElement[] children = AutomationElement.FindAllChildren();

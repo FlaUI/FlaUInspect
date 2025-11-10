@@ -157,13 +157,23 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
-                    
+
                     <Button Content="Expand all"
-                            Command="{Binding ExpandAllTreeItems}"/>
-                    
+                            Command="{Binding ExpandAllTreeItems}" />
+
                     <Rectangle Width="12"
                                Height="32" />
-                    
+
+                    <Button Content="Record Start"
+                            Command="{Binding RecordStartCommand}" />
+                    <Rectangle Width="3"
+                               Height="32" />
+                    <Button Content="Record Stop"
+                            Command="{Binding RecordStopCommand}" />
+
+                    <Rectangle Width="12"
+                               Height="32" />
+
                     <RadioButton GroupName="SelectionMode"
                                  IsChecked="{Binding EnableHoverMode}"
                                  Style="{StaticResource SelectionRadioButtonStyle}"
@@ -368,10 +378,10 @@
                                 <Grid Background="DarkBlue"
                                       x:Name="CopiedNotificationGrid"
                                       Visibility="Collapsed">
-                                    <TextBlock Text="Copied." 
+                                    <TextBlock Text="Copied."
                                                Foreground="White"
                                                HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
+                                               VerticalAlignment="Center" />
                                 </Grid>
                             </Grid>
                             <Grid Width="8" />
