@@ -24,6 +24,7 @@ namespace FlaUInspect.ViewModels;
 public class MainViewModel : ObservableObject {
 
     private readonly object _itemsLock = new ();
+    private readonly string? _applicationName;
     private readonly InternalLogger? _logger;
     private AutomationBase? _automation;
     private RelayCommand? _captureSelectedItemCommand;
@@ -41,8 +42,10 @@ public class MainViewModel : ObservableObject {
     private AutomationElement? _rootElement;
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
+    private RelayCommand? _expandAllTreeItems;
 
-    public MainViewModel(AutomationType automationType, string applicationVersion, InternalLogger logger) {
+    public MainViewModel(AutomationType automationType, string applicationVersion, string? applicationName, InternalLogger logger) {
+        _applicationName = applicationName;
         _logger = logger;
         ApplicationVersion = applicationVersion;
         _logger.LogEvent += (_, _) => {
@@ -162,6 +165,13 @@ public class MainViewModel : ObservableObject {
             }
         });
 
+    private void ClearChildrenRecursively(ElementViewModel element) {
+        foreach (ElementViewModel child in element.Children.Where(x => x != null)!) {
+            ClearChildrenRecursively(child!);
+        }
+        element.ClearEvents();
+    }
+
     public IEnumerable<ElementPatternItem> ElementPatterns {
         get => _elementPatterns ?? Enumerable.Empty<ElementPatternItem>();
         private set => SetProperty(ref _elementPatterns, value as ObservableCollection<ElementPatternItem>);
@@ -245,6 +255,13 @@ public class MainViewModel : ObservableObject {
         }
     });
 
+    public ICommand ExpandAllTreeItems => _expandAllTreeItems ??= new RelayCommand(_ => {
+        foreach (ElementViewModel element in Elements) {
+            element.IsExpanded = true;
+            element.ExpandAll();
+        }
+    });
+
     public event Action? CopiedNotificationRequested;
     public event Action? CopiedNotificationCurrentElementSaveStateRequested;
 
@@ -253,14 +270,6 @@ public class MainViewModel : ObservableObject {
         parent.Add(xElement);
 
         try {
-            foreach (ElementViewModel children in element.Children!) {
-                try {
-                    xElement.Add(CreateXElement(children!));
-                } catch {
-                    // ignored
-                }
-            }
-
             foreach (ElementViewModel children in element.Children.Where(x => x is { IsExpanded: true }).Where(x => x != null)!) {
                 try {
                     ExportElement(xElement, children!);
@@ -332,16 +341,29 @@ public class MainViewModel : ObservableObject {
         _automation = (SelectedAutomationType == AutomationType.UIA2 ? (AutomationBase?)new UIA2Automation() : new UIA3Automation()) ?? new UIA3Automation();
         _patternItemsFactory = new PatternItemsFactory(_automation);
         _rootElement = _automation.GetDesktop();
-        ElementViewModel desktopViewModel = new (_rootElement, _logger);
+
+        if (!string.IsNullOrEmpty(_applicationName)) {
+            _rootElement = _rootElement?.FindFirstChild(cf => cf.ByName(_applicationName)) ?? _rootElement;
+        }
+        ElementViewModel desktopViewModel = new (_rootElement, null, _logger);
 
         desktopViewModel.SelectionChanged += obj => {
             SelectedItem = obj;
         };
-        desktopViewModel.LoadChildren(0);
+        desktopViewModel.LoadChildren(string.IsNullOrEmpty(_applicationName) ? 0 : 1000);
 
-        lock (_itemsLock) {
+        // lock (_itemsLock) {
+        //     Elements.Add(desktopViewModel);
+        //     desktopViewModel.IsExpanded = true;
+        // }
+
+        if (string.IsNullOrEmpty(_applicationName)) {
             Elements.Add(desktopViewModel);
             desktopViewModel.IsExpanded = true;
+        } else {
+            foreach (ElementViewModel child in desktopViewModel.Children) {
+                Elements.Add(child);
+            }
         }
 
         // Initialize TreeWalker
@@ -356,7 +378,7 @@ public class MainViewModel : ObservableObject {
         _focusTrackingMode.ElementFocused += ElementToSelectChanged;
 
         ElementPatterns = GetDefaultPatternList();
-        SelectedItem = Elements[0];
+        SelectedItem = Elements.Count == 0 ? null : Elements[0];
 
         OnPropertyChanged(nameof(Elements));
         OnPropertyChanged(nameof(ElementPatterns));

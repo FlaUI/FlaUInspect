@@ -157,8 +157,13 @@
                             </Viewbox>
                         </StackPanel>
                     </Button>
+                    
+                    <Button Content="Expand all"
+                            Command="{Binding ExpandAllTreeItems}"/>
+                    
                     <Rectangle Width="12"
                                Height="32" />
+                    
                     <RadioButton GroupName="SelectionMode"
                                  IsChecked="{Binding EnableHoverMode}"
                                  Style="{StaticResource SelectionRadioButtonStyle}"

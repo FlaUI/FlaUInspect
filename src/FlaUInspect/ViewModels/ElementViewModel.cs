@@ -1,15 +1,22 @@
-﻿using FlaUI.Core;
+﻿using System.Text.RegularExpressions;
+using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
+using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
+using FlaUI.UIA3;
+using FlaUI.UIA3.Converters;
 using FlaUInspect.Core;
 using FlaUInspect.Core.Extensions;
 using FlaUInspect.Core.Logger;
+using Interop.UIAutomationClient;
+using TreeScope = Interop.UIAutomationClient.TreeScope;
 
 namespace FlaUInspect.ViewModels;
 
-public class ElementViewModel(AutomationElement? automationElement, ILogger? logger) : ObservableObject {
+public class ElementViewModel(AutomationElement? automationElement, ElementViewModel? parent, ILogger? logger) : ObservableObject {
     private readonly object _lockObject = new ();
     public AutomationElement? AutomationElement { get; } = automationElement;
+    public ElementViewModel? Parent { get; } = parent;
 
     public bool IsExpanded {
         get => GetProperty<bool>();
@@ -53,16 +60,26 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger? log
 
             try {
                 if (AutomationElement != null) {
-                    foreach (AutomationElement child in AutomationElement.FindAllChildren()) {
-                        ElementViewModel childViewModel = new (child, logger);
-                        childViewModel.Children.Add(null);
+                    IUIAutomationElementArray? uiAutomationElementArray = (AutomationElement.FrameworkAutomationElement as UIA3FrameworkAutomationElement)
+                                                                          ?.NativeElement.FindAll(TreeScope.TreeScope_Children,
+                                                                                                  new UIA3Automation().NativeAutomation.CreateTrueCondition());
+                    AutomationElement[] nativeArrayToManaged = AutomationElementConverter.NativeArrayToManaged(new UIA3Automation(), uiAutomationElementArray);
 
-                        childViewModel.SelectionChanged += SelectionChanged;
-                        childrenViewModels.Add(childViewModel);
+                    using (CacheRequest.ForceNoCache()) {
+                        AutomationElement[] children = AutomationElement.FindAllChildren();
 
-                        if (level > 0) {
-                            childViewModel.LoadChildren(level - 1);
 
+                        foreach (AutomationElement child in children) {
+                            ElementViewModel childViewModel = new (child, this, logger);
+                            childViewModel.Children.Add(null);
+
+                            childViewModel.SelectionChanged += SelectionChanged;
+                            childrenViewModels.Add(childViewModel);
+
+                            if (level > 0) {
+                                childViewModel.LoadChildren(level - 1);
+
+                            }
                         }
                     }
                 }
@@ -72,5 +89,40 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger? log
 
             Children.Reset(childrenViewModels);
         }
+    }
+
+    public void ExpandAll() {
+        foreach (ElementViewModel? child in Children) {
+            if (child is not null) {
+                child.IsExpanded = true;
+                child?.ExpandAll();
+            }
+        }
+    }
+
+    public void ClearEvents() {
+        this.SelectionChanged -= SelectionChanged;
+    }
+
+    public void ExpandToXPath(List<string> xpath) {
+        LoadChildren(0);
+        SetProperty(true, nameof(IsExpanded));
+
+        if (xpath.Count == 0) {
+            return;
+        }
+
+        var match = Regex.Match(xpath[0], @"(\w+)(\[(\d+)\])?");
+
+        if (!match.Success) {
+            return;
+        }
+        var type = match.Groups[1].Value;
+        var idx = match.Groups[3].Success ? int.Parse(match.Groups[3].Value) : 1;
+
+        var controlType = Enum.TryParse<ControlType>(type, out var ct) ? ct : ControlType.Custom;
+        ElementViewModel? viewModel = Children.Where(x => x.ControlType == controlType).Skip(idx - 1).FirstOrDefault();
+
+        viewModel?.ExpandToXPath(xpath.Skip(1).ToList());
     }
 }
