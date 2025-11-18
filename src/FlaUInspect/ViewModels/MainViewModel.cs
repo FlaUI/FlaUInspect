@@ -28,6 +28,9 @@ using Application = System.Windows.Application;
 namespace FlaUInspect.ViewModels;
 
 public class MainViewModel : ObservableObject {
+    private bool _isPickingWindow;
+    private MouseEventHandler? _globalMouseMoveHandler;
+    
     private const int WhMouseLl = 14;
     private const uint GaRoot = 2;
     private readonly object _itemsLock = new ();
@@ -714,6 +717,11 @@ public class MainViewModel : ObservableObject {
     
     private async Task<string> PickWindowAsync(CancellationToken ct) {
 
+        var previousCursor = Mouse.OverrideCursor;
+        var mainWindow = Application.Current?.MainWindow;
+        Mouse.OverrideCursor = Cursors.Cross;
+
+
         try {
             IntPtr hwnd = await WaitForMouseClickWindowAsync(ct);
 
@@ -746,25 +754,64 @@ public class MainViewModel : ObservableObject {
         catch (OperationCanceledException) {
             // canceled - ignore
         }
+        finally {
+            Application.Current.Dispatcher.Invoke(() => Mouse.OverrideCursor = previousCursor);
+            if (mainWindow != null) {
+                 //mainWindow.Visibility = Visibility.Visible;
+            }
+            
+        }
         return IntPtr.Zero.ToString();
     }
+
+    private AutomationElement? _topWindowUnderCursor;
+    private ElementOverlay? _topWindowOverlay;
     
     // Waits for a mouse click and returns the top-level window handle at click point
     private Task<IntPtr> WaitForMouseClickWindowAsync(CancellationToken ct) {
         var tcs = new TaskCompletionSource<IntPtr>(TaskCreationOptions.RunContinuationsAsynchronously);
-        
-        var previousCursor = Mouse.OverrideCursor;
-        Mouse.OverrideCursor = Cursors.Cross;
 
         _mouseProc = (nCode, wParam, lParam) => {
             const int WM_LBUTTONDOWN = 0x0201;
             const int WM_LBUTTONUP = 0x0202;
 
-            if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP) {
+            // if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP) {
+            //     if (GetCursorPos(out var pt)) {
+            //         IntPtr hwnd = WindowFromPoint(pt);
+            //         IntPtr root = GetAncestor(hwnd, GaRoot);
+            //         tcs.TrySetResult(root);
+            //     }
+            // }
+            
+           if (nCode >= 0 && (wParam == (IntPtr)WM_LBUTTONUP || wParam == (IntPtr)WM_LBUTTONDOWN || wParam == (IntPtr)0x0200)) {
                 if (GetCursorPos(out var pt)) {
                     IntPtr hwnd = WindowFromPoint(pt);
                     IntPtr root = GetAncestor(hwnd, GaRoot);
-                    tcs.TrySetResult(root);
+            
+                    // Highlight the window under the mouse
+                    AutomationElement? topWindowUnderCursor = GetTopWindowUnderCursor();
+
+                    if (_topWindowUnderCursor == null || !_topWindowUnderCursor.Equals(topWindowUnderCursor)) {
+                        _topWindowOverlay?.Dispose();
+
+                        try {
+                            Rectangle boundingRectangleValue = topWindowUnderCursor.Properties.BoundingRectangle.Value;
+                            Color yellow = Color.FromArgb((int)(255 * 0.05), Color.Yellow);
+                            
+                            _topWindowOverlay = new ElementOverlay(yellow);
+                            _topWindowOverlay.CreateAndShowForms(boundingRectangleValue);
+                            _topWindowUnderCursor = topWindowUnderCursor;
+                        } catch {
+                            // Ignore exceptions when getting bounding rectangle
+                        }
+                    }
+                    //ElementHighlighter.HighlightElement(topWindowUnderCursor, _logger);
+            
+                    if (wParam == (IntPtr)WM_LBUTTONUP) {
+                        _topWindowOverlay?.Dispose();
+                        _topWindowUnderCursor = null;
+                        tcs.TrySetResult(root);
+                    }
                 }
             }
             return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
@@ -791,7 +838,7 @@ public class MainViewModel : ObservableObject {
         }
 
         return tcs.Task.ContinueWith(t => {
-                                         Application.Current.Dispatcher.Invoke(() => Mouse.OverrideCursor = previousCursor);
+                                         
                                          
                                          if (_mouseHook != IntPtr.Zero) {
                                              UnhookWindowsHookEx(_mouseHook);
@@ -800,6 +847,22 @@ public class MainViewModel : ObservableObject {
                                          return t.IsCompletedSuccessfully ? t.Result : IntPtr.Zero;
                                      },
                                      TaskScheduler.Default);
+    }
+    
+    public AutomationElement? GetTopWindowUnderCursor()
+    {
+        if (!GetCursorPos(out POINT pt))
+            return null;
+
+        IntPtr hwnd = WindowFromPoint(pt);
+        if (hwnd == IntPtr.Zero)
+            return null;
+
+        IntPtr rootHwnd = GetAncestor(hwnd, GaRoot);
+        if (rootHwnd == IntPtr.Zero)
+            return null;
+
+        return _automation?.FromHandle(rootHwnd);
     }
 
     [DllImport("user32.dll")]
