@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using FlaUInspect.ViewModels;
 
@@ -47,12 +48,18 @@ public partial class MainWindow {
             });
         }
     }
-    
+
     private async void ShowCopiedNotification() {
         CopiedNotificationGrid.Visibility = Visibility.Visible;
         var animation = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(1));
         CopiedNotificationGrid.BeginAnimation(UIElement.OpacityProperty, animation);
         await Task.Delay(1000);
         CopiedNotificationGrid.Visibility = Visibility.Collapsed;
+    }
+
+    private void PickWindowButton_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
+        if (sender is Button { Command: { } command } && command.CanExecute(null)) {
+            command.Execute(null);
+        }
     }
 }

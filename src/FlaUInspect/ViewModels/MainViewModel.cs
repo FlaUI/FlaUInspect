@@ -752,11 +752,15 @@ public class MainViewModel : ObservableObject {
     // Waits for a mouse click and returns the top-level window handle at click point
     private Task<IntPtr> WaitForMouseClickWindowAsync(CancellationToken ct) {
         var tcs = new TaskCompletionSource<IntPtr>(TaskCreationOptions.RunContinuationsAsynchronously);
+        
+        var previousCursor = Mouse.OverrideCursor;
+        Mouse.OverrideCursor = Cursors.Cross;
 
         _mouseProc = (nCode, wParam, lParam) => {
             const int WM_LBUTTONDOWN = 0x0201;
+            const int WM_LBUTTONUP = 0x0202;
 
-            if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONDOWN) {
+            if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP) {
                 if (GetCursorPos(out var pt)) {
                     IntPtr hwnd = WindowFromPoint(pt);
                     IntPtr root = GetAncestor(hwnd, GaRoot);
@@ -787,6 +791,8 @@ public class MainViewModel : ObservableObject {
         }
 
         return tcs.Task.ContinueWith(t => {
+                                         Application.Current.Dispatcher.Invoke(() => Mouse.OverrideCursor = previousCursor);
+                                         
                                          if (_mouseHook != IntPtr.Zero) {
                                              UnhookWindowsHookEx(_mouseHook);
                                              _mouseHook = IntPtr.Zero;

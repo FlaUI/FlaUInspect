@@ -115,7 +115,8 @@
                             VerticalAlignment="Top"
                             Orientation="Horizontal">
                     <Button Content="Pick Window"
-                            Command="{Binding PickWindowCommand}" />
+                            Command="{Binding PickWindowCommand}" 
+                            PreviewMouseDown="PickWindowButton_PreviewMouseDown" />
                     
                     <Grid>
                         <Button Command="{Binding CurrentElementSaveStateCommand}"
