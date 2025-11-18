@@ -114,6 +114,9 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Orientation="Horizontal">
+                    <Button Content="Pick Window"
+                            Command="{Binding PickWindowCommand}" />
+                    
                     <Grid>
                         <Button Command="{Binding CurrentElementSaveStateCommand}"
                                 Style="{StaticResource RibbonButtonStyle}"

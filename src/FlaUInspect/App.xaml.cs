@@ -12,9 +12,9 @@ public partial class App {
         AssemblyFileVersionAttribute? versionAttribute = Assembly.GetEntryAssembly()?.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)) as AssemblyFileVersionAttribute;
         string applicationVersion = versionAttribute?.Version ?? "N/A";
         InternalLogger logger = new ();
-        string applicationName = string.Empty;
+        string windowHandle = string.Empty;
         if (e.Args.Length > 0) {
-            applicationName = e.Args[0];
+            windowHandle = e.Args[0];
         }
 
 #if AUTOMATION_UIA3
@@ -39,7 +39,7 @@ public partial class App {
 
         if (dialog.ShowDialog() == true) {
 
-            MainViewModel mainViewModel = new (dialog.SelectedAutomationType, applicationVersion, applicationName, logger);
+            MainViewModel mainViewModel = new (dialog.SelectedAutomationType, applicationVersion, windowHandle, logger);
             MainWindow mainWindow = new () { DataContext = mainViewModel };
 
             //Re-enable normal shutdown mode.

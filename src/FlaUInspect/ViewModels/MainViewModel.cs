@@ -2,14 +2,20 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml.Linq;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
+using FlaUI.Core.Definitions;
 using FlaUI.Core.Identifiers;
+using FlaUI.Core.WindowsAPI;
 using FlaUI.UIA2;
 using FlaUI.UIA3;
 using FlaUInspect.Core;
@@ -22,9 +28,10 @@ using Application = System.Windows.Application;
 namespace FlaUInspect.ViewModels;
 
 public class MainViewModel : ObservableObject {
-
+    private const int WhMouseLl = 14;
+    private const uint GaRoot = 2;
     private readonly object _itemsLock = new ();
-    private readonly string? _applicationName;
+    private string? _windowHandle;
     private readonly InternalLogger? _logger;
     private AutomationBase? _automation;
     private RelayCommand? _captureSelectedItemCommand;
@@ -45,9 +52,12 @@ public class MainViewModel : ObservableObject {
     private RelayCommand? _expandAllTreeItems;
     private RelayCommand? _recordStartCommand;
     private RelayCommand? _recordStopCommand;
+    
+    private static LowLevelMouseProc? _mouseProc;
+    private static IntPtr _mouseHook = IntPtr.Zero;
 
-    public MainViewModel(AutomationType automationType, string applicationVersion, string? applicationName, InternalLogger logger) {
-        _applicationName = applicationName;
+    public MainViewModel(AutomationType automationType, string applicationVersion, string? windowHandle, InternalLogger logger) {
+        _windowHandle = windowHandle;
         _logger = logger;
         ApplicationVersion = applicationVersion;
         _logger.LogEvent += (_, _) => {
@@ -144,7 +154,6 @@ public class MainViewModel : ObservableObject {
             EnableHoverMode = false;
             EnableFocusTrackingMode = false;
             EnableHighLightSelectionMode = false;
-            Elements.Clear();
             Initialize();
         });
 
@@ -266,7 +275,8 @@ public class MainViewModel : ObservableObject {
 
     private Task _recordingTask = Task.CompletedTask;
     private CancellationTokenSource _recordingCts = new ();
-    private Dictionary<TimeSpan, ElementViewModel[]> _records = new ();
+    private Dictionary<TimeSpan, AutomationElement[]> _records = new ();
+    private RelayCommand? _pickWindowCommand;
 
     public ICommand RecordStartCommand => _recordStartCommand ??= new RelayCommand(_ => {
         _recordingTask.Dispose();
@@ -277,34 +287,179 @@ public class MainViewModel : ObservableObject {
     public ICommand RecordStopCommand => _recordStopCommand ??= new RelayCommand(_ => {
         _recordingCts.Cancel();
     });
-    
-    class UiNode
-    {
-        public string ControlType { get; set; }
-        public string Name { get; set; }
-        public List<UiNode> Children { get; set; } = new();
-    }
+
+    public ICommand PickWindowCommand => _pickWindowCommand ??= new RelayCommand(async _ => {
+        using CancellationTokenSource cts = new (TimeSpan.FromSeconds(30));
+        string hwnd = await PickWindowAsync(cts.Token);
+        if (hwnd != IntPtr.Zero.ToString()) {
+                _windowHandle = hwnd;
+                Initialize();
+        }
+    });
 
     private async Task Recording(CancellationToken token) {
         AutomationElement? desktop = _automation.GetDesktop();
         _records = new ();
 
-        if (!string.IsNullOrEmpty(_applicationName)) {
-            desktop = desktop?.FindFirstChild(cf => cf.ByName(_applicationName)) ?? desktop;
+        if (!string.IsNullOrEmpty(_windowHandle)) {
+            desktop = _automation.FromHandle(IntPtr.Parse(_windowHandle));
         }
 
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        while (token.IsCancellationRequested == false) {
-            //AutomationElement[] elements = desktop.FindAllDescendants();
-            List<ElementViewModel> elements = [];
-            foreach (AutomationElement child in desktop.FindAllChildren()) {
-                ElementViewModel item = new (child, null, _logger);
-                item.LoadChildren(9999);
-                elements.Add(item);
+        while (!token.IsCancellationRequested) {
+            AutomationElement[] allDescendants = desktop.FindAllDescendants();
+
+            // Check if the last record is equal to the current allDescendants
+            if (_records.Count > 0) {
+                var last = _records.Last();
+
+                if (last.Value.SequenceEqual(allDescendants)) {
+                    _records.Remove(last.Key);
+                }
             }
-            _records.Add(stopwatch.Elapsed, elements.ToArray());
-            await Task.Delay(100);
+            _records.Add(stopwatch.Elapsed, allDescendants);
+            //_records.Add(stopwatch.Elapsed, descendants);
+
+
+            //await Task.Delay(100);
+        }
+
+        Dictionary<TimeSpan, List<UiNode>> elementsMap = new ();
+
+        try {
+            foreach (KeyValuePair<TimeSpan, AutomationElement[]> keyValuePair in _records) {
+                List<UiNode> descendants = keyValuePair.Value
+                                                       .Select(x => new UiNode {
+                                                           AutomationElement = x,
+                                                           ControlType = x.ControlType,
+                                                           Name = x.Name,
+                                                           Parent = x.Parent
+                                                       }).ToList();
+                List<UiNode> roots = BuildTree(descendants);
+                elementsMap.Add(keyValuePair.Key, roots);
+            }
+
+            for (int i = 0; i < elementsMap.Count; i++) {
+                List<UiNode> elements = elementsMap.ElementAt(i).Value;
+                string json = ExportToJson(elements);
+                await File.WriteAllTextAsync($"c:\\tmp\\FUI\\recording-{i:D2}.json", json);
+            }
+
+        } catch (Exception e) {
+            Console.WriteLine(e);
+        }
+    }
+
+    private string ExportToJson(List<UiNode> nodes) {
+        List<UiNodeDto> dtoList = nodes
+                                  .Select(UiNodeMapper.ToDto)
+                                  .ToList();
+        
+        return JsonSerializer.Serialize(
+            dtoList,
+            new JsonSerializerOptions { WriteIndented = true }
+        );
+        
+        
+    }
+    // private string ExportToJson(List<UiNode> elementsMap) {
+    //     System.Text.StringBuilder sb = new ();
+    //     using JsonWriter writer = new (sb);
+    //
+    //     void WriteNode(UiNode node) {
+    //         writer.WriteStartObject();
+    //         writer.WriteProperty("Name", node.Name);
+    //         writer.WriteProperty("ControlType", node.ControlType.ToString());
+    //
+    //         if (node.Children.Any()) {
+    //             writer.WritePropertyName("Children");
+    //             writer.WriteStartArray();
+    //
+    //             foreach (UiNode child in node.Children) {
+    //                 WriteNode(child);
+    //             }
+    //
+    //             writer.WriteEndArray();
+    //         }
+    //
+    //         writer.WriteEndObject();
+    //     }
+    //
+    //     writer.WriteStartArray();
+    //
+    //     foreach (UiNode node in elementsMap) {
+    //         WriteNode(node);
+    //     }
+    //
+    //     writer.WriteEndArray();
+    //     return sb.ToString();
+    // }
+
+    class UiNode {
+        public ControlType ControlType { get; set; }
+        public string Name { get; set; }
+        public AutomationElement? Parent { get; set; }
+        public List<UiNode> Children { get; set; } = new ();
+        public AutomationElement AutomationElement { get; set; }
+
+        public override string ToString() {
+            return $"{Name}[{ControlType}]";
+        }
+    }
+    
+    public class UiNodeDto
+    {
+        public string ControlType { get; set; }
+        public string Name { get; set; }
+        public List<UiNodeDto> Children { get; set; } = new();
+    }
+    
+    static class UiNodeMapper
+    {
+        public static UiNodeDto ToDto(UiNode node)
+        {
+            return new UiNodeDto
+            {
+                ControlType = node.ControlType.ToString(),
+                Name = node.Name,
+                Children = node.Children.Select(ToDto).ToList()
+            };
+        }
+    }
+
+    // Build tree from flat list based on ParentAutomationId
+    List<UiNode> BuildTree(List<UiNode> nodes) {
+        Dictionary<AutomationElement, UiNode> lookup = nodes.ToDictionary(n => n.AutomationElement, new AutomationElementEqualityComparer());
+        List<UiNode> roots = new ();
+
+        foreach (UiNode node in nodes) {
+            UiNode? parent = lookup.Values.FirstOrDefault(x => x.AutomationElement.Equals(node.Parent));
+
+            // var iii = node.Parent.GetHashCode();
+            // bool tryGetValue = lookup.TryGetValue(node.Parent, out UiNode? parent);
+            //
+            // if (node.Parent.Name != applicationName && tryGetValue) {
+            
+            //if (node.Parent.Name != applicationName && parent != null) {
+            if (parent != null) {
+                parent.Children.Add(node);
+            } else {
+                roots.Add(node);
+            }
+        }
+        return roots;
+    }
+
+    class AutomationElementEqualityComparer : IEqualityComparer<AutomationElement> {
+        public bool Equals(AutomationElement? x, AutomationElement? y) {
+            if (x is null && y is null) return true;
+            if (x is null || y is null) return false;
+            return x.Equals(y);
+        }
+
+        public int GetHashCode(AutomationElement obj) {
+            return obj?.GetHashCode() ?? 0;
         }
     }
 
@@ -384,38 +539,55 @@ public class MainViewModel : ObservableObject {
     }
 
     public void Initialize() {
+        foreach (ElementViewModel element in Elements) {
+            ClearChildrenRecursively(element);    
+        }
+        Elements.Clear();
+        
         _automation = (SelectedAutomationType == AutomationType.UIA2 ? (AutomationBase?)new UIA2Automation() : new UIA3Automation()) ?? new UIA3Automation();
         _patternItemsFactory = new PatternItemsFactory(_automation);
-        _rootElement = _automation.GetDesktop();
-
-        if (!string.IsNullOrEmpty(_applicationName)) {
-            _rootElement = _rootElement?.FindFirstChild(cf => cf.ByName(_applicationName)) ?? _rootElement;
+        if (string.IsNullOrEmpty(_windowHandle))
+            _rootElement = _automation.GetDesktop();
+        else {
+            _rootElement = _automation.FromHandle(IntPtr.Parse(_windowHandle));
         }
+
+        // if (!string.IsNullOrEmpty(_windowHandle)) {
+        //     //_rootElement = _rootElement?.FindFirstChild(cf => cf.ByName(_windowHandle)) ?? _rootElement;
+        //     _rootElement = _rootElement?.FindFirstChild(cf => cf..ByName(_windowHandle)) ?? _rootElement;
+        // }
         ElementViewModel desktopViewModel = new (_rootElement, null, _logger);
 
         desktopViewModel.SelectionChanged += obj => {
             SelectedItem = obj;
         };
-        desktopViewModel.LoadChildren(string.IsNullOrEmpty(_applicationName) ? 0 : 1000);
+        desktopViewModel.LoadChildren(string.IsNullOrEmpty(_windowHandle) ? 0 : 1000);
 
         // lock (_itemsLock) {
         //     Elements.Add(desktopViewModel);
         //     desktopViewModel.IsExpanded = true;
         // }
 
-        if (string.IsNullOrEmpty(_applicationName)) {
-            Elements.Add(desktopViewModel);
-            desktopViewModel.IsExpanded = true;
-        } else {
-            foreach (ElementViewModel child in desktopViewModel.Children) {
-                Elements.Add(child);
-            }
+        // if (string.IsNullOrEmpty(_windowHandle)) {
+        //     Elements.Add(desktopViewModel);
+        //     desktopViewModel.IsExpanded = true;
+        // } else {
+        //     foreach (ElementViewModel child in desktopViewModel.Children) {
+        //         Elements.Add(child);
+        //     }
+        // }
+        
+        foreach (ElementViewModel child in desktopViewModel.Children) {
+            Elements.Add(child);
         }
 
         // Initialize TreeWalker
         _treeWalker = _automation.TreeWalkerFactory.GetControlViewWalker();
 
         // Initialize hover
+        EnableHoverMode = false;
+        _hoverMode?.Stop();
+        _hoverMode?.Dispose();
         _hoverMode = new HoverMode(_automation, _logger);
         _hoverMode.ElementHovered += ElementToSelectChanged;
 
@@ -466,36 +638,45 @@ public class MainViewModel : ObservableObject {
         }
 
         // Expand the root element if needed
-        if (!Elements[0].IsExpanded) {
-            Elements[0].IsExpanded = true;
-        }
+        
+        //var expandedElements = FindElement(Elements);
+        
+        // if (!Elements[0].IsExpanded) {
+        //     Elements[0].IsExpanded = true;
+        // }
 
-        ElementViewModel elementVm = Elements[0];
+        //ElementViewModel elementVm = Elements[0];
 
+        IEnumerable<ElementViewModel> viewModels = Elements;
+        ElementViewModel? nextElementVm = null;
+        Stack<ElementViewModel> sss = new ();
         while (pathToRoot.Count > 0) {
             AutomationElement elementOnPath = pathToRoot.Pop();
-            ElementViewModel? nextElementVm = FindElement(elementVm, elementOnPath);
+            
+            //ElementViewModel? nextElementVm = FindElement(elementVm, elementOnPath);
+            nextElementVm = FindElement(viewModels, elementOnPath);
+            sss.Push(nextElementVm);
+            // if (nextElementVm == null) {
+            //     // Could not find next element, try reloading the parent
+            //     elementVm.LoadChildren(0);
+            //     // Now search again
+            //     nextElementVm = FindElement(viewModels, elementOnPath);
+            //
+            //     if (nextElementVm == null) {
+            //         // The next element is still not found, exit the loop
+            //         _logger?.LogError("Could not find the next element!");
+            //         break;
+            //     }
+            // }
+            nextElementVm.LoadChildren(0);
+            viewModels = nextElementVm.Children;
 
-            if (nextElementVm == null) {
-                // Could not find next element, try reloading the parent
-                elementVm.LoadChildren(0);
-                // Now search again
-                nextElementVm = FindElement(elementVm, elementOnPath);
-
-                if (nextElementVm == null) {
-                    // The next element is still not found, exit the loop
-                    _logger?.LogError("Could not find the next element!");
-                    break;
-                }
-            }
-            elementVm = nextElementVm;
-
-            if (!elementVm.IsExpanded) {
-                elementVm.IsExpanded = true;
+            if (!nextElementVm.IsExpanded) {
+                nextElementVm.IsExpanded = true;
             }
         }
         // Select the last element
-        SelectedItem = elementVm;
+        SelectedItem = nextElementVm;
         SelectedItem.IsSelected = true;
     }
 
@@ -513,5 +694,137 @@ public class MainViewModel : ObservableObject {
 
             return false;
         });
+    }
+    
+    private ElementViewModel? FindElement(IEnumerable<ElementViewModel> viewModels, AutomationElement element) {
+        return viewModels.FirstOrDefault(el => {
+            if (el?.AutomationElement == null) {
+                return false;
+            }
+
+            try {
+                return el.AutomationElement.Equals(element);
+            } catch (Exception e) {
+                _logger?.LogError(e.ToString());
+            }
+
+            return false;
+        });
+    }
+    
+    private async Task<string> PickWindowAsync(CancellationToken ct) {
+
+        try {
+            IntPtr hwnd = await WaitForMouseClickWindowAsync(ct);
+
+            if (hwnd == IntPtr.Zero) {
+                return IntPtr.Zero.ToString();
+            }
+
+            return hwnd.ToString();
+
+            // GetWindowThreadProcessId(hwnd, out uint pid);
+            //
+            // return pid;
+            // if (pid == 0) {
+            //     return;
+            // }
+
+            // Process proc;
+            //
+            // try {
+            //     proc = Process.GetProcessById((int)pid);
+            // }
+            // catch {
+            //     return;
+            // }
+
+            // FilterText = proc.Id.ToString();
+            // SelectedProcess = new ProcessItem(proc.ProcessName, proc.Id);
+            // await ReadProcessWindowsAsync(SelectedProcess);
+        }
+        catch (OperationCanceledException) {
+            // canceled - ignore
+        }
+        return IntPtr.Zero.ToString();
+    }
+    
+    // Waits for a mouse click and returns the top-level window handle at click point
+    private Task<IntPtr> WaitForMouseClickWindowAsync(CancellationToken ct) {
+        var tcs = new TaskCompletionSource<IntPtr>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        _mouseProc = (nCode, wParam, lParam) => {
+            const int WM_LBUTTONDOWN = 0x0201;
+
+            if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONDOWN) {
+                if (GetCursorPos(out var pt)) {
+                    IntPtr hwnd = WindowFromPoint(pt);
+                    IntPtr root = GetAncestor(hwnd, GaRoot);
+                    tcs.TrySetResult(root);
+                }
+            }
+            return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
+        };
+
+        try {
+            IntPtr hMod = GetModuleHandle(Process.GetCurrentProcess().MainModule?.ModuleName ?? string.Empty);
+            _mouseHook = SetWindowsHookEx(WhMouseLl, _mouseProc!, hMod, 0);
+        }
+        catch {
+            // If hook fails, set result zero
+            tcs.TrySetResult(IntPtr.Zero);
+        }
+
+        if (ct.CanBeCanceled) {
+            ct.Register(() => {
+                tcs.TrySetCanceled();
+
+                if (_mouseHook != IntPtr.Zero) {
+                    UnhookWindowsHookEx(_mouseHook);
+                    _mouseHook = IntPtr.Zero;
+                }
+            });
+        }
+
+        return tcs.Task.ContinueWith(t => {
+                                         if (_mouseHook != IntPtr.Zero) {
+                                             UnhookWindowsHookEx(_mouseHook);
+                                             _mouseHook = IntPtr.Zero;
+                                         }
+                                         return t.IsCompletedSuccessfully ? t.Result : IntPtr.Zero;
+                                     },
+                                     TaskScheduler.Default);
+    }
+
+    [DllImport("user32.dll")]
+    private static extern bool GetCursorPos(out POINT lpPoint);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr WindowFromPoint(POINT point);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
+
+    [DllImport("user32.dll")]
+    private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+    private static extern IntPtr GetModuleHandle(string lpModuleName);
+    
+    private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct POINT {
+        public int X;
+        public int Y;
     }
 }

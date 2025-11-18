@@ -13,10 +13,21 @@ using TreeScope = Interop.UIAutomationClient.TreeScope;
 
 namespace FlaUInspect.ViewModels;
 
-public class ElementViewModel(AutomationElement? automationElement, ElementViewModel? parent, ILogger? logger) : ObservableObject {
+public class ElementViewModel : ObservableObject {
+    private readonly ILogger? _logger;
+
+    public ElementViewModel(AutomationElement? automationElement, ElementViewModel? parent, ILogger? logger) {
+        _logger = logger;
+        AutomationElement = automationElement;
+        Parent = parent;
+        
+        _guidId = Guid.NewGuid().ToString() + (AutomationElement?.Properties.Name.ValueOrDefault ?? string.Empty).NormalizeString();;
+        
+    }
     private readonly object _lockObject = new ();
-    public AutomationElement? AutomationElement { get; } = automationElement;
-    public ElementViewModel? Parent { get; } = parent;
+    private readonly string _guidId;
+    public AutomationElement? AutomationElement { get; }
+    public ElementViewModel? Parent { get; }
 
     public bool IsExpanded {
         get => GetProperty<bool>();
@@ -35,10 +46,42 @@ public class ElementViewModel(AutomationElement? automationElement, ElementViewM
     }
 
     public string Name => (AutomationElement?.Properties.Name.ValueOrDefault ?? string.Empty).NormalizeString();
+    // public string Name {
+    //     get {
+    //         try {
+    //             return (AutomationElement?.Properties.Name.ValueOrDefault ?? string.Empty).NormalizeString();
+    //         } catch (Exception e) {
+    //             Console.WriteLine(e);
+    //             return string.Empty;
+    //         }
+    //     }
+    // }
 
     public string AutomationId => (AutomationElement?.Properties.AutomationId.ValueOrDefault ?? string.Empty).NormalizeString();
+    // public string AutomationId {
+    //     get {
+    //         try {
+    //             return (AutomationElement?.Properties.AutomationId.ValueOrDefault ?? string.Empty).NormalizeString();
+    //         } catch (Exception e) {
+    //             Console.WriteLine(e);
+    //             return string.Empty;
+    //         }
+    //     }
+    // }
 
-    public ControlType ControlType => AutomationElement != null && AutomationElement.Properties.ControlType.TryGetValue(out ControlType value) ? value : ControlType.Custom;
+    public ControlType ControlType => AutomationElement != null && AutomationElement.Properties.ControlType.TryGetValue(out ControlType value) ? value : ControlType.Unknown;
+    // public ControlType ControlType {
+    //     get {
+    //         try {
+    //             return AutomationElement != null && AutomationElement.Properties.ControlType.TryGetValue(out ControlType value)
+    //                 ? value
+    //                 : ControlType.Custom;
+    //         } catch (Exception e) {
+    //             Console.WriteLine(e);
+    //             return ControlType.Unknown;
+    //         }
+    //     }
+    // }
 
     public ExtendedObservableCollection<ElementViewModel?> Children { get; set; } = [];
 
@@ -70,7 +113,7 @@ public class ElementViewModel(AutomationElement? automationElement, ElementViewM
 
 
                         foreach (AutomationElement child in children) {
-                            ElementViewModel childViewModel = new (child, this, logger);
+                            ElementViewModel childViewModel = new (child, this, _logger);
                             childViewModel.Children.Add(null);
 
                             childViewModel.SelectionChanged += SelectionChanged;
@@ -84,7 +127,7 @@ public class ElementViewModel(AutomationElement? automationElement, ElementViewM
                     }
                 }
             } catch (Exception ex) {
-                logger?.LogError($"Exception: {ex.Message}");
+                _logger?.LogError($"Exception: {ex.Message}");
             }
 
             Children.Reset(childrenViewModels);

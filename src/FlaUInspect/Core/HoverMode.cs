@@ -8,7 +8,7 @@ using Point = System.Drawing.Point;
 
 namespace FlaUInspect.Core;
 
-public class HoverMode {
+public class HoverMode : IDisposable {
     private readonly AutomationBase? _automation;
     private readonly DispatcherTimer _dispatcherTimer;
     private readonly ILogger? _logger;
@@ -59,5 +59,10 @@ public class HoverMode {
                 _logger?.LogError($"Exception: {ex.Message}");
             }
         }
+    }
+
+    public void Dispose() {
+        _automation?.Dispose();
+        _dispatcherTimer.Tick -= DispatcherTimerTick;
     }
 }
