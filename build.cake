@@ -71,7 +71,7 @@ Task("Package")
         ReleaseNotes = new[] { "https://github.com/FlaUI/FlaUInspect/blob/main/CHANGELOG.md" },
         Files = new[] {
             new ChocolateyNuSpecContent {
-                Source = @$"src\FlaUInspect\bin\{configuration}\net8.0-windows10.0.19041.0\**", Target = "tools"
+                Source = @$"src\FlaUInspect\bin\{configuration}\net10.0-windows10.0.19041.0\**", Target = "tools"
             },
             new ChocolateyNuSpecContent {
                 Source = "LICENSE", Target = @"tools\LICENSE"
