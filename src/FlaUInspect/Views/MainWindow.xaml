@@ -13,8 +13,7 @@
         d:DesignWidth="800"
         ResizeMode="CanResizeWithGrip"
         mc:Ignorable="d"
-        d:LayoutOverrides="Width, Height"
-        >
+        d:LayoutOverrides="Width, Height">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -40,6 +39,8 @@
                                                     Brush="#ffffffff" />
             <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
 
+            <converters:IsStringNullOrEmptyToVisibleConverter x:Key="IsStringNullOrEmptyToVisibleConverter" />
+
             <Style x:Key="BorderedHeaderExpander"
                    TargetType="Expander">
                 <Setter Property="BorderThickness" Value="1" />
@@ -56,6 +57,23 @@
     </Window.InputBindings>
     <Grid>
         <DockPanel>
+            <Border DockPanel.Dock="Top"
+                    BorderThickness="0 0 0 1"
+                    BorderBrush="Black"
+                    Background="LightGray"
+                    Visibility="{Binding ApplicationName, Converter={StaticResource IsStringNullOrEmptyToVisibleConverter}}">
+                <StackPanel Orientation="Horizontal"
+                            Margin="8 4">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="14" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock Text="Application: " />
+                    <TextBlock Text="{Binding ApplicationName}"
+                               FontWeight="Bold" />
+                </StackPanel>
+            </Border>
             <Grid d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
                   DockPanel.Dock="Top">
                 <Grid.Resources>
@@ -115,21 +133,115 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Orientation="Horizontal">
-                    <Button Content="Pick Window"
-                            Command="{Binding PickWindowCommand}" 
-                            PreviewMouseDown="PickWindowButton_PreviewMouseDown" />
-                    
+                    <Button Command="{Binding PickWindowCommand}"
+                            Style="{StaticResource RibbonButtonStyle}"
+                            PreviewMouseDown="PickWindowButton_PreviewMouseDown">
+                        <ButtonBase.ToolTip>
+                            <TextBlock>
+                                Pick application window.<LineBreak />
+                                Press and hold left mouse button, then select a window then release the button.
+                            </TextBlock>
+                        </ButtonBase.ToolTip>
+                        <Viewbox Style="{StaticResource ViewBoxStyle}">
+                            <ContentControl Content="{StaticResource PickApplicationIcon}" />
+                        </Viewbox>
+                    </Button>
+
+                    <Rectangle Width="12"
+                               Height="32" />
+
+                    <Button Command="{Binding RefreshCommand}"
+                            Style="{StaticResource RibbonButtonStyle}"
+                            ToolTip="Refresh. Reload the UI Automation tree">
+                        <Viewbox Style="{StaticResource ViewBoxStyle}">
+                            <ContentControl Content="{StaticResource RefreshIcon}" />
+                        </Viewbox>
+                    </Button>
+
+                    <Button Command="{Binding ExpandAllTreeItems}"
+                            Style="{StaticResource RibbonButtonStyle}">
+                        <ButtonBase.ToolTip>
+                            <TextBlock>
+                                Expand all tree items.<LineBreak />
+                                (!) Potential performance issues.
+                            </TextBlock>
+                        </ButtonBase.ToolTip>
+                        <Viewbox Style="{StaticResource ViewBoxStyle}">
+                            <ContentControl Content="{StaticResource ExpandAllIcon}" />
+                        </Viewbox>
+                    </Button>
+
+                    <Rectangle Width="12"
+                               Height="32" />
+
+                    <RadioButton GroupName="SelectionMode"
+                                 IsChecked="{Binding EnableHoverMode}"
+                                 Style="{StaticResource SelectionRadioButtonStyle}">
+                        <ButtonBase.ToolTip>
+                            <TextBlock>
+                                Enable HoverMode (use Ctrl).<LineBreak />
+                                To select contol press and hold Ctrl button place mouse cursor over a coltrol.
+                            </TextBlock>
+                        </ButtonBase.ToolTip>
+                        <Viewbox Style="{StaticResource ViewBoxStyle}">
+                            <ContentControl Content="{StaticResource HighLightSelectionModeIcon}" />
+                        </Viewbox>
+                    </RadioButton>
+
+                    <RadioButton GroupName="SelectionMode"
+                                 IsChecked="{Binding EnableHighLightSelectionMode}"
+                                 Style="{StaticResource SelectionRadioButtonStyle}">
+                        <ButtonBase.ToolTip>
+                            <TextBlock>
+                                Enable Select Mode.<LineBreak />
+                                Highlight selected control.
+                            </TextBlock>
+                        </ButtonBase.ToolTip>
+                        <Viewbox Style="{StaticResource ViewBoxStyle}">
+                            <ContentControl Content="{StaticResource EnableHoverModeIcon}" />
+                        </Viewbox>
+                    </RadioButton>
+                    <RadioButton GroupName="SelectionMode"
+                                 IsChecked="{Binding EnableFocusTrackingMode}"
+                                 Style="{StaticResource SelectionRadioButtonStyle}">
+                        <ButtonBase.ToolTip>
+                            <TextBlock>
+                                Focus Tracking.<LineBreak />
+                                The focused control will be selected in tree.
+                            </TextBlock>
+                        </ButtonBase.ToolTip>
+                        <Viewbox Style="{StaticResource ViewBoxStyle}">
+                            <ContentControl Content="{StaticResource EnableFocusTrackingModeIcon}" />
+                        </Viewbox>
+                    </RadioButton>
+                    <Rectangle Width="12"
+                               Height="32" />
+
+                    <Button Command="{Binding CaptureSelectedItemCommand}"
+                            Style="{StaticResource RibbonButtonStyle}">
+                        <ButtonBase.ToolTip>
+                            <TextBlock>
+                                Capture selected item.<LineBreak />
+                                Export to PNG file.
+                            </TextBlock>
+                        </ButtonBase.ToolTip>
+                        <Viewbox>
+                            <ContentControl Content="{StaticResource CaptureSelectedItemIcon}" />
+                        </Viewbox>
+                    </Button>
+
                     <Grid>
                         <Button Command="{Binding CurrentElementSaveStateCommand}"
-                                Style="{StaticResource RibbonButtonStyle}"
-                                ToolTip="Get current element state">
-                            <StackPanel Orientation="Vertical">
-                                <Viewbox Width="20"
-                                         Height="20"
-                                         Stretch="Uniform">
-                                    <ContentControl Content="{StaticResource TreeIcon}" />
-                                </Viewbox>
-                            </StackPanel>
+                                Style="{StaticResource RibbonButtonStyle}">
+                            <ButtonBase.ToolTip>
+                                <TextBlock>
+                                    Get current element state.<LineBreak />
+                                    Copy state of current element to clipboarb.
+                                </TextBlock>
+                            </ButtonBase.ToolTip>
+                            <Viewbox>
+                                <ContentControl Content="{StaticResource GetStateIcon}" />
+                            </Viewbox>
                         </Button>
                         <Grid Background="DarkBlue"
                               x:Name="CopiedNotificationCurrentElementSaveStateGrid"
@@ -141,100 +253,31 @@
                         </Grid>
                     </Grid>
 
-                    <Button Command="{Binding CaptureSelectedItemCommand}"
-                            Style="{StaticResource RibbonButtonStyle}"
-                            ToolTip="Capture selected item">
-                        <StackPanel Orientation="Vertical">
-                            <Viewbox Width="20"
-                                     Height="20"
-                                     Stretch="Uniform">
-                                <ContentControl Content="{StaticResource CaptureSelectedItemIcon}" />
-                            </Viewbox>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Command="{Binding RefreshCommand}"
-                            Style="{StaticResource RibbonButtonStyle}"
-                            ToolTip="Refresh">
-                        <StackPanel Orientation="Vertical">
-                            <Viewbox Style="{StaticResource ViewBoxStyle}">
-                                <ContentControl Content="{StaticResource RefreshIcon}" />
-                            </Viewbox>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Content="Expand all"
-                            Command="{Binding ExpandAllTreeItems}" />
-
-                    <Rectangle Width="12"
-                               Height="32" />
-
-                    <Button Content="Record Start"
-                            Command="{Binding RecordStartCommand}" />
-                    <Rectangle Width="3"
-                               Height="32" />
-                    <TextBlock Text="{Binding RecordingStatus}"/>
-                    <Rectangle Width="3"
-                               Height="32" />
-                    <Button Content="Record Stop"
-                            Command="{Binding RecordStopCommand}" />
-
-                    <Rectangle Width="12"
-                               Height="32" />
-
-                    <RadioButton GroupName="SelectionMode"
-                                 IsChecked="{Binding EnableHoverMode}"
-                                 Style="{StaticResource SelectionRadioButtonStyle}"
-                                 ToolTip="EnableHoverModeIcon Mode (use Ctrl)">
-                        <StackPanel Orientation="Vertical">
-                            <Viewbox Style="{StaticResource ViewBoxStyle}">
-                                <ContentControl Content="{StaticResource EnableHoverModeIcon}" />
-                            </Viewbox>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton GroupName="SelectionMode"
-                                 IsChecked="{Binding EnableHighLightSelectionMode}"
-                                 Style="{StaticResource SelectionRadioButtonStyle}"
-                                 ToolTip="Highlight selected control">
-                        <StackPanel Orientation="Vertical">
-                            <Viewbox Style="{StaticResource ViewBoxStyle}">
-                                <ContentControl Content="{StaticResource EnableHoverModeIcon}" />
-                            </Viewbox>
-                        </StackPanel>
-                    </RadioButton>
-                    <RadioButton GroupName="SelectionMode"
-                                 IsChecked="{Binding EnableFocusTrackingMode}"
-                                 Style="{StaticResource SelectionRadioButtonStyle}"
-                                 ToolTip="Focus Tracking">
-                        <StackPanel Orientation="Vertical">
-                            <Viewbox Style="{StaticResource ViewBoxStyle}">
-                                <ContentControl Content="{StaticResource EnableFocusTrackingModeIcon}" />
-                            </Viewbox>
-                        </StackPanel>
-                    </RadioButton>
-                    <Rectangle Width="12"
-                               Height="32" />
                     <ToggleButton IsChecked="{Binding EnableXPath}"
-                                  Style="{StaticResource RibbonButtonStyle}"
-                                  ToolTip="Display EnableXPathIcon">
-                        <StackPanel Orientation="Vertical">
-                            <Viewbox Style="{StaticResource ViewBoxStyle}">
-                                <ContentControl Content="{StaticResource EnableXPathIcon}" />
-                            </Viewbox>
-                        </StackPanel>
+                                  Style="{StaticResource RibbonButtonStyle}">
+                        <ButtonBase.ToolTip>
+                            <TextBlock>
+                                Display XPath to the current element.
+                            </TextBlock>
+                        </ButtonBase.ToolTip>
+                        <Viewbox Style="{StaticResource ViewBoxStyle}">
+                            <ContentControl Content="{StaticResource EnableXPathIcon}" />
+                        </Viewbox>
                     </ToggleButton>
                 </StackPanel>
+
                 <StackPanel HorizontalAlignment="Right"
                             Orientation="Horizontal">
                     <Button Command="{Binding InfoCommand}"
                             Style="{StaticResource RibbonButtonStyle}">
-                        <StackPanel Orientation="Vertical">
-                            <Viewbox Style="{StaticResource ViewBoxStyle}">
-                                <ContentControl HorizontalContentAlignment="Center"
-                                                VerticalContentAlignment="Center"
-                                                Content="{StaticResource InfoIcon}" />
-                            </Viewbox>
-                        </StackPanel>
+                        <ButtonBase.ToolTip>
+                            <TextBlock>
+                                Open Info dialog.
+                            </TextBlock>
+                        </ButtonBase.ToolTip>
+                        <Viewbox Style="{StaticResource ViewBoxStyle}">
+                            <ContentControl Content="{StaticResource InfoIcon}" />
+                        </Viewbox>
                     </Button>
                 </StackPanel>
             </Grid>
@@ -533,9 +576,9 @@
                 </GroupBox>
             </Grid>
         </DockPanel>
-        <Grid d:Visibility="Collapsed"
-              Background="#d0000000"
-              Visibility="{Binding IsInfoVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid Background="#d0000000"
+              Visibility="{Binding IsInfoVisible, Converter={StaticResource BooleanToVisibilityConverter}, 
+                           FallbackValue=Collapsed}">
             <Border Width="600"
                     Height="400"
                     Background="White">

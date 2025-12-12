@@ -338,9 +338,15 @@ public class MainViewModel : ObservableObject {
         string hwnd = await PickWindowAsync(cts.Token);
         if (hwnd != IntPtr.Zero.ToString()) {
                 _windowHandle = hwnd;
+                ApplicationName = _automation?.FromHandle(IntPtr.Parse(_windowHandle))?.Name ?? string.Empty;
                 Initialize();
         }
     });
+
+    public string ApplicationName {
+        get => _applicationName;
+        private set => SetProperty(ref _applicationName, value);
+    }
 
     private async Task Recording(CancellationToken token) {
         OnPropertyChanged(nameof(RecordingStatus));
@@ -795,26 +801,6 @@ public class MainViewModel : ObservableObject {
             }
 
             return hwnd.ToString();
-
-            // GetWindowThreadProcessId(hwnd, out uint pid);
-            //
-            // return pid;
-            // if (pid == 0) {
-            //     return;
-            // }
-
-            // Process proc;
-            //
-            // try {
-            //     proc = Process.GetProcessById((int)pid);
-            // }
-            // catch {
-            //     return;
-            // }
-
-            // FilterText = proc.Id.ToString();
-            // SelectedProcess = new ProcessItem(proc.ProcessName, proc.Id);
-            // await ReadProcessWindowsAsync(SelectedProcess);
         }
         catch (OperationCanceledException) {
             // canceled - ignore
@@ -831,6 +817,7 @@ public class MainViewModel : ObservableObject {
 
     private AutomationElement? _topWindowUnderCursor;
     private ElementOverlay? _topWindowOverlay;
+    private string _applicationName;
 
     // Waits for a mouse click and returns the top-level window handle at click point
     private Task<IntPtr> WaitForMouseClickWindowAsync(CancellationToken ct) {
@@ -839,14 +826,6 @@ public class MainViewModel : ObservableObject {
         _mouseProc = (nCode, wParam, lParam) => {
             const int WM_LBUTTONDOWN = 0x0201;
             const int WM_LBUTTONUP = 0x0202;
-
-            // if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP) {
-            //     if (GetCursorPos(out var pt)) {
-            //         IntPtr hwnd = WindowFromPoint(pt);
-            //         IntPtr root = GetAncestor(hwnd, GaRoot);
-            //         tcs.TrySetResult(root);
-            //     }
-            // }
             
            if (nCode >= 0 && (wParam == (IntPtr)WM_LBUTTONUP || wParam == (IntPtr)WM_LBUTTONDOWN || wParam == (IntPtr)0x0200)) {
                 if (GetCursorPos(out var pt)) {
