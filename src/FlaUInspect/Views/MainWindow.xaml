@@ -13,7 +13,8 @@
         d:DesignWidth="800"
         ResizeMode="CanResizeWithGrip"
         mc:Ignorable="d"
-        d:LayoutOverrides="Width, Height">
+        d:LayoutOverrides="Width, Height"
+        >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -170,6 +171,9 @@
 
                     <Button Content="Record Start"
                             Command="{Binding RecordStartCommand}" />
+                    <Rectangle Width="3"
+                               Height="32" />
+                    <TextBlock Text="{Binding RecordingStatus}"/>
                     <Rectangle Width="3"
                                Height="32" />
                     <Button Content="Record Stop"

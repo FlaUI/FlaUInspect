@@ -43,7 +43,8 @@ public class MainViewModel : ObservableObject {
     private RelayCommand? _currentElementSaveStateCommand;
     private ObservableCollection<ElementPatternItem>? _elementPatterns = [];
     private FocusTrackingMode? _focusTrackingMode;
-    private HoverMode? _hoverMode;
+    // private HoverMode? _hoverMode;
+    private HoverMouseMode? _hoverMouseMode;
     private RelayCommand? _infoCommand;
     private RelayCommand? _openErrorListCommand;
     private PatternItemsFactory? _patternItemsFactory;
@@ -68,10 +69,48 @@ public class MainViewModel : ObservableObject {
         };
 
         SelectedAutomationType = automationType;
+        _automation = (SelectedAutomationType == AutomationType.UIA2 ? (AutomationBase?)new UIA2Automation() : new UIA3Automation()) ?? new UIA3Automation();
+        
         Elements = [];
         BindingOperations.EnableCollectionSynchronization(Elements, _itemsLock);
+        _hoverMouseMode = new HoverMouseMode(_automation);
+        
+        GlobalMouseHook.MouseMove += (x, y) => {
+            GetCursorPos(out var pt);
+            IntPtr hwnd = WindowFromPoint(pt);
+            IntPtr root = GetAncestor(hwnd, GaRoot);
+            if(!string.IsNullOrEmpty(_windowHandle)) {
+                IntPtr windowHandle = IntPtr.Parse(_windowHandle);
 
+                if (root == windowHandle) {
+                    _hoverMouseMode.Refresh();
+                }
+            }
+        };
+        
+        GlobalMouseHook.Start();
     }
+    
+    public string RecordingStatus
+    {
+        get
+        {
+            if (_recordingTask.IsCompleted)
+            {
+                return "Not Recording";
+            }
+            else if (_recordingTask.IsCanceled)
+            {
+                return "Recording Stopped";
+            }
+            else
+            {
+                return $"Recording {_recordingIndex}...";
+            }
+        }
+    }
+    
+    private int _recordingIndex = 0;
 
     public ICommand OpenErrorListCommand =>
         _openErrorListCommand ??= new RelayCommand(_ => {
@@ -91,10 +130,13 @@ public class MainViewModel : ObservableObject {
         get => GetProperty<bool>();
         set {
             if (SetProperty(value)) {
-                if (value) {
-                    _hoverMode?.Start();
-                } else {
-                    _hoverMode?.Stop();
+                // if (value) {
+                //     _hoverMode?.Start();
+                // } else {
+                //     _hoverMode?.Stop();
+                // }
+                if (_hoverMouseMode != null) {
+                    _hoverMouseMode.IsEnabled = value;
                 }
             }
         }
@@ -301,6 +343,7 @@ public class MainViewModel : ObservableObject {
     });
 
     private async Task Recording(CancellationToken token) {
+        OnPropertyChanged(nameof(RecordingStatus));
         AutomationElement? desktop = _automation.GetDesktop();
         _records = new ();
 
@@ -309,6 +352,8 @@ public class MainViewModel : ObservableObject {
         }
 
         Stopwatch stopwatch = Stopwatch.StartNew();
+        Dictionary<TimeSpan, List<UiNode>> elementsMap = new ();
+        _recordingIndex = 0;
 
         while (!token.IsCancellationRequested) {
             AutomationElement[] allDescendants = desktop.FindAllDescendants();
@@ -324,34 +369,51 @@ public class MainViewModel : ObservableObject {
             _records.Add(stopwatch.Elapsed, allDescendants);
             //_records.Add(stopwatch.Elapsed, descendants);
 
-
+            try {
+                List<UiNode> descendants = allDescendants.Select(x => new UiNode {
+                    AutomationElement = x,
+                    ControlType = x.ControlType,
+                    Name = x.Name,
+                    Parent = x.Parent
+                }).ToList();
+                List<UiNode> roots = BuildTree(descendants);
+                elementsMap.Add(stopwatch.Elapsed, roots);
+                string json = ExportToJson(roots);
+                await File.WriteAllTextAsync($"c:\\tmp\\FUI\\recording-{_recordingIndex:D2}.json", json, token);
+            } catch (Exception e) {
+                Console.WriteLine(e);
+            }
+            OnPropertyChanged(nameof(RecordingStatus));
+            
             //await Task.Delay(100);
         }
 
-        Dictionary<TimeSpan, List<UiNode>> elementsMap = new ();
-
-        try {
-            foreach (KeyValuePair<TimeSpan, AutomationElement[]> keyValuePair in _records) {
-                List<UiNode> descendants = keyValuePair.Value
-                                                       .Select(x => new UiNode {
-                                                           AutomationElement = x,
-                                                           ControlType = x.ControlType,
-                                                           Name = x.Name,
-                                                           Parent = x.Parent
-                                                       }).ToList();
-                List<UiNode> roots = BuildTree(descendants);
-                elementsMap.Add(keyValuePair.Key, roots);
-            }
-
-            for (int i = 0; i < elementsMap.Count; i++) {
-                List<UiNode> elements = elementsMap.ElementAt(i).Value;
-                string json = ExportToJson(elements);
-                await File.WriteAllTextAsync($"c:\\tmp\\FUI\\recording-{i:D2}.json", json);
-            }
-
-        } catch (Exception e) {
-            Console.WriteLine(e);
-        }
+        // Dictionary<TimeSpan, List<UiNode>> elementsMap = new ();
+        //
+        // try {
+        //     foreach (KeyValuePair<TimeSpan, AutomationElement[]> keyValuePair in _records) {
+        //         List<UiNode> descendants = keyValuePair.Value
+        //                                                .Select(x => new UiNode {
+        //                                                    AutomationElement = x,
+        //                                                    ControlType = x.ControlType,
+        //                                                    Name = x.Name,
+        //                                                    Parent = x.Parent
+        //                                                }).ToList();
+        //         List<UiNode> roots = BuildTree(descendants);
+        //         elementsMap.Add(keyValuePair.Key, roots);
+        //     }
+        //
+        //     for (int i = 0; i < elementsMap.Count; i++) {
+        //         List<UiNode> elements = elementsMap.ElementAt(i).Value;
+        //         string json = ExportToJson(elements);
+        //         await File.WriteAllTextAsync($"c:\\tmp\\FUI\\recording-{i:D2}.json", json);
+        //     }
+        //
+        // } catch (Exception e) {
+        //     Console.WriteLine(e);
+        // }
+        OnPropertyChanged(nameof(RecordingStatus));
+        
     }
 
     private string ExportToJson(List<UiNode> nodes) {
@@ -547,7 +609,7 @@ public class MainViewModel : ObservableObject {
         }
         Elements.Clear();
         
-        _automation = (SelectedAutomationType == AutomationType.UIA2 ? (AutomationBase?)new UIA2Automation() : new UIA3Automation()) ?? new UIA3Automation();
+        //_automation = (SelectedAutomationType == AutomationType.UIA2 ? (AutomationBase?)new UIA2Automation() : new UIA3Automation()) ?? new UIA3Automation();
         _patternItemsFactory = new PatternItemsFactory(_automation);
         if (string.IsNullOrEmpty(_windowHandle))
             _rootElement = _automation.GetDesktop();
@@ -589,10 +651,13 @@ public class MainViewModel : ObservableObject {
 
         // Initialize hover
         EnableHoverMode = false;
-        _hoverMode?.Stop();
-        _hoverMode?.Dispose();
-        _hoverMode = new HoverMode(_automation, _logger);
-        _hoverMode.ElementHovered += ElementToSelectChanged;
+        // _hoverMode?.Stop();
+        // _hoverMode?.Dispose();
+        // _hoverMode = new HoverMode(_automation, _logger);
+        // _hoverMode.ElementHovered += ElementToSelectChanged;
+        if (_hoverMouseMode != null) {
+            _hoverMouseMode.IsEnabled = false;
+        }
 
         // Initialize focus tracking
         _focusTrackingMode = new FocusTrackingMode(_automation);
@@ -766,7 +831,7 @@ public class MainViewModel : ObservableObject {
 
     private AutomationElement? _topWindowUnderCursor;
     private ElementOverlay? _topWindowOverlay;
-    
+
     // Waits for a mouse click and returns the top-level window handle at click point
     private Task<IntPtr> WaitForMouseClickWindowAsync(CancellationToken ct) {
         var tcs = new TaskCompletionSource<IntPtr>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -787,30 +852,46 @@ public class MainViewModel : ObservableObject {
                 if (GetCursorPos(out var pt)) {
                     IntPtr hwnd = WindowFromPoint(pt);
                     IntPtr root = GetAncestor(hwnd, GaRoot);
-            
-                    // Highlight the window under the mouse
-                    AutomationElement? topWindowUnderCursor = GetTopWindowUnderCursor();
-
-                    if (_topWindowUnderCursor == null || !_topWindowUnderCursor.Equals(topWindowUnderCursor)) {
-                        _topWindowOverlay?.Dispose();
-
-                        try {
-                            Rectangle boundingRectangleValue = topWindowUnderCursor.Properties.BoundingRectangle.Value;
-                            Color yellow = Color.FromArgb((int)(255 * 0.05), Color.Yellow);
-                            
-                            _topWindowOverlay = new ElementOverlay(yellow);
-                            _topWindowOverlay.CreateAndShowForms(boundingRectangleValue);
-                            _topWindowUnderCursor = topWindowUnderCursor;
-                        } catch {
-                            // Ignore exceptions when getting bounding rectangle
+                    
+                    // Highlight the window under the mouse, but skip if it is the current process
+                    GetWindowThreadProcessId(root, out uint windowProcessId);
+                    if (windowProcessId != (uint)Process.GetCurrentProcess().Id)
+                    {
+                        AutomationElement? topWindowUnderCursor = GetTopWindowUnderCursor();
+                    
+                        if (_topWindowUnderCursor == null || !_topWindowUnderCursor.Equals(topWindowUnderCursor)) {
+                            _topWindowOverlay?.Dispose();
+                    
+                            try {
+                                Rectangle boundingRectangleValue = topWindowUnderCursor.Properties.BoundingRectangle.Value;
+                                //Color yellow = Color.FromArgb((int)(255 * 1.0), Color.Red);
+                    
+                                //_topWindowOverlay = new ElementOverlay(new ElementOverlayConfiguration(2, 0, Color.FromArgb((int)(255 * 0.05), Color.Yellow), ElementOverlay.BoundRectangleFactory));
+                                _topWindowOverlay = new ElementOverlay(new ElementOverlayConfiguration(2, 0, Color.Red, ElementOverlay.BoundRectangleFactory));
+                                _topWindowOverlay.Show(boundingRectangleValue);
+                                _topWindowUnderCursor = topWindowUnderCursor;
+                            } catch {
+                                // Ignore exceptions when getting bounding rectangle
+                            }
                         }
+                    
+                        //ElementHighlighter.HighlightElement(topWindowUnderCursor, _logger);
+
+                        
+                    } else {
+                        _topWindowOverlay?.Dispose();
+                        _topWindowUnderCursor = null;
                     }
-                    //ElementHighlighter.HighlightElement(topWindowUnderCursor, _logger);
-            
+
                     if (wParam == (IntPtr)WM_LBUTTONUP) {
                         _topWindowOverlay?.Dispose();
                         _topWindowUnderCursor = null;
-                        tcs.TrySetResult(root);
+
+                        if (windowProcessId != (uint)Process.GetCurrentProcess().Id) {
+                            tcs.TrySetResult(root);
+                        } else {
+                            tcs.TrySetResult(IntPtr.Zero);
+                        }
                     }
                 }
             }
