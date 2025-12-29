@@ -13,27 +13,24 @@ public partial class App {
         string applicationVersion = versionAttribute?.Version ?? "N/A";
         InternalLogger logger = new ();
 
-#if AUTOMATION_UIA3
-        MainViewModel mainViewModel = new (AutomationType.UIA3, applicationVersion, logger);
-        MainWindow mainWindow = new () { DataContext = mainViewModel };
-
-        //Re-enable normal shutdown mode.
-        Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
-        Current.MainWindow = mainWindow;
-        mainWindow.Show();
-#elif AUTOMATION_UIA2
-        MainViewModel mainViewModel = new (AutomationType.UIA2, applicationVersion, logger);
-        MainWindow mainWindow = new() { DataContext = mainViewModel };
         
-        //Re-enable normal shutdown mode.
-        Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
-        Current.MainWindow = mainWindow;
-        mainWindow.Show();
-#else
         Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         ChooseVersionWindow dialog = new ();
+#if AUTOMATION_UIA3
+		dialog.SelectedAutomationType = AutomationType.UIA3;
+#elif AUTOMATION_UIA2
+		dialog.SelectedAutomationType = AutomationType.UIA2;
+#else
+		var args = Environment.GetCommandLineArgs();
+		if (args.Any(a=>a.Equals("--uia2", StringComparison.OrdinalIgnoreCase)))
+			dialog.SelectedAutomationType = AutomationType.UIA2;
+		else if (args.Any(a=>a.Equals("--uia3", StringComparison.OrdinalIgnoreCase)))
+			dialog.SelectedAutomationType = AutomationType.UIA3;
+		else if (dialog.ShowDialog() != true)
+			return;
+#endif
 
-        if (dialog.ShowDialog() == true) {
+
 
             MainViewModel mainViewModel = new (dialog.SelectedAutomationType, applicationVersion, logger);
             MainWindow mainWindow = new () { DataContext = mainViewModel };
@@ -42,7 +39,7 @@ public partial class App {
             Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
             Current.MainWindow = mainWindow;
             mainWindow.Show();
-        }
-#endif
+
+
     }
 }
