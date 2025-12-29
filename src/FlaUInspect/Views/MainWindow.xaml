@@ -271,9 +271,10 @@
                                              Stretch="Uniform">
                                         <ContentControl Style="{StaticResource TreeItemResourceStyle}" />
                                     </Viewbox>
-                                    <Button Margin="0,0,5,0"
+                                    <Button Margin="0"
                                             Background="Transparent"
                                             BorderThickness="0"
+											VerticalAlignment="Center"
                                             Command="{Binding Path=RefreshItemCommand}"
                                             CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=StackPanel}}"
                                             DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=TreeView}}"
@@ -281,9 +282,8 @@
                                         <Viewbox Width="8"
                                                  Height="8"
                                                  Margin="0,0,1,0"
-                                                 Stretch="Uniform"
-                                                 Visibility="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsMouseOver, Converter={StaticResource BooleanToCollapsedVisibilityConverter}}">
-                                            <ContentControl Content="{StaticResource RefreshIcon}" />
+                                                 Stretch="Uniform">
+											<ContentControl Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Content="{StaticResource RefreshIcon}" />
                                         </Viewbox>
                                     </Button>
                                     <TextBlock>
