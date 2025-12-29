@@ -4,12 +4,14 @@ using FlaUI.Core.Definitions;
 using FlaUInspect.Core;
 using FlaUInspect.Core.Extensions;
 using FlaUInspect.Core.Logger;
+using System.Windows.Input;
 
 namespace FlaUInspect.ViewModels;
 
 public class ElementViewModel(AutomationElement? automationElement, ILogger? logger) : ObservableObject {
     private readonly object _lockObject = new ();
     public AutomationElement? AutomationElement { get; } = automationElement;
+    private RelayCommand? _refreshItemCommand;
 
     public bool IsExpanded {
         get => GetProperty<bool>();
@@ -35,6 +37,12 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger? log
 
     public ExtendedObservableCollection<ElementViewModel?> Children { get; set; } = [];
 
+
+    public ICommand RefreshItemCommand =>
+        _refreshItemCommand ??= new((_) => {
+            Children.Clear();
+            IsExpanded = true;
+        });
 
     public string XPath => AutomationElement == null ? string.Empty : Debug.GetXPathToElement(AutomationElement);
     public event Action<ElementViewModel>? SelectionChanged;

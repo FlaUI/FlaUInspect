@@ -276,8 +276,6 @@
                                             BorderThickness="0"
 											VerticalAlignment="Center"
                                             Command="{Binding Path=RefreshItemCommand}"
-                                            CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=StackPanel}}"
-                                            DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=TreeView}}"
                                             ToolTip="Refresh children list">
                                         <Viewbox Width="8"
                                                  Height="8"

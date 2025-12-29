@@ -33,7 +33,6 @@ public class MainViewModel : ObservableObject {
     private RelayCommand? _openErrorListCommand;
     private PatternItemsFactory? _patternItemsFactory;
     private RelayCommand? _refreshCommand;
-    private RelayCommand? _refreshItemCommand;
     private AutomationElement? _rootElement;
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
@@ -150,13 +149,6 @@ public class MainViewModel : ObservableObject {
         }
     }
 
-    public ICommand RefreshItemCommand =>
-        _refreshItemCommand ??= new RelayCommand(o => {
-            if (o is ElementViewModel item) {
-                item.Children.Clear();
-                item.IsExpanded = true;
-            }
-        });
 
     public IEnumerable<ElementPatternItem> ElementPatterns {
         get => _elementPatterns ?? Enumerable.Empty<ElementPatternItem>();
