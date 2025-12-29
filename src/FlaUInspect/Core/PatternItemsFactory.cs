@@ -101,7 +101,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
             yield break;
         }
         ITogglePattern pattern = element.Patterns.Toggle.Pattern;
-        yield return PatternItem.FromAutomationProperty("ToggleState", pattern.ToggleState);
+        yield return new PatternItem("ToggleState", "Toggle", pattern.Toggle);
     }
 
     private static IEnumerable<PatternItem> AddTextPatternDetails(AutomationElement? element) {
