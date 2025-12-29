@@ -4,14 +4,16 @@ using FlaUI.Core.Definitions;
 using FlaUInspect.Core;
 using FlaUInspect.Core.Extensions;
 using FlaUInspect.Core.Logger;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
-
+using MenuItem = System.Windows.Controls.MenuItem;
 namespace FlaUInspect.ViewModels;
 
 public class ElementViewModel(AutomationElement? automationElement, ILogger? logger) : ObservableObject {
     private readonly object _lockObject = new ();
     public AutomationElement? AutomationElement { get; } = automationElement;
     private RelayCommand? _refreshItemCommand;
+    private RelayCommand? _focusCommand;
 
     public bool IsExpanded {
         get => GetProperty<bool>();
@@ -43,6 +45,32 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger? log
             Children.Clear();
             IsExpanded = true;
         });
+
+    public ICommand FocusCommand =>
+        _focusCommand ??= new((_) => {
+            try {
+                AutomationElement.Focus();
+            } catch { }
+        });
+
+
+    private ObservableCollection<MenuItem>? _mouseActions;
+    public ObservableCollection<MenuItem> MouseActions { get => _mouseActions ??= BuildMouseActions(); }
+
+    private ObservableCollection<MenuItem> BuildMouseActions() {
+        return [
+            CreateMenuItem("Left Click", () => AutomationElement?.Click()),
+            CreateMenuItem("Right Click", () => AutomationElement?.RightClick()),
+            CreateMenuItem("Double Click", () => AutomationElement?.DoubleClick()),
+        ];
+    }
+
+    private MenuItem CreateMenuItem(string header, Action value) {
+        return new MenuItem {
+            Header = header,
+            Command = new RelayCommand(_ => value())
+        };
+    }
 
     public string XPath => AutomationElement == null ? string.Empty : Debug.GetXPathToElement(AutomationElement);
     public event Action<ElementViewModel>? SelectionChanged;

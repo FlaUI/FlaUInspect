@@ -155,6 +155,8 @@ public class MainViewModel : ObservableObject {
         private set => SetProperty(ref _elementPatterns, value as ObservableCollection<ElementPatternItem>);
     }
 
+    public ObservableCollection<System.Windows.Controls.MenuItem> PatternActionContextItems {get; } = new();
+
     public ICommand InfoCommand => _infoCommand ??= new RelayCommand(_ => {
         IsInfoVisible = !IsInfoVisible;
     });
@@ -189,6 +191,7 @@ public class MainViewModel : ObservableObject {
             HashSet<PatternId> supportedPatterns = [.. selectedItemAutomationElement.GetSupportedPatterns()];
             IDictionary<string, PatternItem[]> patternItemsForElement = _patternItemsFactory.CreatePatternItemsForElement(selectedItemAutomationElement, supportedPatterns);
 
+            PatternActionContextItems.Clear();
             foreach (ElementPatternItem elementPattern in ElementPatterns) {
                 elementPattern.IsVisible = elementPattern.PatternIdName == PatternItemsFactory.Identification
                                            || elementPattern.PatternIdName == PatternItemsFactory.Details
@@ -199,6 +202,13 @@ public class MainViewModel : ObservableObject {
                 if (patternItemsForElement.TryGetValue(elementPattern.PatternIdName, out PatternItem[]? children)) {
                     foreach (PatternItem patternItem in children) {
                         elementPattern.Children.Add(patternItem);
+                        if (patternItem.HasExecutableAction) {
+                             System.Windows.Controls.MenuItem actionMenuItem = new() {
+                                Header = $"{patternItem.Key}"
+                            };
+                            actionMenuItem.Click += (_, _) => patternItem.Action?.Invoke();
+                            PatternActionContextItems.Add(actionMenuItem);
+                        }
                     }
                 }
 
