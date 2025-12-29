@@ -288,11 +288,15 @@
                                     </Button>
                                     <TextBlock>
                                         <TextBlock.ToolTip>
+											<TextBlock>
+												<TextBlock.Text>
                                             <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">
                                                 <Binding Path="ControlType" />
                                                 <Binding Path="Name" />
                                                 <Binding Path="AutomationId" />
                                             </MultiBinding>
+												</TextBlock.Text>
+											</TextBlock>
                                         </TextBlock.ToolTip>
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">
