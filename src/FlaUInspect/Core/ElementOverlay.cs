@@ -1,56 +1,49 @@
-// // Description :    Definition of ElementOverlay.cs class
-// //
-// // Copyright © 2025 - 2025, Alcon. All rights reserved.
-
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows;
 using FlaUI.Core.Overlay;
 
 namespace FlaUInspect.Core;
 
 public class ElementOverlay : IDisposable {
-    public ElementOverlayConfiguration Configuration { get; }
 
-    
+    private OverlayRectangleForm[] _overlayRectangleFormList = [];
 
     public ElementOverlay(ElementOverlayConfiguration configuration) {
         Configuration = configuration;
 
     }
 
-    // public ElementOverlay(int size, int margin) {
-    //     Size = size;
-    //     Margin = margin;
-    // }
-    //
-    // public ElementOverlay(int size, int margin, Color color) {
-    //     Size = size;
-    //     Margin = margin;
-    //     Color = color;
-    // }
+    public ElementOverlayConfiguration Configuration { get; }
 
-    // public int Size { get; } = 2;
-    //
-    // public int Margin { get; } = 0;
-    //
-    // public Color Color { get; set; }
-    
+    public void Dispose() {
+        Hide();
+    }
+
+    public static Func<ElementOverlayConfiguration, Rectangle, Rectangle[]> GetRectangleFactory(string mode) {
+        return mode.ToLower() switch {
+            "fill" => FillRectangleFactory,
+            "border" => BoundRectangleFactory,
+            _ => BoundRectangleFactory
+        };
+    }
+
     public static Rectangle[] FillRectangleFactory(ElementOverlayConfiguration config, Rectangle rectangle) {
         return [
-            new Rectangle(rectangle.X - config.Margin, rectangle.Y - config.Margin, rectangle.Width + 2 * config.Margin, rectangle.Height + 2 * config.Margin)];
+            new Rectangle(rectangle.X - (int)config.Margin.Left,
+                          rectangle.Y - (int)config.Margin.Top,
+                          rectangle.Width + (int)config.Margin.Right,
+                          rectangle.Height + (int)config.Margin.Bottom)
+        ];
     }
 
     public static Rectangle[] BoundRectangleFactory(ElementOverlayConfiguration config, Rectangle rectangle) {
         return [
-            new (rectangle.X - config.Margin, rectangle.Y - config.Margin, config.Size, rectangle.Height + 2 * config.Margin),
-            new (rectangle.X - config.Margin, rectangle.Y - config.Margin, rectangle.Width + 2 * config.Margin, config.Size),
-            new (rectangle.X + rectangle.Width - config.Size + config.Margin, rectangle.Y - config.Margin, config.Size, rectangle.Height + 2 * config.Margin),
-            new (rectangle.X - config.Margin, rectangle.Y + rectangle.Height - config.Size + config.Margin, rectangle.Width + 2 * config.Margin, config.Size)
+            new Rectangle(rectangle.X - (int)config.Margin.Left, rectangle.Y - (int)config.Margin.Top, config.Size, rectangle.Height + (int)config.Margin.Bottom),
+            new Rectangle(rectangle.X - (int)config.Margin.Left, rectangle.Y - (int)config.Margin.Top, rectangle.Width + (int)config.Margin.Right, config.Size),
+            new Rectangle(rectangle.X + rectangle.Width - config.Size + (int)config.Margin.Left, rectangle.Y - (int)config.Margin.Top, config.Size, rectangle.Height + (int)config.Margin.Bottom),
+            new Rectangle(rectangle.X - (int)config.Margin.Left, rectangle.Y + rectangle.Height - config.Size + (int)config.Margin.Right, rectangle.Width + (int)config.Margin.Right, config.Size)
         ];
-    }
-
-    public void Dispose() {
-        Hide();
     }
 
     public void Hide() {
@@ -62,20 +55,9 @@ public class ElementOverlay : IDisposable {
         _overlayRectangleFormList = [];
     }
 
-    private OverlayRectangleForm[] _overlayRectangleFormList = [];
-
     public void Show(Rectangle rectangle) {
         Color color1 = Color.FromArgb(255, Configuration.Color.R, Configuration.Color.G, Configuration.Color.B);
         Rectangle[] rectangles = Configuration.RectangleFactory?.Invoke(Configuration, rectangle) ?? BoundRectangleFactory(Configuration, rectangle);
-        // Rectangle[] rectangles = [
-        //     new (rectangle.X - Configuration.Margin, rectangle.Y - Configuration.Margin, Configuration.Size, rectangle.Height + 2 * Configuration.Margin),
-        //     new (rectangle.X - Configuration.Margin, rectangle.Y - Configuration.Margin, rectangle.Width + 2 * Configuration.Margin, Configuration.Size),
-        //     new (rectangle.X + rectangle.Width - Configuration.Size + Configuration.Margin, rectangle.Y - Configuration.Margin, Configuration.Size, rectangle.Height + 2 * Configuration.Margin),
-        //     new (rectangle.X - Configuration.Margin, rectangle.Y + rectangle.Height - Configuration.Size + Configuration.Margin, rectangle.Width + 2 * Configuration.Margin, Configuration.Size)
-        // ];
-        // Rectangle[] rectangles = [
-        //     new (rectangle.X - Margin, rectangle.Y - Margin, rectangle.Width + Margin, rectangle.Height + Margin),
-        // ];
 
         List<OverlayRectangleForm> rectangleForms = [];
 
@@ -107,4 +89,4 @@ public class ElementOverlay : IDisposable {
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 }
 
-public record class ElementOverlayConfiguration(int Size, int Margin, Color Color, Func<ElementOverlayConfiguration, Rectangle, Rectangle[]>? RectangleFactory = null);
+public record ElementOverlayConfiguration(int Size, Thickness Margin, Color Color, Func<ElementOverlayConfiguration, Rectangle, Rectangle[]>? RectangleFactory = null);

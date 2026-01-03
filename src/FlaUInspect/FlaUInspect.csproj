@@ -40,6 +40,9 @@
         <PackageReference Include="FlaUI.Core" Version="5.0.0"/>
         <PackageReference Include="FlaUI.UIA2" Version="5.0.0"/>
         <PackageReference Include="FlaUI.UIA3" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
