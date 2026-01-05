@@ -168,25 +168,49 @@ public class SearchViewModel : ObservableObject {
     private static IEnumerable<ElementViewModel> EnumerateMatchingElements(ElementViewModel startVm, string searchText, FindByType findBy) {
         if (startVm.AutomationElement == null) yield break;
 
-        var stack = new Stack<(ElementViewModel vm, bool skipCheck)>();
-        stack.Push((startVm, true));
+        // Stack contains: (node, childIndex, wasExpandedByUs, foundMatchInSubtree)
+        var stack = new Stack<(ElementViewModel vm, int childIdx, bool expandedByUs, bool foundMatch)>();
+
+        // Start with the root, skip checking it
+        bool startWasExpanded = startVm.IsExpanded;
+        if (!startWasExpanded) startVm.IsExpanded = true;
+        stack.Push((startVm, 0, !startWasExpanded, false));
 
         while (stack.Count > 0) {
-            var (current, skipCheck) = stack.Pop();
-            if (current.AutomationElement == null) continue;
+            var (current, childIdx, expandedByUs, foundMatch) = stack.Pop();
 
-            if (!skipCheck && MatchesCondition(current.AutomationElement, searchText, findBy)) {
-                yield return current;
-            }
+            // Process children
+            if (childIdx < current.Children.Count) {
+                var child = current.Children[childIdx];
+                // Push current back with next child index, preserving foundMatch state
+                stack.Push((current, childIdx + 1, expandedByUs, foundMatch));
 
-            if (!current.IsExpanded) {
-                current.IsExpanded = true;
-            }
+                if (child?.AutomationElement != null) {
+                    bool isMatch = MatchesCondition(child.AutomationElement, searchText, findBy);
+                    if (isMatch) {
+                        // Update parent's foundMatch flag
+                        if (stack.Count > 0) {
+                            var parent = stack.Pop();
+                            stack.Push((parent.vm, parent.childIdx, parent.expandedByUs, true));
+                        }
+                        yield return child;
+                    }
 
-            for (int i = current.Children.Count - 1; i >= 0; i--) {
-                var child = current.Children[i];
-                if (child != null) {
-                    stack.Push((child, false));
+                    // Expand child and push it for processing
+                    bool childWasExpanded = child.IsExpanded;
+                    if (!childWasExpanded) child.IsExpanded = true;
+                    stack.Push((child, 0, !childWasExpanded, isMatch));
+                }
+            } else {
+                // Done with all children of current node
+                // If we expanded this node and found no match in subtree, collapse it
+                if (expandedByUs && !foundMatch) {
+                    current.IsExpanded = false;
+                }
+                // Propagate foundMatch to parent
+                if (foundMatch && stack.Count > 0) {
+                    var parent = stack.Pop();
+                    stack.Push((parent.vm, parent.childIdx, parent.expandedByUs, true));
                 }
             }
         }
