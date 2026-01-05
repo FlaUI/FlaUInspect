@@ -37,6 +37,8 @@ public class MainViewModel : ObservableObject {
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
 
+    public SearchViewModel Search { get; }
+
     public MainViewModel(AutomationType automationType, string applicationVersion, InternalLogger logger) {
         _logger = logger;
         ApplicationVersion = applicationVersion;
@@ -48,6 +50,11 @@ public class MainViewModel : ObservableObject {
         Elements = [];
         BindingOperations.EnableCollectionSynchronization(Elements, _itemsLock);
 
+        Search = new SearchViewModel(
+            () => SelectedItem,
+            () => Elements.FirstOrDefault(),
+            () => _treeWalker,
+            ElementToSelectChanged);
     }
 
     public ICommand OpenErrorListCommand =>
@@ -144,6 +151,9 @@ public class MainViewModel : ObservableObject {
             if (SetProperty(value)) {
                 if (value != null) {
                     ReadPatternsForSelectedItem(value.AutomationElement);
+                }
+                if (!Search.IsNavigating) {
+                    Search.NotifySelectionChanged();
                 }
             }
         }
