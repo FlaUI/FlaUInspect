@@ -21,6 +21,7 @@
                 <ResourceDictionary Source="/Resources/RibbonIcons.xaml" />
                 <ResourceDictionary Source="/Styles/PatternExpanderStyle.xaml" />
                 <ResourceDictionary Source="/Styles/GroupStyle.xaml" />
+                <ResourceDictionary Source="/Styles/ElementToggleExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="SelectableLabel"
@@ -213,6 +214,28 @@
                                Text="Copied." />
                 </Grid>
             </Grid>
+            
+            <Grid>
+                <Button Command="{Binding CopyDetailsToClipboardCommand}"
+                        Style="{StaticResource RibbonButtonStyle}"
+                        ToolTip="Copy current element state to clipboard">
+                    <StackPanel Orientation="Vertical">
+                        <Viewbox Width="20"
+                                 Height="20"
+                                 Stretch="Uniform">
+                            <ContentControl Content="{StaticResource PropertiesIcon}" />
+                        </Viewbox>
+                    </StackPanel>
+                </Button>
+                <Grid x:Name="CopiedNotificationGrid"
+                      Background="DarkBlue"
+                      Visibility="Collapsed">
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="White"
+                               Text="Copied." />
+                </Grid>
+            </Grid>
 
             <ToggleButton IsChecked="{Binding EnableXPath}"
                           Style="{StaticResource RibbonButtonStyle}">
@@ -265,6 +288,7 @@
                                                   Height="16"
                                                   Click="ToggleButton_Click"
                                                   Focusable="False"
+                                                  Style="{StaticResource ElementToggleExpanderStyle}"
                                                   IsChecked="{Binding IsExpanded}"
                                                   Visibility="{Binding Children.Count, Converter={StaticResource CountToVisibilityConverter}}" />
 
@@ -304,64 +328,6 @@
                     <Grid>
                         <DockPanel LastChildFill="True"
                                    Visibility="{Binding TreeViewControl.SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">
-                            <StackPanel Height="40"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        DockPanel.Dock="Top"
-                                        Orientation="Horizontal">
-                                <StackPanel.Resources>
-                                    <Style x:Key="RibbonButtonStyle"
-                                           TargetType="{x:Type ButtonBase}">
-                                        <Setter Property="Width" Value="32" />
-                                        <Setter Property="Height" Value="32" />
-                                        <Setter Property="Margin" Value="4" />
-                                    </Style>
-                                </StackPanel.Resources>
-                                <Grid>
-                                    <Button Command="{Binding CopyDetailsToClipboardCommand}"
-                                            Style="{StaticResource RibbonButtonStyle}"
-                                            ToolTip="Copy current element state to clipboard">
-                                        <StackPanel Orientation="Vertical">
-                                            <Viewbox Width="20"
-                                                     Height="20"
-                                                     Stretch="Uniform">
-                                                <ContentControl Content="{StaticResource PropertiesIcon}" />
-                                            </Viewbox>
-                                        </StackPanel>
-                                    </Button>
-                                    <Grid x:Name="CopiedNotificationGrid"
-                                          Background="DarkBlue"
-                                          Visibility="Collapsed">
-                                        <TextBlock HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Foreground="White"
-                                                   Text="Copied." />
-                                    </Grid>
-                                </Grid>
-                                <Grid Width="8" />
-                                <Button Command="{Binding CollapseAllDetailsCommand}"
-                                        Style="{StaticResource RibbonButtonStyle}"
-                                        ToolTip="Collapse all details">
-                                    <StackPanel Orientation="Vertical">
-                                        <Viewbox Width="20"
-                                                 Height="20"
-                                                 Stretch="Uniform">
-                                            <ContentControl Content="{StaticResource CollapseIcon}" />
-                                        </Viewbox>
-                                    </StackPanel>
-                                </Button>
-                                <Button Command="{Binding ExpandAllDetailsCommand}"
-                                        Style="{StaticResource RibbonButtonStyle}"
-                                        ToolTip="Expand all details">
-                                    <StackPanel Orientation="Vertical">
-                                        <Viewbox Width="20"
-                                                 Height="20"
-                                                 Stretch="Uniform">
-                                            <ContentControl Content="{StaticResource ExpandIcon}" />
-                                        </Viewbox>
-                                    </StackPanel>
-                                </Button>
-                            </StackPanel>
                             <ScrollViewer>
                                 <ItemsControl ItemsSource="{Binding ElementPatterns}">
                                     <ItemsControl.ItemTemplate>

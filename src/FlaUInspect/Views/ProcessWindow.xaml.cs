@@ -41,6 +41,12 @@ public partial class ProcessWindow : Window {
 
     private void ProcessWindow_Closed(object? sender, EventArgs e) {
         if (Application.Current.Windows.Count == 1 && Application.Current.MainWindow is StartupWindow startupWindow) {
+            if (DataContext is ProcessViewModel processViewModel) {
+                if (processViewModel.ClosingCommand.CanExecute(DataContext)) {
+                    processViewModel.ClosingCommand.Execute(DataContext);
+                }
+            }
+            
             startupWindow.Show();
         }
     }

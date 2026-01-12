@@ -85,6 +85,9 @@ public class ProcessViewModel : ObservableObject {
 
         ClosingCommand = new RelayCommand(_ => {
             HoverManager.RemoveListener(_windowHandle);
+            _trackHighlighterOverlay?.Dispose();
+            _focusTrackingMode?.Stop();
+            _focusTrackingMode = null;
         });
 
         CopyDetailsToClipboardCommand = new RelayCommand(_ => {

@@ -673,6 +673,24 @@
             </Path>
         </Canvas>
     </Canvas>
+    
+    <Canvas x:Key="ExpandedIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M 12,19.330856 0.1121287,7.4429845 2.885964,4.6691442 12,13.78318 21.114036,4.6691442 23.887871,7.4429845 Z"
+              Fill="#ff000000" />
+    </Canvas>  
+    
+    <Canvas x:Key="CollapsedIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M 13.776065,12 4.6983994,2.9223347 7.4611676,0.15956707 19.301601,12 7.4611676,23.840433 4.6983994,21.077665 Z"
+              Fill="#ff000000" />
+    </Canvas>
 
 
 </ResourceDictionary>
