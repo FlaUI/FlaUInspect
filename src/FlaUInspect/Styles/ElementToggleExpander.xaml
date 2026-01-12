@@ -9,6 +9,7 @@
            BasedOn="{StaticResource {x:Type ToggleButton}}"
            TargetType="ToggleButton">
         <Setter Property="Background" Value="Transparent" />
+        
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">

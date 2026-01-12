@@ -7,10 +7,10 @@
 
     <Style x:Key="PatternExpanderStyle"
            TargetType="Expander">
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="Gray" />
-        <Setter Property="Foreground" Value="#202020" />
-        <Setter Property="Background" Value="#D0D0D0" />
+        <Setter Property="BorderThickness" Value="{DynamicResource PrimaryThickness}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Expander">

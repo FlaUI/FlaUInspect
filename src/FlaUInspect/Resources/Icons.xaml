@@ -26,7 +26,7 @@
             <RectangleGeometry Rect="0.0,0.0,85.333336,85.333336" />
         </Canvas.Clip>
         <Canvas UseLayoutRounding="False">
-            <Path Fill="#ff000000">
+            <Path Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}">
                 <Path.Data>
                     <PathGeometry Figures="m 47.2636 70.7198 l 0.899756 -6 H 29.015 c -13.1154 0 -19.6525 -0.504103 -20.7484 -1.6 c -2.25545 -2.25544 -2.25545 -50.5446 0 -52.8 c 2.27514 -2.27514 66.5249 -2.27514 68.8 0 c 2.25544 2.25544 2.25544 50.5446 0 52.8 c -0.88 0.88 -4.5343 1.6 -8.12068 1.6 c -5.79887 0 -7.2981 0.664175 -13.5438 6 c -3.86269 3.3 -7.47651 6 -8.03072 6 c -0.554202 0 -0.60275 -2.7 -0.107885 -6 z M 46.6667 43.298 v -9.4219 l -3.66667 0.421896 c -3.55051 0.408531 -3.67916 0.707016 -4.06092 9.4219 l -0.394253 9 h 4.06092 h 4.06092 z M 46.6135 26.7839 C 48.6863 24.2863 47.9623 20.7351 45 18.8696 c -4.61986 -2.90937 -9.82212 3.64654 -6.28017 7.91432 c 2.05948 2.48152 5.8342 2.48152 7.89368 0 z"
                                   FillRule="Nonzero" />
@@ -680,7 +680,7 @@
             x:Shared="False"
             UseLayoutRounding="False">
         <Path Data="M 12,19.330856 0.1121287,7.4429845 2.885964,4.6691442 12,13.78318 21.114036,4.6691442 23.887871,7.4429845 Z"
-              Fill="#ff000000" />
+              Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
     </Canvas>  
     
     <Canvas x:Key="CollapsedIcon"
@@ -689,7 +689,7 @@
             x:Shared="False"
             UseLayoutRounding="False">
         <Path Data="M 13.776065,12 4.6983994,2.9223347 7.4611676,0.15956707 19.301601,12 7.4611676,23.840433 4.6983994,21.077665 Z"
-              Fill="#ff000000" />
+              Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
     </Canvas>
 
 

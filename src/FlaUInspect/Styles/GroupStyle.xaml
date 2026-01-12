@@ -2,13 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style x:Key="GroupBoxStyle"
            TargetType="GroupBox">
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="GroupBox">
                     <Border BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="1">
                         <DockPanel LastChildFill="True">
-                            <Border Background="#FF9FDAFF"
+                            <Border Background="{DynamicResource SecondaryWindowBackgroundBrush}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="0,0,0,1"
                                     DockPanel.Dock="Top">

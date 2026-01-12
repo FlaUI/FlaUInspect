@@ -8,8 +8,9 @@
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         xmlns:viewModels="clr-namespace:FlaUInspect.ViewModels"
         d:DataContext="{d:DesignInstance viewModels:StartupViewModel}"
-        d:DesignHeight="400"
-        d:DesignWidth="600"
+        d:DesignHeight="600"
+        d:DesignWidth="800"
+        Background="{DynamicResource PrimaryWindowBackgroundBrush}"
         mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
@@ -24,6 +25,7 @@
             <DataTemplate DataType="{x:Type viewModels:SettingsViewModel}">
                 <local:SettingsWindow />
             </DataTemplate>
+            <system:Double x:Key="Width">96</system:Double>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -32,15 +34,17 @@
                 <Border Height="1"
                         Margin="2"
                         HorizontalAlignment="Stretch"
-                        Background="Black" />
+                        Background="{DynamicResource PrimaryBorderBrush}" />
 
                 <Grid>
-                    <Button Margin="8"
+                    <Button Width="{StaticResource Width}"
+                            Margin="8"
                             Padding="4"
                             HorizontalAlignment="Left"
                             Command="{Binding SettingCommand}"
                             Content="Settings" />
-                    <Button Margin="8"
+                    <Button Width="{StaticResource Width}"
+                            Margin="8"
                             Padding="4"
                             HorizontalAlignment="Right"
                             Click="CloseClick"
@@ -56,7 +60,7 @@
                 <DockPanel Grid.Column="0"
                            Margin="8"
                            LastChildFill="True">
-                    <Button Width="250"
+                    <Button Width="128"
                             HorizontalAlignment="Left"
                             Command="{Binding PickCommand}"
                             Content="Find window"
@@ -64,15 +68,18 @@
                             PreviewMouseDown="PickWindowButton_PreviewMouseDown" />
                     <Border Height="1"
                             Margin="0,16"
-                            Background="Black"
+                            Background="{DynamicResource PrimaryBorderBrush}"
                             DockPanel.Dock="Top" />
                     <DockPanel LastChildFill="True">
                         <DockPanel Margin="0,4"
                                    DockPanel.Dock="Top"
                                    LastChildFill="True">
-                            <TextBlock DockPanel.Dock="Left"
-                                       Text="Find:" />
-                            <TextBox Margin="8,0,0,0"
+                            <TextBlock VerticalAlignment="Center"
+                                       DockPanel.Dock="Left"
+                                       Foreground="{DynamicResource TextBrush}"
+                                       Text="Filter : " />
+                            <TextBox Height="24"
+                                     Margin="8,0,0,0"
                                      Text="{Binding FilterProcess, UpdateSourceTrigger=PropertyChanged}" />
                         </DockPanel>
                         <Grid DockPanel.Dock="Bottom">
@@ -80,14 +87,15 @@
                                       VerticalAlignment="Center"
                                       Content="Windowed only application"
                                       IsChecked="{Binding IsWindowedOnly}" />
-                            <Button Margin="4"
+                            <Button Width="{StaticResource Width}"
+                                    Margin="4"
                                     Padding="4"
                                     HorizontalAlignment="Right"
                                     Command="{Binding RefreshCommand}"
                                     Content="Refresh" />
                         </Grid>
                         <Border Height="1"
-                                Background="Black"
+                                Background="{DynamicResource PrimaryBorderBrush}"
                                 DockPanel.Dock="Bottom" />
                         <Grid DockPanel.Dock="Bottom">
                             <TextBlock Text="Double click to open by selected UIA." />
@@ -121,7 +129,7 @@
                         Width="1"
                         Margin="8"
                         VerticalAlignment="Stretch"
-                        Background="Black" />
+                        Background="{DynamicResource PrimaryBorderBrush}" />
 
                 <StackPanel Grid.Column="2"
                             HorizontalAlignment="Center"
@@ -129,7 +137,8 @@
                             IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
                             Orientation="Vertical">
                     <StackPanel.Resources>
-                        <Style TargetType="{x:Type Button}">
+                        <Style BasedOn="{StaticResource {x:Type Button}}"
+                               TargetType="{x:Type Button}">
                             <Setter Property="Margin" Value="10" />
                         </Style>
                     </StackPanel.Resources>
@@ -177,33 +186,43 @@
                 </StackPanel>
             </Grid>
         </DockPanel>
-        <Grid Background="#aa000000"
+        <Grid Background="#cc000000"
               Visibility="{Binding DialogContent, Converter={StaticResource NullToVisibilityConverter}}">
-            <DockPanel Margin="32"
-                       Background="White"
-                       LastChildFill="True">
-                <Grid DockPanel.Dock="Bottom">
-                    <Border Margin="2"
-                            BorderBrush="Black"
-                            BorderThickness="0,1,0,0">
-                        <StackPanel HorizontalAlignment="Right"
-                                    Orientation="Horizontal">
-                            <StackPanel.Resources>
-                                <system:Double x:Key="Width">50</system:Double>
-                            </StackPanel.Resources>
-                            <Button Width="{StaticResource Width}"
-                                    Margin="4"
-                                    Command="{Binding CloseSettingCommand}"
-                                    Content="Close" />
-                            <Button Width="{StaticResource Width}"
-                                    Margin="4"
-                                    Command="{Binding SaveSettingCommand}"
-                                    Content="Save" />
-                        </StackPanel>
+            <Border Margin="96"
+                    Background="{DynamicResource PrimaryWindowBackgroundBrush}"
+                    CornerRadius="6">
+                <DockPanel LastChildFill="True">
+                    <Border Background="{DynamicResource SecondaryWindowBackgroundBrush}"
+                            CornerRadius="6 6 0 0"
+                            DockPanel.Dock="Top">
+                        <TextBlock Margin="8"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   Text="Settings" />
                     </Border>
-                </Grid>
-                <ContentControl Content="{Binding DialogContent}" />
-            </DockPanel>
+                    <Grid DockPanel.Dock="Bottom">
+                        <Border Margin="8,0"
+                                BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                                BorderThickness="0,1,0,0">
+                            <StackPanel Margin="0,8"
+                                        HorizontalAlignment="Right"
+                                        Orientation="Horizontal">
+                                <Button Width="{StaticResource Width}"
+                                        Margin="4"
+                                        Command="{Binding CloseSettingCommand}"
+                                        Content="Close" />
+                                <Button Width="{StaticResource Width}"
+                                        Margin="4"
+                                        Command="{Binding SaveSettingCommand}"
+                                        Content="Save" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <ContentControl Content="{Binding DialogContent}" />
+                </DockPanel>
+            </Border>
         </Grid>
     </Grid>
 </Window>

@@ -5,11 +5,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:models="clr-namespace:FlaUInspect.Models"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         xmlns:viewModels="clr-namespace:FlaUInspect.ViewModels"
         Title="{Binding WindowTitle}"
         Width="800"
         Height="450"
         d:DataContext="{d:DesignInstance viewModels:ProcessViewModel}"
+        Background="{DynamicResource PrimaryWindowBackgroundBrush}"
         Closed="ProcessWindowOnClosed"
         mc:Ignorable="d">
     <Window.Resources>
@@ -24,17 +26,26 @@
                 <ResourceDictionary Source="/Styles/ElementToggleExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <system:Double x:Key="ButtonWidth">32</system:Double>
+            <system:Double x:Key="ButtonHeight">32</system:Double>
+
             <Style x:Key="SelectableLabel"
                    TargetType="{x:Type TextBox}">
+                <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="IsReadOnly" Value="True" />
             </Style>
 
+            <SolidColorBrush x:Key="Details.Item.Background"
+                             Color="{DynamicResource PrimaryColor}" />
+            <SolidColorBrush x:Key="Details.Item.Background.Alternative"
+                             Color="{DynamicResource SecondaryColor}" />
+
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:AlternationToColorConverter x:Key="AlternationToColorConverter"
-                                                    AlternativeBrush="#ffeeeeee"
-                                                    Brush="#ffffffff" />
+                                                    AlternativeBrush="{StaticResource Details.Item.Background}"
+                                                    Brush="{StaticResource Details.Item.Background.Alternative}" />
 
             <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"
                                                    ZeroCountVisibility="Hidden" />
@@ -43,62 +54,27 @@
             <converters:IndentConverter x:Key="IndentConverter" />
 
             <Style x:Key="RibbonButtonStyle"
-                   TargetType="{x:Type ButtonBase}">
-                <Setter Property="Width" Value="32" />
-                <Setter Property="Height" Value="32" />
+                   BasedOn="{StaticResource {x:Type Button}}"
+                   TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
+                <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
+                <Setter Property="Margin" Value="4" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
+
+            <Style x:Key="RibbonToggleButtonStyle"
+                   BasedOn="{StaticResource {x:Type ToggleButton}}"
+                   TargetType="{x:Type ToggleButton}">
+                <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
+                <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
                 <Setter Property="Margin" Value="4" />
             </Style>
 
-            <Style x:Key="RibbonRadioButtonStyle"
+            <Style x:Key="ProcessRadioButtonStyle"
+                   BasedOn="{StaticResource RibbonRadioButtonStyle}"
                    TargetType="RadioButton">
-                <Setter Property="Background" Value="#DEDEDE" />
-                <Setter Property="BorderBrush" Value="Gray" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="Padding" Value="4" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="Width" Value="32" />
-                <Setter Property="Height" Value="32" />
-                <Setter Property="Margin" Value="2" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="RadioButton">
-                            <DockPanel LastChildFill="True">
-                                <Border Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}">
-                                    <Grid>
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                                          VerticalAlignment="Center"
-                                                          RecognizesAccessKey="True" />
-                                        <Border x:Name="Marker"
-                                                Height="2"
-                                                Margin="0"
-                                                VerticalAlignment="Bottom"
-                                                Background="#FF3399FF"
-                                                BorderThickness="0"
-                                                DockPanel.Dock="Bottom"
-                                                Visibility="Hidden" />
-                                    </Grid>
-                                </Border>
-                            </DockPanel>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter Property="Background" Value="#FFCCE5FF" />
-                                    <Setter Property="BorderBrush" Value="#FF3399FF" />
-                                    <Setter Property="Foreground" Value="#FF3399FF" />
-                                    <Setter TargetName="Marker" Property="Visibility" Value="Visible" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#FFE6F2FF" />
-                                    <Setter Property="BorderBrush" Value="#FF3399FF" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="Opacity" Value="0.5" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
+                <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
             </Style>
 
             <Style x:Key="ViewBoxStyle"
@@ -107,6 +83,9 @@
                 <Setter Property="Height" Value="20" />
                 <Setter Property="Stretch" Value="Uniform" />
             </Style>
+            <system:Double x:Key="ButtonWidth1">32</system:Double>
+            <system:Double x:Key="ButtonHeight1">32</system:Double>
+
         </ResourceDictionary>
 
     </Window.Resources>
@@ -141,7 +120,7 @@
 
             <RadioButton GroupName="SelectionMode"
                          IsChecked="{Binding EnableHoverMode}"
-                         Style="{StaticResource RibbonRadioButtonStyle}">
+                         Style="{StaticResource ProcessRadioButtonStyle}">
                 <ButtonBase.ToolTip>
                     <TextBlock>
                         Enable HoverMode (use Ctrl).<LineBreak />
@@ -154,7 +133,7 @@
 
             <RadioButton GroupName="SelectionMode"
                          IsChecked="{Binding EnableHighLightSelectionMode}"
-                         Style="{StaticResource RibbonRadioButtonStyle}">
+                         Style="{StaticResource ProcessRadioButtonStyle}">
                 <ButtonBase.ToolTip>
                     <TextBlock>
                         Enable Select Mode.<LineBreak />
@@ -166,7 +145,7 @@
             </RadioButton>
             <RadioButton GroupName="SelectionMode"
                          IsChecked="{Binding EnableFocusTrackingMode}"
-                         Style="{StaticResource RibbonRadioButtonStyle}">
+                         Style="{StaticResource ProcessRadioButtonStyle}">
                 <ButtonBase.ToolTip>
                     <TextBlock>
                         Focus Tracking.<LineBreak />
@@ -214,7 +193,7 @@
                                Text="Copied." />
                 </Grid>
             </Grid>
-            
+
             <Grid>
                 <Button Command="{Binding CopyDetailsToClipboardCommand}"
                         Style="{StaticResource RibbonButtonStyle}"
@@ -238,7 +217,7 @@
             </Grid>
 
             <ToggleButton IsChecked="{Binding EnableXPath}"
-                          Style="{StaticResource RibbonButtonStyle}">
+                          Style="{StaticResource RibbonToggleButtonStyle}">
                 <ButtonBase.ToolTip>
                     <TextBlock>
                         Display XPath to the current element.
@@ -288,8 +267,8 @@
                                                   Height="16"
                                                   Click="ToggleButton_Click"
                                                   Focusable="False"
-                                                  Style="{StaticResource ElementToggleExpanderStyle}"
                                                   IsChecked="{Binding IsExpanded}"
+                                                  Style="{StaticResource ElementToggleExpanderStyle}"
                                                   Visibility="{Binding Children.Count, Converter={StaticResource CountToVisibilityConverter}}" />
 
 
@@ -314,9 +293,11 @@
                                Visibility="{Binding Elements.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=EqualsZero}" />
                 </Grid>
             </GroupBox>
-            <GridSplitter Grid.Row="1"
+            <GridSplitter Grid.Row="0"
+                          Grid.RowSpan="2"
                           Grid.Column="1"
-                          HorizontalAlignment="Stretch" />
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource PrimaryWindowBackgroundBrush}" />
 
 
             <GroupBox Grid.Row="0"
@@ -345,10 +326,12 @@
                                                                 <ContentControl Style="{StaticResource DetailsResourceStyle}" />
                                                             </Viewbox>
                                                             <TextBlock VerticalAlignment="Center"
+                                                                       FontWeight="Bold"
                                                                        Text="{Binding PatternName}" />
                                                         </DockPanel>
                                                     </Expander.Header>
                                                     <ItemsControl AlternationCount="2"
+                                                                  Foreground="{DynamicResource TextBrush}"
                                                                   Grid.IsSharedSizeScope="True"
                                                                   ItemsSource="{Binding Children}">
                                                         <ItemsControl.ItemTemplate>

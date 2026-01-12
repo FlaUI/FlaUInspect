@@ -18,7 +18,8 @@ public partial class App {
 
     public static InternalLogger Logger { get; } = new ();
 
-    private void ApplicationStart(object sender, StartupEventArgs e) {
+    protected override void OnStartup(StartupEventArgs e) {
+        base.OnStartup(e);
 
         ServiceCollection services = new ();
         services.AddSingleton<ISettingsService<FlaUiAppSettings>>(_ => new JsonSettingsService<FlaUiAppSettings>(Path.Combine(AppContext.BaseDirectory, $"appsettings.json")));
@@ -34,6 +35,10 @@ public partial class App {
         StartupWindow startupWindow = new (Logger) { DataContext = startupViewModel };
         Current.MainWindow = startupWindow;
         startupWindow.Show();
+
+        //Preload light theme
+        SetTheme(flaUiAppSettings);
+
         Task.Run(() => startupViewModel.Init());
 
         return;
@@ -81,28 +86,7 @@ public partial class App {
     public static void ApplyAppOption(FlaUiAppSettings settings) {
         // Apply theme
         Current.Dispatcher.Invoke(() => {
-            ResourceDictionary newTheme = new ();
-
-            // switch (settings.Theme) {
-            //     case "Dark":
-            //         newTheme.Source = new Uri("/FlaUInspect;component/Themes/DarkTheme.xaml", UriKind.Relative);
-            //         break;
-            //     default:
-            //         newTheme.Source = new Uri("/FlaUInspect;component/Themes/LightTheme.xaml", UriKind.Relative);
-            //         break;
-            // }
-
-            // Remove existing theme dictionaries
-            for (int i = Current.Resources.MergedDictionaries.Count - 1; i >= 0; i--) {
-                ResourceDictionary dict = Current.Resources.MergedDictionaries[i];
-
-                if (dict.Source != null && (dict.Source.OriginalString.Contains("Themes/DarkTheme.xaml") || dict.Source.OriginalString.Contains("Themes/LightTheme.xaml"))) {
-                    Current.Resources.MergedDictionaries.RemoveAt(i);
-                }
-            }
-
-            // Add the new theme dictionary
-            Current.Resources.MergedDictionaries.Add(newTheme);
+            SetTheme(settings);
         });
 
         ThicknessConverter converter = new ();
@@ -140,5 +124,30 @@ public partial class App {
         } else {
             FlaUiAppOptions.PickOverlay = FlaUiAppOptions.DefaultOverlay;
         }
+    }
+
+    private static void SetTheme(FlaUiAppSettings settings) {
+        ResourceDictionary newTheme = new();
+
+        switch (settings.Theme) {
+            case "Dark":
+                newTheme.Source = new Uri("/FlaUInspect;component/Themes/DarkTheme.xaml", UriKind.Relative);
+                break;
+            default:
+                newTheme.Source = new Uri("/FlaUInspect;component/Themes/LightTheme.xaml", UriKind.Relative);
+                break;
+        }
+
+        // Remove existing theme dictionaries
+        for (int i = Current.Resources.MergedDictionaries.Count - 1; i >= 0; i--) {
+            ResourceDictionary dict = Current.Resources.MergedDictionaries[i];
+
+            if (dict.Source != null && (dict.Source.OriginalString.Contains("Themes/DarkTheme.xaml") || dict.Source.OriginalString.Contains("Themes/LightTheme.xaml"))) {
+                Current.Resources.MergedDictionaries.RemoveAt(i);
+            }
+        }
+
+        // Add the new theme dictionary
+        Current.Resources.MergedDictionaries.Add(newTheme);
     }
 }
