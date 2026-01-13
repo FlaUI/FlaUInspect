@@ -6,6 +6,10 @@ using FlaUInspect.Core.Extensions;
 using FlaUInspect.Core.Logger;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Microsoft.Win32;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using MenuItem = System.Windows.Controls.MenuItem;
 namespace FlaUInspect.ViewModels;
 
@@ -71,6 +75,21 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger? log
             Command = new RelayCommand(_ => value())
         };
     }
+
+    public ObservableCollection<ExportOptionItem> ExportOptions => ExportConfiguration.Options;
+
+    private RelayCommand? _exportToJsonCommand;
+    public ICommand ExportToJsonCommand =>
+        _exportToJsonCommand ??= new RelayCommand(_ => {
+            if (AutomationElement == null) return;
+            var saveFileDialog = new SaveFileDialog { Filter = "JSON files (*.json)|*.json" };
+            if (saveFileDialog.ShowDialog() == true) {
+                var options = ExportOptions.Where(x => x.IsChecked).Select(x => x.Header).ToHashSet();
+                var rootNode = JsonExporter.CollectNodeData(AutomationElement, options);
+                var json = JsonSerializer.Serialize(rootNode, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(saveFileDialog.FileName, json);
+            }
+        });
 
     public string XPath => AutomationElement == null ? string.Empty : Debug.GetXPathToElement(AutomationElement);
     public event Action<ElementViewModel>? SelectionChanged;

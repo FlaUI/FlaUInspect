@@ -322,6 +322,18 @@
                                             <MenuItem Header="Focus" Command="{Binding FocusCommand}" IsCheckable="False" />
                                             <MenuItem Header="Pattern Actions" ItemsSource="{Binding PlacementTarget.Tag.PatternActionContextItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}" Visibility="{Binding PlacementTarget.Tag.PatternActionContextItems.Count, Converter={StaticResource CountToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}" />
                                             <MenuItem Header="Mouse Actions" ItemsSource="{Binding MouseActions}" />
+                                            <Separator />
+                                            <MenuItem Header="Export to JSON" Command="{Binding ExportToJsonCommand}" />
+                                            <MenuItem Header="Export Options" ItemsSource="{Binding ExportOptions}">
+                                                <MenuItem.ItemContainerStyle>
+                                                    <Style TargetType="MenuItem">
+                                                        <Setter Property="Header" Value="{Binding Header}" />
+                                                        <Setter Property="IsCheckable" Value="True" />
+                                                        <Setter Property="IsChecked" Value="{Binding IsChecked}" />
+                                                        <Setter Property="StaysOpenOnClick" Value="True" />
+                                                    </Style>
+                                                </MenuItem.ItemContainerStyle>
+                                            </MenuItem>
                                         </ContextMenu>
 									</StackPanel.ContextMenu>
                                     <Viewbox Width="16"

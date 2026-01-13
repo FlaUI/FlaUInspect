@@ -29,6 +29,8 @@ FlaUInspect is supposed to be a modern alternative, based on [FlaUI](https://git
 On startup of FlaUInspect, you can choose if you want to use UIA2 or UIA3 (see [FAQ](https://github.com/Roemer/FlaUI/wiki/FAQ) why you can't use both at the same time).
 You can use pre-built versions of FlaUInspect.UIA2 and FlaUInspect.UIA3 if you want to use a version of UIA.
 
+For command line usage, see [CLI.md](CLI.md).
+
 
 ###### Main Screen
 ![Main Screen](https://github.com/user-attachments/assets/6212341b-9776-4907-9edc-acc00073c92e)
