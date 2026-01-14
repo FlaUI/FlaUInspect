@@ -22,6 +22,12 @@ public class SettingsViewModel : ObservableObject, IDialogViewModel, ISettingVie
     public void Save() {
         _settingsService.Save(Settings.Current);
     }
+    
+    public string Title { get; } = "Settings";
+    public string CloseButtonText { get; } = "Close";
+    public string SaveButtonText { get; } = "Save";
+    public bool IsSaveVisible { get; } = true;
+    public bool IsCloseVisible { get; } = true;
 
     public bool CanClose { get; } = true;
 

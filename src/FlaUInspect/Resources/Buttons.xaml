@@ -5,6 +5,7 @@
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+        <Setter Property="Width" Value="96"/>
         <Setter Property="Padding" Value="10"></Setter>
         <Setter Property="Template">
             <Setter.Value>

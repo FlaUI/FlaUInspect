@@ -1,7 +1,6 @@
 using FlaUInspect.Core;
-using FlaUInspect.Settings;
 
-namespace FlaUInspect.ViewModels;
+namespace FlaUInspect.Settings;
 
 public interface ISettingViewModel {
     Editable<FlaUiAppSettings> Settings { get; }

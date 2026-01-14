@@ -74,6 +74,9 @@ public class StartupViewModel : ObservableObject {
                                                   }
                                               },
                                               _ => DialogContent is IDialogViewModel { CanClose: true });
+        AboutCommand = new RelayCommand(_=> {
+            DialogContent = new AboutViewModel();
+        });
 
         _filteredProcesses = CollectionViewSource.GetDefaultView(_processes);
         _filteredProcesses.Filter = FilterProcesses;
@@ -95,6 +98,8 @@ public class StartupViewModel : ObservableObject {
 
     public ICommand CloseSettingCommand { get; }
     public ICommand SaveSettingCommand { get; }
+    
+    public ICommand AboutCommand { get; }
 
 
     public bool IsBusy {
