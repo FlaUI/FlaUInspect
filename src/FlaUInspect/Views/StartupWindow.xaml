@@ -16,7 +16,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/ChooseVersionIcons.xaml" />
+                <ResourceDictionary Source="/Controls/ChooseVersionIcons.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />

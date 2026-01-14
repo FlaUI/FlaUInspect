@@ -17,13 +17,13 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Styles/ImageStyles.xaml" />
+                <ResourceDictionary Source="/Controls/ImageStyles.xaml" />
                 <ResourceDictionary Source="../Resources/Icons.xaml" />
                 <ResourceDictionary Source="/Resources/DetailsIcons.xaml" />
                 <ResourceDictionary Source="/Resources/RibbonIcons.xaml" />
-                <ResourceDictionary Source="/Styles/PatternExpanderStyle.xaml" />
-                <ResourceDictionary Source="/Styles/GroupStyle.xaml" />
-                <ResourceDictionary Source="/Styles/ElementToggleExpander.xaml" />
+                <ResourceDictionary Source="/Controls/PatternExpanderStyle.xaml" />
+                <ResourceDictionary Source="/Controls/GroupStyle.xaml" />
+                <ResourceDictionary Source="/Controls/ElementToggleExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <system:Double x:Key="ButtonWidth">32</system:Double>

@@ -40,6 +40,6 @@
     <CornerRadius x:Key="PrimaryCornerRadius">2</CornerRadius>
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="../Styles/Generic.xaml"/>
+        <ResourceDictionary Source="/Themes/Generic.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
