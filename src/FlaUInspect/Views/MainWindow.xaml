@@ -320,6 +320,7 @@
 										<ContextMenu>
 											<MenuItem Header="Refresh Children" Command="{Binding RefreshItemCommand}" />
                                             <MenuItem Header="Focus" Command="{Binding FocusCommand}" IsCheckable="False" />
+                                            <MenuItem Header="Native Front &amp; Focus" Command="{Binding FocusNativeCommand}" IsCheckable="False" />
                                             <MenuItem Header="Pattern Actions" ItemsSource="{Binding PlacementTarget.Tag.PatternActionContextItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}" Visibility="{Binding PlacementTarget.Tag.PatternActionContextItems.Count, Converter={StaticResource CountToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}" />
                                             <MenuItem Header="Mouse Actions" ItemsSource="{Binding MouseActions}" />
                                             <Separator />

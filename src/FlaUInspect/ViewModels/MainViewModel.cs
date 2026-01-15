@@ -216,7 +216,8 @@ public class MainViewModel : ObservableObject {
                              System.Windows.Controls.MenuItem actionMenuItem = new() {
                                 Header = $"{patternItem.Key}"
                             };
-                            actionMenuItem.Click += (_, _) => patternItem.Action?.Invoke();
+                            var safeAction = ElementViewModel.CreateDelayedSafeAction(patternItem.Action);
+                            actionMenuItem.Click += (_, _) => safeAction();
                             PatternActionContextItems.Add(actionMenuItem);
                         }
                     }
