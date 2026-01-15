@@ -56,6 +56,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         new (FlaUI.UIA3.Patterns.TablePattern.Pattern, AddTablePatternDetails),
         new (FlaUI.UIA3.Patterns.TextPattern.Pattern, AddTextPatternDetails),
         new (FlaUI.UIA3.Patterns.TogglePattern.Pattern, AddTogglePatternDetails),
+        new (FlaUI.UIA3.Patterns.VirtualizedItemPattern.Pattern, AddVirtualizedPatternDetails),
         new (FlaUI.UIA3.Patterns.ValuePattern.Pattern, AddValuePatternDetails),
         new (FlaUI.UIA3.Patterns.WindowPattern.Pattern, AddWindowPatternDetails),
         new (InvokePattern.Pattern, AddInvokePatternDetails)
@@ -102,6 +103,13 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         }
         ITogglePattern pattern = element.Patterns.Toggle.Pattern;
         yield return new PatternItem("ToggleState", "Toggle", pattern.Toggle);
+    }
+    private static IEnumerable<PatternItem> AddVirtualizedPatternDetails(AutomationElement? element) {
+        if (element == null) {
+            yield break;
+        }
+        IVirtualizedItemPattern pattern = element.Patterns.VirtualizedItem.Pattern;
+        yield return new PatternItem("Virtualized", "Realize", pattern.Realize);
     }
 
     private static IEnumerable<PatternItem> AddTextPatternDetails(AutomationElement? element) {
@@ -164,6 +172,9 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         ISelectionItemPattern pattern = element.Patterns.SelectionItem.Pattern;
         yield return PatternItem.FromAutomationProperty("IsSelected", pattern.IsSelected);
         yield return PatternItem.FromAutomationProperty("SelectionContainer", pattern.SelectionContainer);
+        yield return new PatternItem("AddToSelection", "AddToSelection", pattern.AddToSelection);
+        yield return new PatternItem("RemoveFromSelection", "RemoveFromSelection", pattern.RemoveFromSelection);
+        yield return new PatternItem("Select", "Select", pattern.Select);
     }
 
     private static IEnumerable<PatternItem> AddScrollPatternDetails(AutomationElement? element) {
