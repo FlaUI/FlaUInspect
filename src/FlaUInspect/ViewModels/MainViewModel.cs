@@ -33,10 +33,11 @@ public class MainViewModel : ObservableObject {
     private RelayCommand? _openErrorListCommand;
     private PatternItemsFactory? _patternItemsFactory;
     private RelayCommand? _refreshCommand;
-    private RelayCommand? _refreshItemCommand;
     private AutomationElement? _rootElement;
     private RelayCommand? _startNewInstanceCommand;
     private ITreeWalker? _treeWalker;
+
+    public SearchViewModel Search { get; }
 
     public MainViewModel(AutomationType automationType, string applicationVersion, InternalLogger logger) {
         _logger = logger;
@@ -49,6 +50,11 @@ public class MainViewModel : ObservableObject {
         Elements = [];
         BindingOperations.EnableCollectionSynchronization(Elements, _itemsLock);
 
+        Search = new SearchViewModel(
+            () => SelectedItem,
+            () => Elements.FirstOrDefault(),
+            () => _treeWalker,
+            ElementToSelectChanged);
     }
 
     public ICommand OpenErrorListCommand =>
@@ -146,22 +152,20 @@ public class MainViewModel : ObservableObject {
                 if (value != null) {
                     ReadPatternsForSelectedItem(value.AutomationElement);
                 }
+                if (!Search.IsNavigating) {
+                    Search.NotifySelectionChanged();
+                }
             }
         }
     }
 
-    public ICommand RefreshItemCommand =>
-        _refreshItemCommand ??= new RelayCommand(o => {
-            if (o is ElementViewModel item) {
-                item.Children.Clear();
-                item.IsExpanded = true;
-            }
-        });
 
     public IEnumerable<ElementPatternItem> ElementPatterns {
         get => _elementPatterns ?? Enumerable.Empty<ElementPatternItem>();
         private set => SetProperty(ref _elementPatterns, value as ObservableCollection<ElementPatternItem>);
     }
+
+    public ObservableCollection<System.Windows.Controls.MenuItem> PatternActionContextItems {get; } = new();
 
     public ICommand InfoCommand => _infoCommand ??= new RelayCommand(_ => {
         IsInfoVisible = !IsInfoVisible;
@@ -197,6 +201,7 @@ public class MainViewModel : ObservableObject {
             HashSet<PatternId> supportedPatterns = [.. selectedItemAutomationElement.GetSupportedPatterns()];
             IDictionary<string, PatternItem[]> patternItemsForElement = _patternItemsFactory.CreatePatternItemsForElement(selectedItemAutomationElement, supportedPatterns);
 
+            PatternActionContextItems.Clear();
             foreach (ElementPatternItem elementPattern in ElementPatterns) {
                 elementPattern.IsVisible = elementPattern.PatternIdName == PatternItemsFactory.Identification
                                            || elementPattern.PatternIdName == PatternItemsFactory.Details
@@ -207,6 +212,14 @@ public class MainViewModel : ObservableObject {
                 if (patternItemsForElement.TryGetValue(elementPattern.PatternIdName, out PatternItem[]? children)) {
                     foreach (PatternItem patternItem in children) {
                         elementPattern.Children.Add(patternItem);
+                        if (patternItem.HasExecutableAction) {
+                             System.Windows.Controls.MenuItem actionMenuItem = new() {
+                                Header = $"{patternItem.Key}"
+                            };
+                            var safeAction = ElementViewModel.CreateDelayedSafeAction(patternItem.Action);
+                            actionMenuItem.Click += (_, _) => safeAction();
+                            PatternActionContextItems.Add(actionMenuItem);
+                        }
                     }
                 }
 

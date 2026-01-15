@@ -11,7 +11,7 @@ public partial class ChooseVersionWindow {
         InitializeComponent();
     }
 
-    public AutomationType SelectedAutomationType { get; private set; }
+    public AutomationType SelectedAutomationType { get; set; }
 
     private void Uia2ButtonClick(object sender, RoutedEventArgs e) {
         SelectedAutomationType = AutomationType.UIA2;

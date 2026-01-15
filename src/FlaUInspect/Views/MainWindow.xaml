@@ -178,6 +178,57 @@
                             </Viewbox>
                         </StackPanel>
                     </ToggleButton>
+                    <Rectangle Width="12"
+                               Height="32" />
+                    <GroupBox Header="Search Descendants"
+                              Padding="4,0"
+                              Margin="0,-2"
+                              VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <ComboBox x:Name="FindByComboBox"
+                                      Width="140"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{Binding Source={x:Static core:FindByTypeValues.All}}"
+                                      SelectedItem="{Binding Search.SelectedFindByType}" />
+                            <TextBox x:Name="SearchTextBox"
+                                     Width="150"
+                                     Margin="4,0,0,0" ToolTip="Value to Search, hit Enter to find, up/down arrow to navigate between results"
+                                     VerticalAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     Text="{Binding Search.SearchText, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Return"
+                                                Command="{Binding Search.FindNextCommand}" />
+                                    <KeyBinding Key="Down"
+                                                Command="{Binding Search.FindNextCommand}" />
+                                    <KeyBinding Key="Up"
+                                                Command="{Binding Search.FindPreviousCommand}" />
+                                </TextBox.InputBindings>
+                            </TextBox>
+                            <Button
+                                    Margin="2,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding Search.FindPreviousCommand}"
+                                    Content="▲"
+                                Padding="2"
+                                    FontSize="10"
+                                    ToolTip="Previous result" />
+                            <Button
+                                    Margin="2,0,0,0"
+                                    Padding="2"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding Search.FindNextCommand}"
+                                    Content="▼"
+                                    FontSize="10"
+                                    ToolTip="Next result" />
+                            <TextBlock Width="40"
+                                       Margin="4,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding Search.PositionText}"
+                                       ToolTip="Current result / Total results" />
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Right"
                             Orientation="Horizontal">
@@ -264,35 +315,58 @@
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type models:Element}"
                                                       ItemsSource="{Binding Children}">
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" Tag="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" ContextMenuOpening="TreeViewItem_ContextMenuOpening">
+									<StackPanel.ContextMenu>
+										<ContextMenu>
+											<MenuItem Header="Refresh Children" Command="{Binding RefreshItemCommand}" />
+                                            <MenuItem Header="Focus" Command="{Binding FocusCommand}" IsCheckable="False" />
+                                            <MenuItem Header="Native Front &amp; Focus" Command="{Binding FocusNativeCommand}" IsCheckable="False" />
+                                            <MenuItem Header="Pattern Actions" ItemsSource="{Binding PlacementTarget.Tag.PatternActionContextItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}" Visibility="{Binding PlacementTarget.Tag.PatternActionContextItems.Count, Converter={StaticResource CountToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}" />
+                                            <MenuItem Header="Mouse Actions" ItemsSource="{Binding MouseActions}" />
+                                            <Separator />
+                                            <MenuItem Header="Export to JSON" Command="{Binding ExportToJsonCommand}" />
+                                            <MenuItem Header="Export Options" ItemsSource="{Binding ExportOptions}">
+                                                <MenuItem.ItemContainerStyle>
+                                                    <Style TargetType="MenuItem">
+                                                        <Setter Property="Header" Value="{Binding Header}" />
+                                                        <Setter Property="IsCheckable" Value="True" />
+                                                        <Setter Property="IsChecked" Value="{Binding IsChecked}" />
+                                                        <Setter Property="StaysOpenOnClick" Value="True" />
+                                                    </Style>
+                                                </MenuItem.ItemContainerStyle>
+                                            </MenuItem>
+                                        </ContextMenu>
+									</StackPanel.ContextMenu>
                                     <Viewbox Width="16"
                                              Height="16"
                                              Margin="0,0,1,0"
                                              Stretch="Uniform">
                                         <ContentControl Style="{StaticResource TreeItemResourceStyle}" />
                                     </Viewbox>
-                                    <Button Margin="0,0,5,0"
+                                    <Button Margin="0"
                                             Background="Transparent"
                                             BorderThickness="0"
+											VerticalAlignment="Center"
                                             Command="{Binding Path=RefreshItemCommand}"
-                                            CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=StackPanel}}"
-                                            DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=TreeView}}"
                                             ToolTip="Refresh children list">
                                         <Viewbox Width="8"
                                                  Height="8"
                                                  Margin="0,0,1,0"
-                                                 Stretch="Uniform"
-                                                 Visibility="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsMouseOver, Converter={StaticResource BooleanToCollapsedVisibilityConverter}}">
-                                            <ContentControl Content="{StaticResource RefreshIcon}" />
+                                                 Stretch="Uniform">
+											<ContentControl Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Content="{StaticResource RefreshIcon}" />
                                         </Viewbox>
                                     </Button>
                                     <TextBlock>
                                         <TextBlock.ToolTip>
+											<TextBlock>
+												<TextBlock.Text>
                                             <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">
                                                 <Binding Path="ControlType" />
                                                 <Binding Path="Name" />
                                                 <Binding Path="AutomationId" />
                                             </MultiBinding>
+												</TextBlock.Text>
+											</TextBlock>
                                         </TextBlock.ToolTip>
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">

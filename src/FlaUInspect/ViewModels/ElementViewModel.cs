@@ -4,12 +4,22 @@ using FlaUI.Core.Definitions;
 using FlaUInspect.Core;
 using FlaUInspect.Core.Extensions;
 using FlaUInspect.Core.Logger;
-
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+using Microsoft.Win32;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using MenuItem = System.Windows.Controls.MenuItem;
+using User32=FlaUI.Core.WindowsAPI.User32;
 namespace FlaUInspect.ViewModels;
 
 public class ElementViewModel(AutomationElement? automationElement, ILogger? logger) : ObservableObject {
     private readonly object _lockObject = new ();
     public AutomationElement? AutomationElement { get; } = automationElement;
+    private RelayCommand? _refreshItemCommand;
+    private RelayCommand? _focusCommand;
+    private RelayCommand? _focusNativeCommand;
 
     public bool IsExpanded {
         get => GetProperty<bool>();
@@ -35,6 +45,84 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger? log
 
     public ExtendedObservableCollection<ElementViewModel?> Children { get; set; } = [];
 
+
+    public ICommand RefreshItemCommand =>
+        _refreshItemCommand ??= new((_) => {
+            Children.Clear();
+            IsExpanded = true;
+        });
+
+    public ICommand FocusCommand =>
+        _focusCommand ??= CreateDelayedSafeCommand(AutomationElement.Focus);
+
+    public ICommand FocusNativeCommand =>
+        _focusNativeCommand ??= CreateDelayedSafeCommand(DoNativeFocus);
+
+    private async void DoNativeFocus() {
+        try{
+        //await Task.Delay(250);
+            if (AutomationElement.Properties.ProcessId.TryGetValue(out int processId)){
+                var proc = System.Diagnostics.Process.GetProcessById(processId);
+                var res = User32.SetForegroundWindow(proc.MainWindowHandle);
+                await Task.Delay(100);
+            }
+            AutomationElement.FocusNative();
+        }catch(Exception ex){
+            System.Diagnostics.Debug.WriteLine(ex.ToString());
+        }
+    }
+
+    private static RelayCommand CreateDelayedSafeCommand(Action action, int delayMs=250){
+        var delayedAction = CreateDelayedSafeAction(action,delayMs);
+        return new RelayCommand(_ => delayedAction());
+    }
+    /// <summary>
+    /// Mouse/focus related commands need a delay to allow our mosue action t obe handled first or we resteal the mouse
+    /// </summary>
+    /// <param name="action"></param>
+    /// <param name="delayMs"></param>
+    /// <returns></returns>
+    public static Action CreateDelayedSafeAction(Action action, int delayMs=250) {
+        return async () => {
+            try {
+                await Task.Delay(delayMs);
+                action();
+            } catch { }
+        };
+    }
+
+    private ObservableCollection<MenuItem>? _mouseActions;
+    public ObservableCollection<MenuItem> MouseActions { get => _mouseActions ??= BuildMouseActions(); }
+
+    private ObservableCollection<MenuItem> BuildMouseActions() {
+        return [
+            CreateMenuItem("Left Click", CreateDelayedSafeAction(() => AutomationElement?.Click())),
+            CreateMenuItem("Right Click", CreateDelayedSafeAction(() => AutomationElement?.RightClick())),
+            CreateMenuItem("Double Click", CreateDelayedSafeAction(() => AutomationElement?.DoubleClick())),
+        ];
+    }
+    private MenuItem CreateMenuItem(string header, Action<object> value) => CreateMenuItem(header,()=>value(default));
+    private MenuItem CreateMenuItem(string header, Action value) {
+        return new MenuItem {
+            Header = header,
+            Command = new RelayCommand(_ => value())
+        };
+    }
+
+    public ObservableCollection<ExportOptionItem> ExportOptions => ExportConfiguration.Options;
+
+    private RelayCommand? _exportToJsonCommand;
+    public ICommand ExportToJsonCommand =>
+        _exportToJsonCommand ??= new RelayCommand(_ => {
+            if (AutomationElement == null) return;
+            var saveFileDialog = new SaveFileDialog { Filter = "JSON files (*.json)|*.json" };
+            if (saveFileDialog.ShowDialog() == true) {
+                var options = ExportOptions.Where(x => x.IsChecked).Select(x => x.Header).ToHashSet();
+                var rootNode = JsonExporter.CollectNodeData(AutomationElement, options);
+                var json = JsonSerializer.Serialize(rootNode, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(saveFileDialog.FileName, json);
+            }
+        });
 
     public string XPath => AutomationElement == null ? string.Empty : Debug.GetXPathToElement(AutomationElement);
     public event Action<ElementViewModel>? SelectionChanged;
