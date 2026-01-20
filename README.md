@@ -43,7 +43,7 @@ Select Selection Mode button and click on any control in the application. The Fl
 
 Highlight selectin and Dark theme
 
-<img width="600" alt="Image" src="https://github.com/user-attachments/assets/f0a23f20-f994-4a17-b83b-3da6c96e337f" />
+<img width="600" alt="Image" src="https://github.com/user-attachments/assets/7b9db566-6e3b-459d-bc49-1715a172a189" />
 
 FlaUinspect supports Light and Dark theme currently.
 
