@@ -1,0 +1,236 @@
+<Window x:Class="FlaUInspect.Views.StartupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:FlaUInspect.Core.Converters"
+        xmlns:core="clr-namespace:FlaUInspect.Core"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:FlaUInspect.Views"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:viewModels="clr-namespace:FlaUInspect.ViewModels"
+        d:DataContext="{d:DesignInstance viewModels:StartupViewModel}"
+        d:DesignHeight="600"
+        d:DesignWidth="800"
+        Background="{DynamicResource PrimaryWindowBackgroundBrush}"
+        mc:Ignorable="d">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/ChooseVersionIcons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+            <DataTemplate DataType="{x:Type viewModels:SettingsViewModel}">
+                <local:SettingsWindow />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:AboutViewModel}">
+                <local:AboutView />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Bottom">
+                <Border Height="1"
+                        Margin="2"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource PrimaryBorderBrush}" />
+
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Margin="8"
+                                Padding="4"
+                                HorizontalAlignment="Left"
+                                Command="{Binding SettingCommand}"
+                                Content="Settings" />
+                        <Button Margin="8"
+                                Padding="4"
+                                HorizontalAlignment="Left"
+                                Command="{Binding AboutCommand}"
+                                Content="About" />
+                    </StackPanel>
+                    <Button Margin="8"
+                            Padding="4"
+                            HorizontalAlignment="Right"
+                            Click="CloseClick"
+                            Content="Close" />
+                </Grid>
+            </StackPanel>
+            <Grid IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0"
+                           Margin="8"
+                           LastChildFill="True">
+                    <Button Width="128"
+                            HorizontalAlignment="Left"
+                            Command="{Binding PickCommand}"
+                            Content="Find window"
+                            DockPanel.Dock="Top"
+                            PreviewMouseDown="PickWindowButton_PreviewMouseDown" />
+                    <Border Height="1"
+                            Margin="0,16"
+                            Background="{DynamicResource PrimaryBorderBrush}"
+                            DockPanel.Dock="Top" />
+                    <DockPanel LastChildFill="True">
+                        <DockPanel Margin="0,4"
+                                   DockPanel.Dock="Top"
+                                   LastChildFill="True">
+                            <TextBlock VerticalAlignment="Center"
+                                       DockPanel.Dock="Left"
+                                       Foreground="{DynamicResource TextBrush}"
+                                       Text="Filter : " />
+                            <TextBox Height="24"
+                                     Margin="8,0,0,0"
+                                     Text="{Binding FilterProcess, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <Grid DockPanel.Dock="Bottom">
+                            <CheckBox HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"
+                                      Content="Windowed only application"
+                                      IsChecked="{Binding IsWindowedOnly}" />
+                            <Button Margin="4"
+                                    Padding="4"
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding RefreshCommand}"
+                                    Content="Refresh" />
+                        </Grid>
+                        <Border Height="1"
+                                Background="{DynamicResource PrimaryBorderBrush}"
+                                DockPanel.Dock="Bottom" />
+                        <Grid DockPanel.Dock="Bottom">
+                            <TextBlock Text="Double click to open by selected UIA." />
+                        </Grid>
+                        <Grid>
+                            <ListBox x:Name="ProcessesListBox"
+                                     ItemsSource="{Binding FilteredProcesses}"
+                                     MouseDoubleClick="ProcessesListBoxOnMouseDoubleClick"
+                                     SelectedItem="{Binding SelectedProcess}"
+                                     Visibility="{Binding Processes.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=GreaterThanZero}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type viewModels:ProcessWindowInfo}">
+                                        <TextBlock>
+                                            <Run Text="[" />
+                                            <Run Text="{Binding ProcessId}" />
+                                            <Run Text="] " />
+                                            <Run Text="{Binding WindowTitle}" />
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Loading ..."
+                                       Visibility="{Binding Processes.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=EqualsZero}" />
+                        </Grid>
+                    </DockPanel>
+                </DockPanel>
+
+                <Border Grid.Column="1"
+                        Width="1"
+                        Margin="8"
+                        VerticalAlignment="Stretch"
+                        Background="{DynamicResource PrimaryBorderBrush}" />
+
+                <StackPanel Grid.Column="2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
+                            Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <Style BasedOn="{StaticResource {x:Type Button}}"
+                               TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="10" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <DockPanel LastChildFill="True">
+                        <RadioButton x:Name="Uia2RadioButton"
+                                     VerticalAlignment="Center"
+                                     DockPanel.Dock="Left"
+                                     GroupName="UiaVersion" />
+                        <Button Padding="10"
+                                Click="Uia2Click"
+                                IsEnabled="{Binding ElementName=ProcessesListBox, Path=SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">
+                            <StackPanel Orientation="Vertical">
+                                <Viewbox Width="48"
+                                         Height="48"
+                                         Stretch="Uniform">
+                                    <ContentControl Content="{StaticResource Uia2Icon}" />
+                                </Viewbox>
+                                <TextBlock TextAlignment="Center">
+                                    UIA2<LineBreak />
+                                    Uia2Icon</TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </DockPanel>
+                    <DockPanel LastChildFill="True">
+                        <RadioButton x:Name="Uia3RadioButton"
+                                     VerticalAlignment="Center"
+                                     DockPanel.Dock="Left"
+                                     GroupName="UiaVersion"
+                                     IsChecked="True" />
+                        <Button Padding="10"
+                                Click="Uia3Click"
+                                IsEnabled="{Binding ElementName=ProcessesListBox, Path=SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">
+                            <StackPanel Orientation="Vertical">
+                                <Viewbox Width="48"
+                                         Height="48"
+                                         Stretch="Uniform">
+                                    <ContentControl Content="{StaticResource Uia3Icon}" />
+                                </Viewbox>
+                                <TextBlock TextAlignment="Center">
+                                    UIA3<LineBreak />
+                                    Uia3Icon</TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </DockPanel>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
+        <Grid Background="#cc000000"
+              Visibility="{Binding DialogContent, Converter={StaticResource NullToVisibilityConverter}}">
+            <Border Margin="96"
+                    Background="{DynamicResource PrimaryWindowBackgroundBrush}"
+                    CornerRadius="6">
+                <DockPanel LastChildFill="True">
+                    <Border Background="{DynamicResource SecondaryWindowBackgroundBrush}"
+                            CornerRadius="6 6 0 0"
+                            DockPanel.Dock="Top">
+                        <TextBlock Margin="8"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   Text="{Binding DialogContent.Title}" />
+                    </Border>
+                    <Grid DockPanel.Dock="Bottom">
+                        <Border Margin="8,0"
+                                BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                                BorderThickness="0,1,0,0">
+                            <StackPanel Margin="0,8"
+                                        HorizontalAlignment="Right"
+                                        Orientation="Horizontal">
+                                <Button Margin="4"
+                                        Command="{Binding CloseSettingCommand}"
+                                        Content="{Binding DialogContent.CloseButtonText}"
+                                        Visibility="{Binding DialogContent.IsCloseVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                <Button Margin="4"
+                                        Command="{Binding SaveSettingCommand}"
+                                        Content="{Binding DialogContent.SaveButtonText}"
+                                        Visibility="{Binding DialogContent.IsSaveVisible, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <ContentControl Content="{Binding DialogContent}" />
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

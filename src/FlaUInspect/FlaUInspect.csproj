@@ -16,7 +16,7 @@
         <AssemblyName>FlaUInspect</AssemblyName>
         <RootNamespace>FlaUInspect</RootNamespace>
         <Product>FlaUInspect</Product>
-        <Version>2.0.0</Version>
+        <Version>3.0.0</Version>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -24,22 +24,13 @@
         <AssemblyName>FlaUInspect</AssemblyName>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'UIA2' ">
-        <DefineConstants>TRACE;AUTOMATION_UIA2</DefineConstants>
-        <OutputPath>bin\UIA2\</OutputPath>
-        <AssemblyName>FlaUInspect.UIA2</AssemblyName>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'UIA3' ">
-        <DefineConstants>TRACE;AUTOMATION_UIA3</DefineConstants>
-        <OutputPath>bin\UIA3\</OutputPath>
-        <AssemblyName>FlaUInspect.UIA3</AssemblyName>
-    </PropertyGroup>
-
     <ItemGroup>
-        <PackageReference Include="FlaUI.Core" Version="5.0.0"/>
-        <PackageReference Include="FlaUI.UIA2" Version="5.0.0"/>
-        <PackageReference Include="FlaUI.UIA3" Version="5.0.0"/>
+        <PackageReference Include="FlaUI.Core" Version="5.0.0" />
+        <PackageReference Include="FlaUI.UIA2" Version="5.0.0" />
+        <PackageReference Include="FlaUI.UIA3" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -58,10 +49,80 @@
             <XamlRuntime>Wpf</XamlRuntime>
             <SubType>Designer</SubType>
         </Page>
-        <Page Update="Resources\ChooseVersionIcons.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <XamlRuntime>Wpf</XamlRuntime>
-            <SubType>Designer</SubType>
+        <Page Update="Controls\Comboboxes.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\Buttons.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\CheckBoxes.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\ListBoxes.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\ListViews.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\RadioButtons.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\ChooseVersionIcons.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\TextBlocks.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\TextBoxes.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\ToggleButtons.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\PatternExpanderStyle.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\ImageStyles.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\GroupStyle.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Controls\ElementToggleExpander.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Themes\Generic.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <XamlRuntime>Wpf</XamlRuntime>
+          <SubType>Designer</SubType>
         </Page>
     </ItemGroup>
 
@@ -73,7 +134,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="LICENSE"/>
+        <None Remove="LICENSE" />
+        <None Remove="Resources\ListView.xaml~" />
     </ItemGroup>
 
 </Project>

@@ -7,19 +7,31 @@ using FlaUInspect.Core.Logger;
 
 namespace FlaUInspect.ViewModels;
 
-public class ElementViewModel(AutomationElement? automationElement, ILogger? logger) : ObservableObject {
+public class ElementViewModel : ObservableObject {
+    private readonly string _guidId;
+
     private readonly object _lockObject = new ();
-    public AutomationElement? AutomationElement { get; } = automationElement;
+    private readonly ILogger? _logger;
+
+    public ElementViewModel(AutomationElement? automationElement, ElementViewModel? parent, int level, ILogger? logger) {
+        Level = level;
+        _logger = logger;
+        AutomationElement = automationElement;
+        Parent = parent;
+
+        _guidId = Guid.NewGuid().ToString() + (AutomationElement?.Properties.Name.ValueOrDefault ?? string.Empty).NormalizeString();
+        Name = (AutomationElement?.Properties.Name.ValueOrDefault ?? string.Empty).NormalizeString();
+        AutomationId = (AutomationElement?.Properties.AutomationId.ValueOrDefault ?? string.Empty).NormalizeString();
+        ControlType = AutomationElement != null && AutomationElement.Properties.ControlType.TryGetValue(out ControlType value) ? value : ControlType.Unknown;
+
+    }
+
+    public AutomationElement? AutomationElement { get; }
+    public ElementViewModel? Parent { get; }
 
     public bool IsExpanded {
         get => GetProperty<bool>();
-        set {
-            SetProperty(value);
-
-            if (value && (Children.Count == 0 || Children[0] == null)) {
-                LoadChildren(0);
-            }
-        }
+        set => SetProperty(value);
     }
 
     public bool IsSelected {
@@ -27,50 +39,36 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger? log
         set => SetProperty(value);
     }
 
-    public string Name => (AutomationElement?.Properties.Name.ValueOrDefault ?? string.Empty).NormalizeString();
+    public int Level { get; }
 
-    public string AutomationId => (AutomationElement?.Properties.AutomationId.ValueOrDefault ?? string.Empty).NormalizeString();
+    public string Name { get; }
 
-    public ControlType ControlType => AutomationElement != null && AutomationElement.Properties.ControlType.TryGetValue(out ControlType value) ? value : ControlType.Custom;
+    public string AutomationId { get; }
 
-    public ExtendedObservableCollection<ElementViewModel?> Children { get; set; } = [];
-
-
+    public ControlType ControlType { get; }
     public string XPath => AutomationElement == null ? string.Empty : Debug.GetXPathToElement(AutomationElement);
-    public event Action<ElementViewModel>? SelectionChanged;
 
-    public void LoadChildren(int level) {
-        lock (_lockObject) {
-            if (Children is { Count: > 0 } && Children[0] == null) {
-                Children.Clear();
-            }
+    public override string ToString() {
+        return $"{Name} [{ControlType}] : {AutomationId}";
+    }
 
-            foreach (ElementViewModel? child in Children) {
-                child!.SelectionChanged -= SelectionChanged;
-            }
+    public List<ElementViewModel> LoadChildren() {
+        {
 
-            List<ElementViewModel?> childrenViewModels = [];
 
             try {
                 if (AutomationElement != null) {
-                    foreach (AutomationElement child in AutomationElement.FindAllChildren()) {
-                        ElementViewModel childViewModel = new (child, logger);
-                        childViewModel.Children.Add(null);
+                    using (CacheRequest.ForceNoCache()) {
+                        AutomationElement[] elements = AutomationElement.FindAllChildren();
 
-                        childViewModel.SelectionChanged += SelectionChanged;
-                        childrenViewModels.Add(childViewModel);
-
-                        if (level > 0) {
-                            childViewModel.LoadChildren(level - 1);
-
-                        }
+                        return elements.Select(element => new ElementViewModel(element, this, Level + 1, _logger)).ToList();
                     }
                 }
             } catch (Exception ex) {
-                logger?.LogError($"Exception: {ex.Message}");
+                _logger?.LogError($"Exception: {ex.Message}");
             }
 
-            Children.Reset(childrenViewModels);
+            return [];
         }
     }
 }

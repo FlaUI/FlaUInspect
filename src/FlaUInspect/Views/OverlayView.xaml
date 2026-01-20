@@ -1,0 +1,36 @@
+<UserControl x:Class="FlaUInspect.Views.OverlayView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:settings="clr-namespace:FlaUInspect.Settings"
+             xmlns:views="clr-namespace:FlaUInspect.Views"
+             MaxWidth="200"
+             MaxHeight="400"
+             d:DataContext="{d:DesignInstance settings:OverlaySettings}"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
+             mc:Ignorable="d"
+             Background="{DynamicResource PrimaryWindowBackgroundBrush}">
+    <DockPanel LastChildFill="True">
+        <HeaderedContentControl DockPanel.Dock="Top"
+                                Header="Size">
+            <TextBox Text="{Binding Size}" />
+        </HeaderedContentControl>
+        <HeaderedContentControl DockPanel.Dock="Top"
+                                Header="Margin">
+            <TextBox Text="{Binding Margin}" />
+        </HeaderedContentControl>
+        <HeaderedContentControl DockPanel.Dock="Top"
+                                Header="Mode">
+            <ComboBox ItemsSource="{Binding Path=DataContext.OverlayModes, RelativeSource={RelativeSource AncestorType=views:SettingsWindow}}"
+                      SelectedItem="{Binding OverlayMode}" />
+        </HeaderedContentControl>
+        <HeaderedContentControl DockPanel.Dock="Bottom"
+                                Header="Overlay Color"
+                                Style="{StaticResource ScrollableHeaderedControl}">
+            <!-- <controls:ColorPicker SelectedColor="{Binding OverlayColor}"/> -->
+            <TextBox Text="{Binding OverlayColor}" />
+        </HeaderedContentControl>
+    </DockPanel>
+</UserControl>

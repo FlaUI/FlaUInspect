@@ -201,6 +201,7 @@
     <!--  This style is used for displaying images in the details view based on the PatternName property.  -->
     <Style x:Key="DetailsResourceStyle"
            TargetType="{x:Type ContentControl}">
+        <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding PatternName}"
                          Value="Identification">

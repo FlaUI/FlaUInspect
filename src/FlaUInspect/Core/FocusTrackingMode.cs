@@ -5,11 +5,9 @@ using Application = System.Windows.Application;
 
 namespace FlaUInspect.Core;
 
-public class FocusTrackingMode(AutomationBase? automation) {
+public class FocusTrackingMode(AutomationBase? automation, Action<AutomationElement> onFocusChangedAction) {
     private AutomationElement? _currentFocusedElement;
     private FocusChangedEventHandlerBase? _eventHandler;
-
-    public event Action<AutomationElement?>? ElementFocused;
 
     public void Start() {
         // Might give problems because inspect is registered as well.
@@ -32,9 +30,12 @@ public class FocusTrackingMode(AutomationBase? automation) {
 
         if (!Equals(_currentFocusedElement, automationElement)) {
             _currentFocusedElement = automationElement;
-            Application.Current.Dispatcher.Invoke(() => {
-                ElementFocused?.Invoke(automationElement);
-            });
+
+            if (automationElement != null) {
+                Application.Current.Dispatcher.Invoke(() => {
+                    onFocusChangedAction(automationElement);
+                });
+            }
         }
     }
 }

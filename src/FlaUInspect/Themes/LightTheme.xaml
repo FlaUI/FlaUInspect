@@ -1,0 +1,45 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="PrimaryColor">LightGray</Color>
+    <Color x:Key="PrimaryHoverColor">#c0c0c0</Color> 
+    <Color x:Key="PrimaryPressedColor">#a9a9a9</Color>
+    <Color x:Key="PrimaryDisabledColor">#a9a9a9</Color>
+    
+    <Color x:Key="PrimaryBorderColor">#FF000000</Color>
+    
+    <Color x:Key="PrimaryWindowBackgroundColor">#dddddd</Color>
+    <Color x:Key="SecondaryWindowBackgroundColor">#bebebe</Color>
+
+    <Color x:Key="SecondaryColor">#F0F0F0</Color>
+    <Color x:Key="AccentColor">#007ACC</Color>
+    
+    <Color x:Key="TextColor">#000000</Color>
+    <Color x:Key="DisabledTextColor">#a9a9a9</Color>
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource PrimaryColor}" />
+    <SolidColorBrush x:Key="PrimaryHoverBrush" Color="{DynamicResource PrimaryHoverColor}" />
+    <SolidColorBrush x:Key="PrimaryPressedBrush" Color="{DynamicResource PrimaryPressedColor}" />
+    <SolidColorBrush x:Key="PrimaryDisabledBrush" Color="{DynamicResource PrimaryDisabledColor}" />
+
+    <SolidColorBrush x:Key="PrimaryBorderBrush" Color="{DynamicResource PrimaryBorderColor}" />
+    <SolidColorBrush x:Key="PrimaryWindowBackgroundBrush" Color="{DynamicResource PrimaryWindowBackgroundColor}" />
+    <SolidColorBrush x:Key="SecondaryWindowBackgroundBrush" Color="{DynamicResource SecondaryWindowBackgroundColor}" />
+    
+    
+    
+    <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}" />
+    <SolidColorBrush x:Key="TextBrush" Color="{DynamicResource TextColor}" />
+    
+    <SolidColorBrush x:Key="DisabledTextBrush" Color="{DynamicResource TextColor}" />
+    
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{DynamicResource SecondaryColor}" />
+    
+
+    <Thickness x:Key="PrimaryThickness">1,1,1,1</Thickness>
+    <CornerRadius x:Key="PrimaryCornerRadius">2</CornerRadius>
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Themes/Generic.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
