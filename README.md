@@ -57,7 +57,7 @@ This is a major update with a lot of changes:
 * New UI
 * New features
 * Much more stable
-* Based on .NET 8
+* Based on .NET 10
 * Three separate versions for UIA2 and UIA3 and default with choosing on startup
 
 ### Installation
