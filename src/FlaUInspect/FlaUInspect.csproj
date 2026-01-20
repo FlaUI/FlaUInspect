@@ -138,8 +138,4 @@
         <None Remove="Resources\ListView.xaml~" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Styles\" />
-    </ItemGroup>
-
 </Project>

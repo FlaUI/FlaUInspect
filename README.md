@@ -2,9 +2,54 @@
 
 ![FlaUInspect](/FlaUInspect.png?raw=true)
 
-### New 2.0.0
+## NEW 3.0.0
 
-New has been [released](https://github.com/FlaUI/FlaUInspect/releases/tag/v2.0.0)!
+New version released! Download it [here](https://github.com/FlaUI/FlaUInspect/releases/tag/v3.0.0)
+
+This is a major update with a lot of changes:
+- using separated window for process
+- new UI
+- Dark and Light theme support
+- implement settings
+- new icons
+- new application selection bounding 
+- redesigned:
+  - property grid
+  - control tree
+  - menu buttons
+  - mouse hover control selection
+- improved performance
+- fixed and redesigned 3-state highlight of selected control
+
+#### Screenshot of new UI:
+
+Main window and selection application highlights.
+
+<img width="600" alt="Image" src="https://github.com/user-attachments/assets/f0a23f20-f994-4a17-b83b-3da6c96e337f" />
+
+Main window display application and allow user to select it from list or press and hold Find window button and drag mouse over applications. The FlaUinspect will highlight the application under mouse cursor and select id in the list.
+
+Hover mode
+
+<img width="600" alt="Image" src="https://github.com/user-attachments/assets/53fbcd61-cd93-4f09-9962-13be900f4c95" />
+
+Select Hover mode button and hold Ctrl key and move mouse over application windows. The FlaUInspect will highlight the control under mouse cursor and select it in the tree.
+
+Highlight selection
+
+<img width="600" alt="Image" src="https://github.com/user-attachments/assets/7e5c8767-e75f-449b-adb5-cbd55522f405" />
+
+Select Selection Mode button and click on any control in the application. The FlaUInspect will highlight the selected control in the application.
+
+Highlight selectin and Dark theme
+
+<img width="600" alt="Image" src="https://github.com/user-attachments/assets/f0a23f20-f994-4a17-b83b-3da6c96e337f" />
+
+FlaUinspect supports Light and Dark theme currently.
+
+### 2.0.0
+
+Download it [here](https://github.com/FlaUI/FlaUInspect/releases/tag/v2.0.0)
 
 This is a major update with a lot of changes:
 
