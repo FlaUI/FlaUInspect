@@ -1,6 +1,6 @@
 # FlaUInspect
 
-![FlaUInspect](/FlaUInspect.png?raw=true)
+![FlaUInspect](src/FlaUInspect/FlaUInspect.png)
 
 ## NEW 3.0.0
 
