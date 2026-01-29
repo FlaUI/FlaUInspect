@@ -1,20 +1,17 @@
+﻿using FlaUInspect.Core;
 using System.Collections.ObjectModel;
 
 namespace FlaUInspect.ViewModels;
 
-public static class ExportConfiguration
-{
-    public static ObservableCollection<ExportOptionItem> Options { get; } = new()
-    {
-        new ExportOptionItem { Header = "ControlType", IsChecked = true },
-        new ExportOptionItem { Header = "ClassName", IsChecked = true },
-        new ExportOptionItem { Header = "Name", IsChecked = true },
-        new ExportOptionItem { Header = "AutomationId", IsChecked = true },
-        new ExportOptionItem { Header = "HelpText", IsChecked = false },
-        new ExportOptionItem { Header = "BoundingRectangle", IsChecked = false },
-        new ExportOptionItem { Header = "ProcessId", IsChecked = false },
-        new ExportOptionItem { Header = "IsEnabled", IsChecked = false },
-        new ExportOptionItem { Header = "IsOffscreen", IsChecked = false },
-        new ExportOptionItem { Header = "SupportedPatterns", IsChecked = false }
-    };
+public static class ExportConfiguration {
+    public static ObservableCollection<ExportOptionItem> Options { get; } = GetOptions();
+
+    private static ObservableCollection<ExportOptionItem> GetOptions() {
+        var ret = new ObservableCollection<ExportOptionItem>();
+        foreach (var itm in Enum.GetValues<JsonExporter.ExportOptions>()) {
+            ret.Add(new ExportOptionItem { Header = itm.ToString(), IsChecked = JsonExporter.DefaultOptions.Contains(itm) });
+        }
+        return ret;
+    }
+
 }

@@ -117,9 +117,9 @@ public class ElementViewModel(AutomationElement? automationElement, ILogger? log
             if (AutomationElement == null) return;
             var saveFileDialog = new SaveFileDialog { Filter = "JSON files (*.json)|*.json" };
             if (saveFileDialog.ShowDialog() == true) {
-                var options = ExportOptions.Where(x => x.IsChecked).Select(x => x.Header).ToHashSet();
+                var options = ExportOptions.Where(x => x.IsChecked).Select(x => x.Header).ToHashSet(StringComparer.OrdinalIgnoreCase);
                 var rootNode = JsonExporter.CollectNodeData(AutomationElement, options);
-                var json = JsonSerializer.Serialize(rootNode, new JsonSerializerOptions { WriteIndented = true });
+                var json = FlaUInspect.Core.JsonExporter.SerializeNodeInfo(rootNode);
                 File.WriteAllText(saveFileDialog.FileName, json);
             }
         });
