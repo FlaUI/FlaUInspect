@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Identifiers;
@@ -102,6 +102,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
             yield break;
         }
         ITogglePattern pattern = element.Patterns.Toggle.Pattern;
+        yield return new PatternItem("IsToggled", pattern.ToggleState.IsSupported ? pattern.ToggleState.ToString() : "Not Supported");
         yield return new PatternItem("ToggleState", "Toggle", pattern.Toggle);
     }
     private static IEnumerable<PatternItem> AddVirtualizedPatternDetails(AutomationElement? element) {
