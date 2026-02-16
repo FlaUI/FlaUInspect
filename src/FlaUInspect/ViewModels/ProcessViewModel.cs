@@ -375,7 +375,7 @@ public class ProcessViewModel : ObservableObject {
                 }
 
                 foreach (PatternItem patternItem in elementPattern.Children.Where(x => x.HasExecutableAction)) {
-                    Dispatcher.CurrentDispatcher.Invoke(() => PatternActionItems.Add(new PatternActionItem(patternItem.Key, true, () => patternItem.Action?.Invoke())));
+                    PatternActionItems.Add(new PatternActionItem(patternItem.Key, true, () => patternItem.Action?.Invoke()));
                 }
             }
 
