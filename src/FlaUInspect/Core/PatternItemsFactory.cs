@@ -41,7 +41,8 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         new (TogglePattern.Pattern, AddTogglePatternDetails),
         new (ValuePattern.Pattern, AddValuePatternDetails),
         new (WindowPattern.Pattern, AddWindowPatternDetails),
-        new (InvokePattern.Pattern, AddInvokePatternDetails)
+        new (InvokePattern.Pattern, AddInvokePatternDetails),
+        new (VirtualizedItemPattern.Pattern, AddVirtualizedPatternDetails)
     ];
 
     private readonly KeyValuePair<PatternId, Func<AutomationElement, IEnumerable<PatternItem>>>[] _patternsUia3Func = [
@@ -58,7 +59,8 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         new (FlaUI.UIA3.Patterns.TogglePattern.Pattern, AddTogglePatternDetails),
         new (FlaUI.UIA3.Patterns.ValuePattern.Pattern, AddValuePatternDetails),
         new (FlaUI.UIA3.Patterns.WindowPattern.Pattern, AddWindowPatternDetails),
-        new (InvokePattern.Pattern, AddInvokePatternDetails)
+        new (InvokePattern.Pattern, AddInvokePatternDetails),
+        new (FlaUI.UIA3.Patterns.VirtualizedItemPattern.Pattern, AddVirtualizedPatternDetails)
     ];
 
     public IDictionary<string, PatternItem[]> CreatePatternItemsForElement(AutomationElement element, HashSet<PatternId> allSupportedPatterns) {
@@ -101,7 +103,8 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
             yield break;
         }
         ITogglePattern pattern = element.Patterns.Toggle.Pattern;
-        yield return PatternItem.FromAutomationProperty("ToggleState", pattern.ToggleState);
+        yield return new PatternItem("IsToggled", pattern.ToggleState.IsSupported ? pattern.ToggleState.ToString() : "Not Supported");
+        yield return PatternItem.FromAutomationProperty("ToggleState", pattern.ToggleState, pattern.Toggle);
     }
 
     private static IEnumerable<PatternItem> AddTextPatternDetails(AutomationElement? element) {
@@ -164,6 +167,9 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
         ISelectionItemPattern pattern = element.Patterns.SelectionItem.Pattern;
         yield return PatternItem.FromAutomationProperty("IsSelected", pattern.IsSelected);
         yield return PatternItem.FromAutomationProperty("SelectionContainer", pattern.SelectionContainer);
+        yield return new PatternItem("AddToSelection", "AddToSelection", pattern.AddToSelection);
+        yield return new PatternItem("RemoveFromSelection", "RemoveFromSelection", pattern.RemoveFromSelection);
+        yield return new PatternItem("Select", "Select", pattern.Select);
     }
 
     private static IEnumerable<PatternItem> AddScrollPatternDetails(AutomationElement? element) {
@@ -291,6 +297,14 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
 
         IInvokePattern pattern = element.Patterns.Invoke.Pattern;
         yield return new PatternItem("Invoke", "Invoke", pattern.Invoke);
+    }
+    
+    private static IEnumerable<PatternItem> AddVirtualizedPatternDetails(AutomationElement? element) {
+        if (element == null) {
+            yield break;
+        }
+        IVirtualizedItemPattern pattern = element.Patterns.VirtualizedItem.Pattern;
+        yield return new PatternItem("Virtualized", "Realize", pattern.Realize);
     }
 
     private static string GetTextAttribute<T>(AutomationElement element, ITextPattern pattern,

@@ -7,6 +7,8 @@
         xmlns:models="clr-namespace:FlaUInspect.Models"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         xmlns:viewModels="clr-namespace:FlaUInspect.ViewModels"
+        xmlns:views="clr-namespace:FlaUInspect.Views"
+        x:Name="ProcessWindowElement"
         Title="{Binding WindowTitle}"
         Width="800"
         Height="450"
@@ -228,6 +230,73 @@
                 </Viewbox>
             </ToggleButton>
         </StackPanel>
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style x:Key="CommandButtonStyle"
+                       TargetType="Button">
+                    <Setter Property="Height" Value="32" />
+                    <Setter Property="Width" Value="32" />
+                    <Setter Property="Margin" Value="4" />
+                    <Setter Property="Padding" Value="0" />
+                </Style>
+            </StackPanel.Resources>
+            <Grid Background="LightBlue">
+                <HeaderedContentControl VerticalAlignment="Center"
+                                        HorizontalContentAlignment="Left"
+                                        Header="Mouse Actions">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Left Click"
+                                Style="{StaticResource CommandButtonStyle}" 
+                                Command="{Binding LeftClickCommand}"/>
+                        <Button Content="Right Click"
+                                Style="{StaticResource CommandButtonStyle}" 
+                                Command="{Binding RightClickCommand}"/>
+                        <Button Content="Double Click"
+                                Style="{StaticResource CommandButtonStyle}" 
+                                Command="{Binding DoubleClickCommand}"/>
+                    </StackPanel>
+                </HeaderedContentControl>
+            </Grid>
+            
+            <HeaderedContentControl Header="Pattern Actions"
+                                    VerticalAlignment="Center"
+                                    HorizontalContentAlignment="Left"
+                                    Margin="16,0,0,0">
+
+                <ItemsControl ItemsSource="{Binding PatternActionItems}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding Path=DataContext.PatternActionItemCommand, RelativeSource={RelativeSource AncestorType=views:ProcessWindow}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource CommandButtonStyle}" 
+                                    Content="{Binding Title}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <!--<ItemsControl ItemsSource="{Binding PatternActionItems}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding Path=DataContext.PatternActionItemCommand, RelativeSource={RelativeSource AncestorType=views:ProcessWindow}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource CommandButtonStyle}" 
+                                    Content="{Binding Title}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>-->
+            </HeaderedContentControl>
+        </StackPanel>
         <Grid>
             <Grid.Resources />
             <Grid.ColumnDefinitions>
@@ -263,6 +332,7 @@
                                 <StackPanel Margin="{Binding Level, Converter={StaticResource IndentConverter}, Mode=OneWay}"
                                             Orientation="Horizontal">
 
+
                                     <ToggleButton Width="16"
                                                   Height="16"
                                                   Click="ToggleButton_Click"
@@ -271,9 +341,7 @@
                                                   Style="{StaticResource ElementToggleExpanderStyle}"
                                                   Visibility="{Binding Children.Count, Converter={StaticResource CountToVisibilityConverter}}" />
 
-
-                                    <TextBlock Margin="4,0,0,0"
-                                               ToolTip="{Binding}">
+                                    <TextBlock Margin="4,0,0,0">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">
                                                 <Binding Path="ControlType" />
@@ -282,6 +350,8 @@
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
+
+                                    
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>

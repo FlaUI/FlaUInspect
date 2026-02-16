@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Identifiers;
@@ -105,6 +106,26 @@ public class ProcessViewModel : ObservableObject {
                 _logger?.LogError(e.ToString());
             }
         });
+
+        PatternActionItemCommand = new RelayCommand(item => {
+            if (item is PatternActionItem patternItem) {
+                patternItem.Action?.Invoke();
+            }
+        });
+
+        LeftClickCommand = new RelayCommand(async void (_) => {
+                                                await Task.Run(() => SelectedItem?.AutomationElement?.Click());
+                                            },
+                                            _ => SelectedItem?.AutomationElement != null);
+        
+        RightClickCommand = new RelayCommand(async void (_) => {
+                                                 await Task.Run(() => SelectedItem?.AutomationElement?.RightClick());
+                                             },
+                                             _ => SelectedItem?.AutomationElement != null);
+        DoubleClickCommand = new RelayCommand(async void (_) => {
+                                                  await Task.Run(() => SelectedItem?.AutomationElement?.DoubleClick());
+                                              },
+                                              _ => SelectedItem?.AutomationElement != null);
     }
 
     public string? WindowTitle { get; }
@@ -130,11 +151,18 @@ public class ProcessViewModel : ObservableObject {
         get => GetProperty<ElementViewModel>();
         set {
             if (SetProperty(value)) {
+                OnPropertyChanged(nameof(LeftClickCommand));
+                OnPropertyChanged(nameof(RightClickCommand));
+                OnPropertyChanged(nameof(DoubleClickCommand));
+                
                 if (value != null) {
                     if (EnableHighLightSelectionMode) {
                         TrackSelectedItem(value);
                     }
-                    Task.Run(() => ReadPatternsForSelectedItem(value.AutomationElement));
+                    Task.Run(() => { 
+                        ReadPatternsForSelectedItem(value.AutomationElement);
+                        OnPropertyChanged(nameof(PatternActionItems));
+                    });
                 }
             }
         }
@@ -329,6 +357,8 @@ public class ProcessViewModel : ObservableObject {
             HashSet<PatternId> supportedPatterns = [.. selectedItemAutomationElement.GetSupportedPatterns()];
             IDictionary<string, PatternItem[]> patternItemsForElement = _patternItemsFactory.CreatePatternItemsForElement(selectedItemAutomationElement, supportedPatterns);
 
+            PatternActionItems = new ObservableCollection<PatternActionItem>();
+
             foreach (ElementPatternItem elementPattern in ElementPatterns) {
                 elementPattern.IsVisible = elementPattern.PatternIdName == PatternItemsFactory.Identification
                                            || elementPattern.PatternIdName == PatternItemsFactory.Details
@@ -343,11 +373,23 @@ public class ProcessViewModel : ObservableObject {
                 if (!elementPattern.Children.Any()) {
                     elementPattern.IsVisible = false;
                 }
+
+                foreach (PatternItem patternItem in elementPattern.Children.Where(x => x.HasExecutableAction)) {
+                    Dispatcher.CurrentDispatcher.Invoke(() => PatternActionItems.Add(new PatternActionItem(patternItem.Key, true, () => patternItem.Action?.Invoke())));
+                }
             }
+
+
         } catch (Exception e) {
             _logger?.LogError(e.ToString());
         }
     }
+
+    public ObservableCollection<PatternActionItem> PatternActionItems { get; private set; } = [];
+    public ICommand PatternActionItemCommand { get; }
+    public ICommand LeftClickCommand { get; }
+    public ICommand RightClickCommand { get; }
+    public ICommand DoubleClickCommand { get; }
 
     public void ExpandElement(ElementViewModel sender) {
         List<ElementViewModel> children = sender.LoadChildren();

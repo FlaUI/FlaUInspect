@@ -22,4 +22,7 @@ public class PatternItem(string key, string? value, Action? action = null) : Obs
     public static PatternItem FromAutomationProperty<T>(string key, IAutomationProperty<T> value) {
         return new PatternItem(key, value!.ToDisplayText());
     }
+    public static PatternItem FromAutomationProperty<T>(string key, IAutomationProperty<T> value, Action action) {
+        return new PatternItem(key, value!.ToDisplayText(), action);
+    }
 }
