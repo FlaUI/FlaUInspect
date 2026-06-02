@@ -5,31 +5,21 @@ using System.Windows.Data;
 namespace FlaUInspect.Core.Converters;
 
 public class StringToThicknessConverter : IValueConverter {
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
-        if (value is string str && !string.IsNullOrWhiteSpace(str)) {
-            string[] parts = str.Split(new char[] { ',', ' ' });
+	public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) => value is string str
+		&& !string.IsNullOrWhiteSpace(str)
+		&& str.Split([',', ' ']) is string[] parts
+			? parts.Length == 4
+			&& double.TryParse(parts[0], out var left)
+			&& double.TryParse(parts[1], out var top)
+			&& double.TryParse(parts[2], out var right)
+			&& double.TryParse(parts[3], out var bottom)
+				? new Thickness(left, top, right, bottom)
+				: parts.Length == 2
+				&& double.TryParse(parts[0], out var leftRigth)
+				&& double.TryParse(parts[1], out var topBottom)
+					? new Thickness(leftRigth, topBottom, leftRigth, topBottom)
+					: new Thickness(0)
+			: new Thickness(0);
 
-            if (parts.Length == 4 &&
-                double.TryParse(parts[0], out double left) &&
-                double.TryParse(parts[1], out double top) &&
-                double.TryParse(parts[2], out double right) &&
-                double.TryParse(parts[3], out double bottom)) {
-                return new Thickness(left, top, right, bottom);
-            }
-
-            if (parts.Length == 2 &&
-                double.TryParse(parts[0], out double leftRigth) &&
-                double.TryParse(parts[1], out double topBottom)) {
-                return new Thickness(leftRigth, topBottom, leftRigth, topBottom);
-            }
-        }
-        return new Thickness(0);
-    }
-
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
-        if (value is Thickness thickness) {
-            return $"{thickness.Left},{thickness.Top},{thickness.Right},{thickness.Bottom}";
-        }
-        return string.Empty;
-    }
+	public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => value is Thickness thickness ? $"{thickness.Left},{thickness.Top},{thickness.Right},{thickness.Bottom}" : string.Empty;
 }

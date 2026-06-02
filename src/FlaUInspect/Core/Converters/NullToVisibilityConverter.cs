@@ -5,11 +5,7 @@ using System.Windows.Data;
 namespace FlaUInspect.Core.Converters;
 
 public class NullToVisibilityConverter : IValueConverter {
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
-        return value == null ? Visibility.Collapsed : Visibility.Visible;
-    }
+	public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) => value == null ? Visibility.Collapsed : Visibility.Visible;
 
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
-        throw new NotSupportedException();
-    }
+	public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotSupportedException();
 }

@@ -5,17 +5,11 @@ using System.Windows.Data;
 namespace FlaUInspect.Core.Converters;
 
 public class IsStringNullOrEmptyToVisibleConverter : IValueConverter {
-    public bool IsInverted { get; set; }
+	public bool IsInverted { get; set; }
 
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
-        var str = value as string;
-        bool condition = string.IsNullOrEmpty(str);
-        condition = IsInverted ? !condition : condition;
+	public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) => !string.IsNullOrEmpty(value as string) | IsInverted // If string is not null or empty, (bitwise)or if inverted
+		? Visibility.Visible
+		: Visibility.Collapsed;
 
-        return condition ? Visibility.Collapsed : Visibility.Visible;
-    }
-
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
-        throw new NotSupportedException();
-    }
+	public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) => throw new NotSupportedException();
 }

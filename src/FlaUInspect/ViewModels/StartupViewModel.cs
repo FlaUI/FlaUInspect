@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -16,305 +16,287 @@ using Application = System.Windows.Application;
 
 namespace FlaUInspect.ViewModels;
 
-public class StartupViewModel : ObservableObject {
-    private const int WhMouseLl = 14;
-    private const uint GaRoot = 2;
+public partial class StartupViewModel : ObservableObject, IDisposable {
+	private const int WhMouseLl = 14;
+	private const uint GaRoot = 2;
 
-    private static IntPtr _mouseHook = IntPtr.Zero;
-    private static LowLevelMouseProc? _mouseProc;
+	private static IntPtr _mouseHook = 0;
+	private static LowLevelMouseProc? _mouseProc;
 
-    private readonly AutomationBase _defaultAutomation = new UIA3Automation();
+	private readonly AutomationBase _defaultAutomation = new UIA3Automation();
+	private ElementOverlay? _topWindowOverlay;
+	private AutomationElement? _topWindowUnderCursor;
+	private bool _disposedValue;
 
-    private ICollectionView _filteredProcesses;
+	public StartupViewModel() {
+		IsWindowedOnly = true;
+		RefreshCommand = new AsyncRelayCommand(_ => Init());
 
-    private ObservableCollection<ProcessWindowInfo> _processes = [];
-    private ElementOverlay? _topWindowOverlay;
-    private AutomationElement? _topWindowUnderCursor;
+		PickCommand = new AsyncRelayCommand(async _ => {
+			using CancellationTokenSource cts = new(TimeSpan.FromSeconds(30));
+			var hwnd = await PickWindowAsync(cts.Token);
+			SelectedProcess = Processes.FirstOrDefault(x => x.MainWindowHandle == hwnd);
+		});
 
-    public StartupViewModel() {
-        IsWindowedOnly = true;
-        RefreshCommand = new AsyncRelayCommand(async () => {
-            await Init();
-        });
+		SettingCommand = new RelayCommand(_ => {
+			var settingsService = App.Services.GetService<ISettingsService<FlaUiAppSettings>>();
+			if (settingsService is null)
+				return;
+			var flaUiAppSettings = settingsService.Load();
+			Editable<FlaUiAppSettings> settings = new(flaUiAppSettings,
+													   s => (FlaUiAppSettings)s.Clone(),
+													   (from, to) => from.CopyTo(to),
+													   (a, b) => a.Equals(b));
 
-        PickCommand = new AsyncRelayCommand(async () => {
-            using CancellationTokenSource cts = new (TimeSpan.FromSeconds(30));
-            IntPtr hwnd = await PickWindowAsync(cts.Token);
-            SelectedProcess = Processes.FirstOrDefault(x => x.MainWindowHandle == hwnd);
-        });
+			DialogContent = new SettingsViewModel();
+		});
 
-        SettingCommand = new RelayCommand(_ => {
-            ISettingsService<FlaUiAppSettings>? settingsService = App.Services.GetService<ISettingsService<FlaUiAppSettings>>();
-            FlaUiAppSettings flaUiAppSettings = settingsService.Load();
-            Editable<FlaUiAppSettings> settings = new (flaUiAppSettings,
-                                                       s => s.Clone() as FlaUiAppSettings,
-                                                       (from, to) => from.CopyTo(to),
-                                                       (a, b) => a.Equals(b));
+		CloseSettingCommand = new RelayCommand(_ => {
+			((IDialogViewModel)DialogContent!).Close();
+			DialogContent = null;
+		},
+											   _ => DialogContent is IDialogViewModel { CanClose: true });
 
-            DialogContent = new SettingsViewModel();
-        });
+		SaveSettingCommand = new RelayCommand(_ => {
+			((IDialogViewModel)DialogContent!).Save();
 
-        CloseSettingCommand = new RelayCommand(_ => {
-                                                   if (DialogContent is IDialogViewModel { CanClose: true } closableViewModel) {
-                                                       closableViewModel.Close();
-                                                       DialogContent = null;
-                                                   }
-                                               },
-                                               _ => DialogContent is IDialogViewModel { CanClose: true });
+			var settingsViewModel = DialogContent as ISettingViewModel;
+			DialogContent = null;
 
-        SaveSettingCommand = new RelayCommand(_ => {
-                                                  if (DialogContent is IDialogViewModel { CanClose: true } closableViewModel) {
-                                                      ISettingViewModel? settingsViewModel = DialogContent as ISettingViewModel;
-                                                      closableViewModel.Save();
-                                                      DialogContent = null;
+			if (settingsViewModel != null)
+				App.ApplyAppOption(settingsViewModel.Settings.Current);
+		},
+											  _ => DialogContent is IDialogViewModel { CanClose: true });
+		AboutCommand = new RelayCommand(_ => DialogContent = new AboutViewModel());
 
-                                                      if (settingsViewModel != null) {
-                                                          App.ApplyAppOption(settingsViewModel.Settings.Current);
-                                                      }
-                                                  }
-                                              },
-                                              _ => DialogContent is IDialogViewModel { CanClose: true });
-        AboutCommand = new RelayCommand(_=> {
-            DialogContent = new AboutViewModel();
-        });
+		FilteredProcesses = CollectionViewSource.GetDefaultView(Processes);
+		FilteredProcesses.Filter = FilterProcesses;
 
-        _filteredProcesses = CollectionViewSource.GetDefaultView(_processes);
-        _filteredProcesses.Filter = FilterProcesses;
+		DialogContent = null;
+	}
 
-        DialogContent = null;
-    }
+	public object? DialogContent {
+		get => GetProperty<object?>();
+		set => SetProperty(value);
+	}
 
+	public ICollectionView FilteredProcesses { get; private set; }
 
-    public object? DialogContent {
-        get => GetProperty<object?>();
-        set => SetProperty(value);
-    }
+	public ICommand SettingCommand { get; private set; }
+	public ICommand RefreshCommand { get; private set; }
+	public ICommand PickCommand { get; }
 
-    public ICollectionView FilteredProcesses => _filteredProcesses;
+	public ICommand CloseSettingCommand { get; }
+	public ICommand SaveSettingCommand { get; }
 
-    public ICommand SettingCommand { get; private set; }
-    public ICommand RefreshCommand { get; private set; }
-    public ICommand PickCommand { get; }
+	public ICommand AboutCommand { get; }
 
-    public ICommand CloseSettingCommand { get; }
-    public ICommand SaveSettingCommand { get; }
-    
-    public ICommand AboutCommand { get; }
+	public bool IsBusy {
+		get => GetProperty<bool>();
+		set => SetProperty(value);
+	}
 
+	public ProcessWindowInfo? SelectedProcess {
+		get => GetProperty<ProcessWindowInfo>();
+		set => SetProperty(value);
+	}
 
-    public bool IsBusy {
-        get => GetProperty<bool>();
-        set => SetProperty(value);
-    }
+	public ObservableCollection<ProcessWindowInfo> Processes {
+		get;
+		private set {
+			_ = SetProperty(ref field, value);
+			FilteredProcesses = CollectionViewSource.GetDefaultView(field);
+			FilteredProcesses.Filter = FilterProcesses;
+			OnPropertyChanged(nameof(FilteredProcesses));
+		}
+	} = [];
 
-    public ProcessWindowInfo? SelectedProcess {
-        get => GetProperty<ProcessWindowInfo>();
-        set => SetProperty(value);
-    }
+	public string? FilterProcess {
+		get => GetProperty<string?>();
+		set {
+			if (SetProperty(value))
+				FilteredProcesses?.Refresh();
+		}
+	}
 
-    public ObservableCollection<ProcessWindowInfo> Processes {
-        get => _processes;
-        private set {
-            SetProperty(ref _processes, value);
-            _filteredProcesses = CollectionViewSource.GetDefaultView(_processes);
-            _filteredProcesses.Filter = FilterProcesses;
-            OnPropertyChanged(nameof(FilteredProcesses));
-        }
-    }
+	public bool IsWindowedOnly {
+		get => GetProperty<bool>();
+		set {
+			if (SetProperty(value))
+				_ = Task.Run(Init);
+		}
+	}
 
-    public string? FilterProcess {
-        get => GetProperty<string?>();
-        set {
-            if (SetProperty(value)) {
-                _filteredProcesses?.Refresh();
-            }
-        }
-    }
+	private bool FilterProcesses(object obj) => obj is ProcessWindowInfo p && (
+			string.IsNullOrWhiteSpace(FilterProcess)
+			|| p.WindowTitle.Contains(FilterProcess, StringComparison.OrdinalIgnoreCase)
+			|| p.ProcessId.ToString(CultureInfo.InvariantCulture).Contains(FilterProcess, StringComparison.OrdinalIgnoreCase));
 
-    public bool IsWindowedOnly {
-        get => GetProperty<bool>();
-        set {
-            if (SetProperty(value)) {
-                Task.Run(async () => await Init());
-            }
-        }
-    }
+	private async Task<IntPtr> PickWindowAsync(CancellationToken ctsToken) {
+		var previousCursor = Mouse.OverrideCursor;
+		Mouse.OverrideCursor = Cursors.Cross;
 
-    private bool FilterProcesses(object obj) {
-        if (obj is not ProcessWindowInfo p) {
-            return false;
-        }
+		try {
+			return await WaitForMouseClickWindowAsync(ctsToken);
+		}
+		catch (OperationCanceledException) {
+			// canceled - ignore
+		}
+		finally {
+			_ = Application.Current.Dispatcher.Invoke(() => Mouse.OverrideCursor = previousCursor);
+		}
+		return 0;
+	}
 
-        if (string.IsNullOrWhiteSpace(FilterProcess)) {
-            return true;
-        }
+	private Task<IntPtr> WaitForMouseClickWindowAsync(CancellationToken ct) {
+		TaskCompletionSource<IntPtr> tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        return p.WindowTitle.Contains(FilterProcess, StringComparison.OrdinalIgnoreCase)
-               || p.ProcessId.ToString().Contains(FilterProcess, StringComparison.OrdinalIgnoreCase);
-    }
+		_mouseProc = (nCode, wParam, lParam) => {
+			const int WM_LBUTTONDOWN = 0x0201;
+			const int WM_LBUTTONUP = 0x0202;
 
-    private async Task<IntPtr> PickWindowAsync(CancellationToken ctsToken) {
-        Cursor? previousCursor = Mouse.OverrideCursor;
-        Mouse.OverrideCursor = Cursors.Cross;
+			if (nCode < 0 || (wParam != WM_LBUTTONUP && wParam != WM_LBUTTONDOWN && wParam != 0x0200) || !GetCursorPos(out var pt))
+				return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
 
-        try {
-            return await WaitForMouseClickWindowAsync(ctsToken);
-        } catch (OperationCanceledException) {
-            // canceled - ignore
-        } finally {
-            Application.Current.Dispatcher.Invoke(() => Mouse.OverrideCursor = previousCursor);
-        }
-        return IntPtr.Zero;
-    }
+			var hwnd = WindowFromPoint(pt);
+			var root = GetAncestor(hwnd, GaRoot);
 
-    private Task<IntPtr> WaitForMouseClickWindowAsync(CancellationToken ct) {
-        TaskCompletionSource<IntPtr> tcs = new (TaskCreationOptions.RunContinuationsAsynchronously);
+			// Highlight the window under the mouse, but skip if it is the current process
+			if (GetWindowThreadProcessId(root, out var windowProcessId) == (uint)Environment.ProcessId) {
+				_topWindowOverlay?.Dispose();
+				_topWindowUnderCursor = null;
+			}
+			else {
+				var topWindowUnderCursor = GetTopWindowUnderCursor();
 
-        _mouseProc = (nCode, wParam, lParam) => {
-            const int WM_LBUTTONDOWN = 0x0201;
-            const int WM_LBUTTONUP = 0x0202;
+				if (_topWindowUnderCursor == null || !_topWindowUnderCursor.Equals(topWindowUnderCursor)) {
+					_topWindowOverlay?.Dispose();
+					try {
+						var boundingRectangleValue = topWindowUnderCursor?.Properties.BoundingRectangle.Value ?? new();
+						_topWindowOverlay = App.FlaUiAppOptions.PickOverlay();
+						_topWindowOverlay?.Show(boundingRectangleValue);
+						_topWindowUnderCursor = topWindowUnderCursor;
 
-            if (nCode >= 0 && (wParam == (IntPtr)WM_LBUTTONUP || wParam == (IntPtr)WM_LBUTTONDOWN || wParam == (IntPtr)0x0200)) {
-                if (GetCursorPos(out POINT pt)) {
-                    IntPtr hwnd = WindowFromPoint(pt);
-                    IntPtr root = GetAncestor(hwnd, GaRoot);
+						if (topWindowUnderCursor != null)
+							SelectedProcess = Processes.FirstOrDefault(x => x.MainWindowHandle == topWindowUnderCursor.Properties.NativeWindowHandle);
+					}
+					catch {
+						// Ignore exceptions when getting bounding rectangle
+					}
+				}
+			}
 
-                    // Highlight the window under the mouse, but skip if it is the current process
-                    GetWindowThreadProcessId(root, out uint windowProcessId);
+			if (wParam == WM_LBUTTONUP) {
+				_topWindowOverlay?.Dispose();
+				_topWindowUnderCursor = null;
 
-                    if (windowProcessId != (uint)Process.GetCurrentProcess().Id) {
-                        AutomationElement? topWindowUnderCursor = GetTopWindowUnderCursor();
+				_ = windowProcessId != (uint)Environment.ProcessId ? tcs.TrySetResult(root) : tcs.TrySetResult(0);
+			}
+			return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
+		};
 
-                        if (_topWindowUnderCursor == null || !_topWindowUnderCursor.Equals(topWindowUnderCursor)) {
-                            _topWindowOverlay?.Dispose();
+		try {
+			_mouseHook = SetWindowsHookEx(WhMouseLl, _mouseProc, GetModuleHandle(Process.GetCurrentProcess().MainModule?.ModuleName ?? string.Empty), 0);
+		}
+		catch {
+			// If hook fails, set result zero
+			_ = tcs.TrySetResult(0);
+		}
 
-                            try {
-                                Rectangle boundingRectangleValue = topWindowUnderCursor.Properties.BoundingRectangle.Value;
-                                _topWindowOverlay = App.FlaUiAppOptions.PickOverlay();
-                                _topWindowOverlay?.Show(boundingRectangleValue);
-                                _topWindowUnderCursor = topWindowUnderCursor;
+		if (ct.CanBeCanceled) {
+			_ = ct.Register(() => {
+				_ = tcs.TrySetCanceled();
 
-                                SelectedProcess = Processes.FirstOrDefault(x => x.MainWindowHandle == topWindowUnderCursor.Properties.NativeWindowHandle);
-                            } catch {
-                                // Ignore exceptions when getting bounding rectangle
-                            }
-                        }
+				if (_mouseHook != 0) {
+					_ = UnhookWindowsHookEx(_mouseHook);
+					_mouseHook = 0;
+				}
+			});
+		}
 
-                    } else {
-                        _topWindowOverlay?.Dispose();
-                        _topWindowUnderCursor = null;
-                    }
+		return tcs.Task.ContinueWith(t => {
+			if (_mouseHook != 0) {
+				_ = UnhookWindowsHookEx(_mouseHook);
+				_mouseHook = 0;
+			}
+			return t.IsCompletedSuccessfully ? t.Result : 0;
+		},
+									 TaskScheduler.Default);
+	}
 
-                    if (wParam == (IntPtr)WM_LBUTTONUP) {
-                        _topWindowOverlay?.Dispose();
-                        _topWindowUnderCursor = null;
+	public AutomationElement? GetTopWindowUnderCursor() => GetCursorPos(out var pt)
+		&& WindowFromPoint(pt) is nint hwnd and not 0
+		&& GetAncestor(hwnd, GaRoot) is nint rootHwnd and not 0
+			? (_defaultAutomation?.FromHandle(rootHwnd))
+			: null;
 
-                        if (windowProcessId != (uint)Process.GetCurrentProcess().Id) {
-                            tcs.TrySetResult(root);
-                        } else {
-                            tcs.TrySetResult(IntPtr.Zero);
-                        }
-                    }
-                }
-            }
-            return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
-        };
+	public async Task Init() {
+		IsBusy = true;
+		await Task.Delay(100); // Simulate some loading time;
+		var currentProcessId = Environment.ProcessId;
+		IEnumerable<ProcessWindowInfo> collection = [.. GetChildren(_defaultAutomation.GetDesktop())
+													.Where(x => !string.IsNullOrEmpty(x.Name))
+													.Where(x => x.Properties.ProcessId != currentProcessId)
+													.Select(x => new ProcessWindowInfo(x.Properties.ProcessId.Value,
+																					   x.Name,
+																					   x.Properties.NativeWindowHandle.Value))];
+		Processes = new ObservableCollection<ProcessWindowInfo>(collection);
+		IsBusy = false;
+		return;
 
-        try {
-            IntPtr hMod = GetModuleHandle(Process.GetCurrentProcess().MainModule?.ModuleName ?? string.Empty);
-            _mouseHook = SetWindowsHookEx(WhMouseLl, _mouseProc!, hMod, 0);
-        } catch {
-            // If hook fails, set result zero
-            tcs.TrySetResult(IntPtr.Zero);
-        }
+		AutomationElement[] GetChildren(AutomationElement el) => IsWindowedOnly ? el.FindAllChildren(x => x.ByControlType(ControlType.Window)) : el.FindAllChildren();
+	}
 
-        if (ct.CanBeCanceled) {
-            ct.Register(() => {
-                tcs.TrySetCanceled();
+	[LibraryImport("user32.dll")]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	private static partial bool GetCursorPos(out POINT lpPoint);
 
-                if (_mouseHook != IntPtr.Zero) {
-                    UnhookWindowsHookEx(_mouseHook);
-                    _mouseHook = IntPtr.Zero;
-                }
-            });
-        }
+	[LibraryImport("user32.dll")]
+	private static partial IntPtr WindowFromPoint(POINT point);
 
-        return tcs.Task.ContinueWith(t => {
-                                         if (_mouseHook != IntPtr.Zero) {
-                                             UnhookWindowsHookEx(_mouseHook);
-                                             _mouseHook = IntPtr.Zero;
-                                         }
-                                         return t.IsCompletedSuccessfully ? t.Result : IntPtr.Zero;
-                                     },
-                                     TaskScheduler.Default);
-    }
+	[LibraryImport("user32.dll")]
+	private static partial IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
 
-    public AutomationElement? GetTopWindowUnderCursor() {
-        if (!GetCursorPos(out POINT pt))
-            return null;
+	[LibraryImport("user32.dll")]
+	private static partial uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
-        IntPtr hwnd = WindowFromPoint(pt);
-        if (hwnd == IntPtr.Zero)
-            return null;
+	[LibraryImport("user32.dll", SetLastError = true)]
+	private static partial IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
 
-        IntPtr rootHwnd = GetAncestor(hwnd, GaRoot);
-        if (rootHwnd == IntPtr.Zero)
-            return null;
+	[LibraryImport("user32.dll", SetLastError = true)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	private static partial bool UnhookWindowsHookEx(IntPtr hhk);
 
-        return _defaultAutomation?.FromHandle(rootHwnd);
-    }
+	[LibraryImport("user32.dll")]
+	private static partial IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
-    public async Task Init() {
-        IsBusy = true;
-        await Task.Delay(100); // Simulate some loading time;
-        int currentProcessId = Environment.ProcessId;
-        IEnumerable<ProcessWindowInfo> collection = GetChildren(_defaultAutomation.GetDesktop())
-                                                    .Where(x => !string.IsNullOrEmpty(x.Name))
-                                                    .Where(x => x.Properties.ProcessId != currentProcessId)
-                                                    .Select(x => new ProcessWindowInfo(x.Properties.ProcessId.Value,
-                                                                                       x.Name,
-                                                                                       x.Properties.NativeWindowHandle.Value))
-                                                    .ToList();
-        Processes = new ObservableCollection<ProcessWindowInfo>(collection);
-        IsBusy = false;
-        return;
+	[LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf16)]
+	private static partial IntPtr GetModuleHandle(string lpModuleName);
 
-        AutomationElement[] GetChildren(AutomationElement el) {
-            return IsWindowedOnly ? el.FindAllChildren(x => x.ByControlType(ControlType.Window)) : el.FindAllChildren();
-        }
-    }
+	private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-    [DllImport("user32.dll")]
-    private static extern bool GetCursorPos(out POINT lpPoint);
+	[StructLayout(LayoutKind.Sequential)]
+	private struct POINT {
+		public int x;
+		public int y;
+	}
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr WindowFromPoint(POINT point);
+	protected virtual void Dispose(bool disposing) {
+		if (_disposedValue)
+			return;
 
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
+		if (disposing) {
+			_defaultAutomation.Dispose();
+			_topWindowOverlay?.Dispose();
+			_topWindowOverlay = null;
+		}
+		_disposedValue = true;
+	}
 
-    [DllImport("user32.dll")]
-    private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-    [DllImport("user32.dll")]
-    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-    private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-    private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct POINT {
-        public int X;
-        public int Y;
-    }
+	public void Dispose() {
+		Dispose(disposing: true);
+		GC.SuppressFinalize(this);
+	}
 }
 
 public record ProcessWindowInfo(int ProcessId, string WindowTitle, IntPtr MainWindowHandle);

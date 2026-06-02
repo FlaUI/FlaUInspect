@@ -4,28 +4,28 @@ using System.Text.Json;
 namespace FlaUInspect.Settings;
 
 public sealed class JsonSettingsService<T> : ISettingsService<T> where T : class, new() {
-    private readonly string _filePath;
-    private readonly JsonSerializerOptions _options;
+	private readonly string _filePath;
+	private readonly JsonSerializerOptions _options;
 
-    public JsonSettingsService(string filePath) {
-        _filePath = filePath;
+	public JsonSettingsService(string filePath) {
+		_filePath = filePath;
 
-        _options = new JsonSerializerOptions {
-            WriteIndented = true,
-            PropertyNameCaseInsensitive = true
-        };
-    }
+		_options = new JsonSerializerOptions {
+			WriteIndented = true,
+			PropertyNameCaseInsensitive = true
+		};
+	}
 
-    public T Load() {
-        if (!File.Exists(_filePath))
-            return new T();
+	public T Load() {
+		if (!File.Exists(_filePath))
+			return new T();
 
-        string json = File.ReadAllText(_filePath);
-        return JsonSerializer.Deserialize<T>(json, _options) ?? new T();
-    }
+		var json = File.ReadAllText(_filePath);
+		return JsonSerializer.Deserialize<T>(json, _options) ?? new T();
+	}
 
-    public void Save(T settings) {
-        string json = JsonSerializer.Serialize(settings, _options);
-        File.WriteAllText(_filePath, json);
-    }
+	public void Save(T settings) {
+		var json = JsonSerializer.Serialize(settings, _options);
+		File.WriteAllText(_filePath, json);
+	}
 }

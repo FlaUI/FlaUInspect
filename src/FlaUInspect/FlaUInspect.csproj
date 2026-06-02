@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
         <UseWPF>true</UseWPF>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -17,6 +17,8 @@
         <RootNamespace>FlaUInspect</RootNamespace>
         <Product>FlaUInspect</Product>
         <Version>3.0.0</Version>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

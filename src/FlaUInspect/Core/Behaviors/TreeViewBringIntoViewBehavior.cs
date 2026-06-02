@@ -5,66 +5,54 @@ using System.Windows.Threading;
 namespace FlaUInspect.Core.Behaviors;
 
 public static class TreeViewBringIntoViewBehavior {
-    public static readonly DependencyProperty BringSelectedItemIntoViewProperty =
-        DependencyProperty.RegisterAttached(
-            "BringSelectedItemIntoView",
-            typeof(bool),
-            typeof(TreeViewBringIntoViewBehavior),
-            new PropertyMetadata(false, OnChanged));
+	public static readonly DependencyProperty BringSelectedItemIntoViewProperty =
+		DependencyProperty.RegisterAttached(
+			"BringSelectedItemIntoView",
+			typeof(bool),
+			typeof(TreeViewBringIntoViewBehavior),
+			new PropertyMetadata(false, OnChanged));
 
-    public static bool GetBringSelectedItemIntoView(DependencyObject obj) {
-        return (bool)obj.GetValue(BringSelectedItemIntoViewProperty);
-    }
+	public static bool GetBringSelectedItemIntoView(DependencyObject obj) => (bool)obj.GetValue(BringSelectedItemIntoViewProperty);
 
-    public static void SetBringSelectedItemIntoView(DependencyObject obj, bool value) {
-        obj.SetValue(BringSelectedItemIntoViewProperty, value);
-    }
+	public static void SetBringSelectedItemIntoView(DependencyObject obj, bool value) => obj.SetValue(BringSelectedItemIntoViewProperty, value);
 
-    private static void OnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-        if (d is not TreeView treeView) {
-            return;
-        }
+	private static void OnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+		if (d is not TreeView treeView)
+			return;
 
-        if ((bool)e.NewValue) {
-            treeView.SelectedItemChanged += TreeView_SelectedItemChanged;
-        } else {
-            treeView.SelectedItemChanged -= TreeView_SelectedItemChanged;
-        }
-    }
+		if ((bool)e.NewValue)
+			treeView.SelectedItemChanged += TreeView_SelectedItemChanged;
+		else
+			treeView.SelectedItemChanged -= TreeView_SelectedItemChanged;
+	}
 
-    private static void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
-        if (sender is not TreeView treeView || e.NewValue == null) {
-            return;
-        }
+	private static void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
+		if (sender is not TreeView treeView || e.NewValue == null)
+			return;
 
-        treeView.Dispatcher.BeginInvoke(new Action(() => {
-                                            TreeViewItem? item = GetTreeViewItem(treeView, e.NewValue);
-                                            item?.BringIntoView();
-                                        }),
-                                        DispatcherPriority.Background);
-    }
+		_ = treeView.Dispatcher.BeginInvoke(new Action(() => {
+			var item = GetTreeViewItem(treeView, e.NewValue);
+			item?.BringIntoView();
+		}),
+										DispatcherPriority.Background);
+	}
 
-    private static TreeViewItem? GetTreeViewItem(ItemsControl container, object item) {
-        if (container.DataContext == item)
-            return container as TreeViewItem;
+	private static TreeViewItem? GetTreeViewItem(ItemsControl container, object item) {
+		if (container.DataContext == item)
+			return container as TreeViewItem;
 
-        foreach (object? i in container.Items) {
-            ItemsControl? child = container.ItemContainerGenerator.ContainerFromItem(i) as ItemsControl;
+		foreach (var i in container.Items) {
+			if (container.ItemContainerGenerator.ContainerFromItem(i) is not ItemsControl child)
+				continue;
 
-            if (child == null)
-                continue;
+			if (child is TreeViewItem tvi && !tvi.IsExpanded)
+				tvi.IsExpanded = true;
 
-            if (child is TreeViewItem tvi && !tvi.IsExpanded) {
-                tvi.IsExpanded = true;
-            }
+			var result = GetTreeViewItem(child, item);
+			if (result != null)
+				return result;
+		}
 
-            TreeViewItem? result = GetTreeViewItem(child, item);
-
-            if (result != null) {
-                return result;
-            }
-        }
-
-        return null;
-    }
+		return null;
+	}
 }

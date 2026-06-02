@@ -39,12 +39,12 @@
     <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="{DynamicResource PrimaryDisabledColor}"/>
     <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="{DynamicResource DisabledTextColor}"/>
     <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="{DynamicResource DisabledTextColor}"/>
-    
+
     <Style TargetType="{x:Type CheckBox}"
            BasedOn="{StaticResource {x:Type CheckBox}}">
-        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
-        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource PrimaryBorderBrush}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisual}" />
+        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Template">
@@ -121,5 +121,5 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+	</Style>
 </ResourceDictionary>
