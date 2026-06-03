@@ -13,8 +13,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Resources/RibbonIcons.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <CubicEase x:Key="CubicOut"
-                       EasingMode="EaseOut" />
 
         </ResourceDictionary>
     </UserControl.Resources>

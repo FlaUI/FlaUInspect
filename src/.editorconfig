@@ -8,14 +8,6 @@ indent_style = space
 indent_size = 4
 
 # Microsoft .NET properties
-csharp_new_line_before_catch = false
-csharp_new_line_before_else = false
-csharp_new_line_before_finally = false
-csharp_new_line_before_members_in_object_initializers = false
-csharp_new_line_before_open_brace = none
-csharp_preferred_modifier_order = private, public, protected, internal, file, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async, required:suggestion
-csharp_style_prefer_utf8_string_literals = true:suggestion
-csharp_style_var_for_built_in_types = false:suggestion
 dotnet_naming_rule.unity_serialized_field_rule.import_to_resharper = True
 dotnet_naming_rule.unity_serialized_field_rule.resharper_description = Unity serialized field
 dotnet_naming_rule.unity_serialized_field_rule.resharper_guid = 5f0fdb63-c892-4d2c-9324-15c80b22a7ef
@@ -67,9 +59,7 @@ fsharp_space_before_semicolon = false
 fsharp_space_before_uppercase_invocation = false
 
 # ReSharper properties
-resharper_align_first_arg_by_paren = false
 resharper_align_linq_query = true
-resharper_align_multiline_calls_chain = false
 resharper_align_multiline_extends_list = true
 resharper_align_multiline_parameter = true
 resharper_align_multiline_type_parameter_constraints = true
@@ -231,7 +221,6 @@ csharp_using_directive_placement = outside_namespace:silent
 csharp_prefer_braces = true:suggestion
 csharp_new_line_before_open_brace = none
 dotnet_diagnostic.bc40000.severity = warning
-dotnet_diagnostic.bc400005.severity = warning
 dotnet_diagnostic.bc40008.severity = warning
 dotnet_diagnostic.bc40056.severity = warning
 dotnet_diagnostic.bc42016.severity = warning
@@ -4190,9 +4179,6 @@ resharper_partial_method_with_single_part_highlighting = none
 
 [*.feature.cs]
 # Nest under the corresponding .feature file
-rider_nesting_parent = true
-
-[*.feature.cs]
 rider_nesting_parent =
 {basename}.feature
 
