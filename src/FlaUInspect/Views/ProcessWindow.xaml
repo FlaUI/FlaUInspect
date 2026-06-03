@@ -26,8 +26,12 @@
                 <ResourceDictionary Source="/Controls/ElementToggleExpander.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <system:Double x:Key="ButtonWidth">32</system:Double>
-            <system:Double x:Key="ButtonHeight">32</system:Double>
+            <system:Double x:Key="ButtonWidth">
+                32
+            </system:Double>
+            <system:Double x:Key="ButtonHeight">
+                32
+            </system:Double>
 
             <Style x:Key="SelectableLabel"
                    TargetType="{x:Type TextBox}">
@@ -83,8 +87,6 @@
                 <Setter Property="Height" Value="20" />
                 <Setter Property="Stretch" Value="Uniform" />
             </Style>
-            <system:Double x:Key="ButtonWidth1">32</system:Double>
-            <system:Double x:Key="ButtonHeight1">32</system:Double>
 
         </ResourceDictionary>
 

@@ -109,7 +109,6 @@ public class ProcessViewModel : ObservableObject {
 
     public string? WindowTitle { get; }
 
-
     public bool EnableXPath {
         get => GetProperty<bool>();
         set => SetProperty(value);
@@ -306,15 +305,14 @@ public class ProcessViewModel : ObservableObject {
                                                                     new ElementPatternItem("Pattern Support", PatternItemsFactory.PatternSupport, true, true)
                                                                 }
                                                                 .Concat(
-                                                                    (_automation?.PatternLibrary.AllForCurrentFramework ?? [])
-                                                                    .Select(x => {
-                                                                        ElementPatternItem patternItem = new (x.Name, x.Name) {
-                                                                            IsVisible = true
-                                                                        };
-                                                                        return patternItem;
-                                                                    })));
+                                                                        (_automation?.PatternLibrary.AllForCurrentFramework ?? [])
+                                                                        .Select(x => {
+                                                                            ElementPatternItem patternItem = new (x.Name, x.Name) {
+                                                                                IsVisible = true
+                                                                            };
+                                                                            return patternItem;
+                                                                        })));
     }
-
 
     private void ReadPatternsForSelectedItem(AutomationElement? selectedItemAutomationElement) {
         if (SelectedItem?.AutomationElement == null || selectedItemAutomationElement == null) {

@@ -37,7 +37,7 @@ public static class GlobalMouseHook {
 
     [DllImport("user32.dll")]
     private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn,
-        IntPtr hMod, uint dwThreadId);
+                                                  IntPtr hMod, uint dwThreadId);
 
     [DllImport("user32.dll")]
     private static extern bool UnhookWindowsHookEx(IntPtr hhk);

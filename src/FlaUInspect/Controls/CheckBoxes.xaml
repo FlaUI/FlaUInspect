@@ -27,21 +27,33 @@
         </Setter>
     </Style>
 
-    <SolidColorBrush x:Key="OptionMark.Static.Background" Color="{DynamicResource PrimaryWindowBackgroundColor}"/> 
-    <SolidColorBrush x:Key="OptionMark.Static.Border" Color="{DynamicResource PrimaryBorderColor}"/> 
-     <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="{DynamicResource PrimaryBorderColor}"/>
-    <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="{DynamicResource PrimaryWindowBackgroundColor}"/>
-    <SolidColorBrush x:Key="OptionMark.MouseOver.Border" Color="{DynamicResource PrimaryHoverColor}"/>
-    <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="{DynamicResource PrimaryHoverColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Pressed.Background" Color="{DynamicResource PrimaryWindowBackgroundColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="{DynamicResource PrimaryPressedColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="{DynamicResource PrimaryPressedColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Background" Color="{DynamicResource PrimaryDisabledColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Border" Color="{DynamicResource DisabledTextColor}"/>
-    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph" Color="{DynamicResource DisabledTextColor}"/>
-    
-    <Style TargetType="{x:Type CheckBox}"
-           BasedOn="{StaticResource {x:Type CheckBox}}">
+    <SolidColorBrush x:Key="OptionMark.Static.Background"
+                     Color="{DynamicResource PrimaryWindowBackgroundColor}" />
+    <SolidColorBrush x:Key="OptionMark.Static.Border"
+                     Color="{DynamicResource PrimaryBorderColor}" />
+    <SolidColorBrush x:Key="OptionMark.Static.Glyph"
+                     Color="{DynamicResource PrimaryBorderColor}" />
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Background"
+                     Color="{DynamicResource PrimaryWindowBackgroundColor}" />
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Border"
+                     Color="{DynamicResource PrimaryHoverColor}" />
+    <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph"
+                     Color="{DynamicResource PrimaryHoverColor}" />
+    <SolidColorBrush x:Key="OptionMark.Pressed.Background"
+                     Color="{DynamicResource PrimaryWindowBackgroundColor}" />
+    <SolidColorBrush x:Key="OptionMark.Pressed.Border"
+                     Color="{DynamicResource PrimaryPressedColor}" />
+    <SolidColorBrush x:Key="OptionMark.Pressed.Glyph"
+                     Color="{DynamicResource PrimaryPressedColor}" />
+    <SolidColorBrush x:Key="OptionMark.Disabled.Background"
+                     Color="{DynamicResource PrimaryDisabledColor}" />
+    <SolidColorBrush x:Key="OptionMark.Disabled.Border"
+                     Color="{DynamicResource DisabledTextColor}" />
+    <SolidColorBrush x:Key="OptionMark.Disabled.Glyph"
+                     Color="{DynamicResource DisabledTextColor}" />
+
+    <Style BasedOn="{StaticResource {x:Type CheckBox}}"
+           TargetType="{x:Type CheckBox}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
         <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource PrimaryBorderBrush}" />

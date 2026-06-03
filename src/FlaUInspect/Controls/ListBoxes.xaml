@@ -1,6 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
+
     <SolidColorBrush x:Key="ListBox.Static.Background"
                      Color="{DynamicResource PrimaryColor}" />
     <SolidColorBrush x:Key="ListBox.Static.Border"
@@ -52,5 +52,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 </ResourceDictionary>

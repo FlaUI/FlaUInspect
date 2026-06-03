@@ -7,10 +7,10 @@ namespace FlaUInspect.Core.Behaviors;
 public static class TreeViewBringIntoViewBehavior {
     public static readonly DependencyProperty BringSelectedItemIntoViewProperty =
         DependencyProperty.RegisterAttached(
-            "BringSelectedItemIntoView",
-            typeof(bool),
-            typeof(TreeViewBringIntoViewBehavior),
-            new PropertyMetadata(false, OnChanged));
+                                            "BringSelectedItemIntoView",
+                                            typeof(bool),
+                                            typeof(TreeViewBringIntoViewBehavior),
+                                            new PropertyMetadata(false, OnChanged));
 
     public static bool GetBringSelectedItemIntoView(DependencyObject obj) {
         return (bool)obj.GetValue(BringSelectedItemIntoViewProperty);

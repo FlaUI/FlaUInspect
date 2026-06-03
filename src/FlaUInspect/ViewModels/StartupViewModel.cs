@@ -74,7 +74,7 @@ public class StartupViewModel : ObservableObject {
                                                   }
                                               },
                                               _ => DialogContent is IDialogViewModel { CanClose: true });
-        AboutCommand = new RelayCommand(_=> {
+        AboutCommand = new RelayCommand(_ => {
             DialogContent = new AboutViewModel();
         });
 
@@ -83,7 +83,6 @@ public class StartupViewModel : ObservableObject {
 
         DialogContent = null;
     }
-
 
     public object? DialogContent {
         get => GetProperty<object?>();
@@ -98,9 +97,8 @@ public class StartupViewModel : ObservableObject {
 
     public ICommand CloseSettingCommand { get; }
     public ICommand SaveSettingCommand { get; }
-    
-    public ICommand AboutCommand { get; }
 
+    public ICommand AboutCommand { get; }
 
     public bool IsBusy {
         get => GetProperty<bool>();
@@ -269,12 +267,12 @@ public class StartupViewModel : ObservableObject {
         await Task.Delay(100); // Simulate some loading time;
         int currentProcessId = Environment.ProcessId;
         IEnumerable<ProcessWindowInfo> collection = GetChildren(_defaultAutomation.GetDesktop())
-                                                    .Where(x => !string.IsNullOrEmpty(x.Name))
-                                                    .Where(x => x.Properties.ProcessId != currentProcessId)
-                                                    .Select(x => new ProcessWindowInfo(x.Properties.ProcessId.Value,
-                                                                                       x.Name,
-                                                                                       x.Properties.NativeWindowHandle.Value))
-                                                    .ToList();
+            .Where(x => !string.IsNullOrEmpty(x.Name))
+            .Where(x => x.Properties.ProcessId != currentProcessId)
+            .Select(x => new ProcessWindowInfo(x.Properties.ProcessId.Value,
+                                               x.Name,
+                                               x.Properties.NativeWindowHandle.Value))
+            .ToList();
         Processes = new ObservableCollection<ProcessWindowInfo>(collection);
         IsBusy = false;
         return;

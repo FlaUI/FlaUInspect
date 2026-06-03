@@ -22,7 +22,7 @@ public static class HoverManager {
     private static readonly object LockObject = new ();
 
     static HoverManager() {
-        DispatcherTimer timer = new() {
+        DispatcherTimer timer = new () {
             Interval = TimeSpan.FromMilliseconds(300)
         };
         timer.Tick += (s, e) => Refresh();

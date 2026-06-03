@@ -38,7 +38,7 @@ public class Editable<T> : ObservableObject where T : class, new() {
 
     private static void Copy(T from, T to) {
         foreach (PropertyInfo p in typeof(T).GetProperties()
-                                            .Where(p => p.CanRead && p.CanWrite)) {
+                     .Where(p => p.CanRead && p.CanWrite)) {
             p.SetValue(to, p.GetValue(from));
         }
     }

@@ -94,40 +94,37 @@ public partial class App {
 
         if (settings.HoverOverlay != null) {
             Thickness hoverMargin = (Thickness)converter.ConvertFromString(cloneSetting.HoverOverlay.Margin);
-            FlaUiAppOptions.HoverOverlay = () => new ElementOverlay(
-                new ElementOverlayConfiguration(cloneSetting.HoverOverlay.Size,
-                                                hoverMargin,
-                                                ColorTranslator.FromHtml(cloneSetting.HoverOverlay.OverlayColor),
-                                                ElementOverlay.GetRectangleFactory(cloneSetting.HoverOverlay.OverlayMode)));
+            FlaUiAppOptions.HoverOverlay = () => new ElementOverlay(new ElementOverlayConfiguration(cloneSetting.HoverOverlay.Size,
+                                                                                                    hoverMargin,
+                                                                                                    ColorTranslator.FromHtml(cloneSetting.HoverOverlay.OverlayColor),
+                                                                                                    ElementOverlay.GetRectangleFactory(cloneSetting.HoverOverlay.OverlayMode)));
         } else {
             FlaUiAppOptions.HoverOverlay = FlaUiAppOptions.DefaultOverlay;
         }
 
         if (settings.SelectionOverlay != null) {
             Thickness selectionMargin = (Thickness)converter.ConvertFromString(cloneSetting.SelectionOverlay.Margin);
-            FlaUiAppOptions.SelectionOverlay = () => new ElementOverlay(
-                new ElementOverlayConfiguration(cloneSetting.SelectionOverlay.Size,
-                                                selectionMargin,
-                                                ColorTranslator.FromHtml(cloneSetting.SelectionOverlay.OverlayColor),
-                                                ElementOverlay.GetRectangleFactory(cloneSetting.SelectionOverlay.OverlayMode)));
+            FlaUiAppOptions.SelectionOverlay = () => new ElementOverlay(new ElementOverlayConfiguration(cloneSetting.SelectionOverlay.Size,
+                                                                                                        selectionMargin,
+                                                                                                        ColorTranslator.FromHtml(cloneSetting.SelectionOverlay.OverlayColor),
+                                                                                                        ElementOverlay.GetRectangleFactory(cloneSetting.SelectionOverlay.OverlayMode)));
         } else {
             FlaUiAppOptions.SelectionOverlay = FlaUiAppOptions.DefaultOverlay;
         }
 
         if (settings.PickOverlay != null) {
             Thickness pickMargin = (Thickness)converter.ConvertFromString(cloneSetting.PickOverlay.Margin);
-            FlaUiAppOptions.PickOverlay = () => new ElementOverlay(
-                new ElementOverlayConfiguration(cloneSetting.PickOverlay.Size,
-                                                pickMargin,
-                                                ColorTranslator.FromHtml(cloneSetting.PickOverlay.OverlayColor),
-                                                ElementOverlay.GetRectangleFactory(cloneSetting.PickOverlay.OverlayMode)));
+            FlaUiAppOptions.PickOverlay = () => new ElementOverlay(new ElementOverlayConfiguration(cloneSetting.PickOverlay.Size,
+                                                                                                   pickMargin,
+                                                                                                   ColorTranslator.FromHtml(cloneSetting.PickOverlay.OverlayColor),
+                                                                                                   ElementOverlay.GetRectangleFactory(cloneSetting.PickOverlay.OverlayMode)));
         } else {
             FlaUiAppOptions.PickOverlay = FlaUiAppOptions.DefaultOverlay;
         }
     }
 
     private static void SetTheme(FlaUiAppSettings settings) {
-        ResourceDictionary newTheme = new();
+        ResourceDictionary newTheme = new ();
 
         switch (settings.Theme) {
             case "Dark":

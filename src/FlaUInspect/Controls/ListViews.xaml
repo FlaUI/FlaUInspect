@@ -1,12 +1,16 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
-    <SolidColorBrush x:Key="ListBox.Static.Background" Color="{DynamicResource PrimaryColor}" />
-    <SolidColorBrush x:Key="ListBox.Static.Border" Color="{DynamicResource PrimaryBorderColor}" />
-    
-    <SolidColorBrush x:Key="ListBox.Disabled.Background" Color="{DynamicResource PrimaryDisabledColor}" />
-    <SolidColorBrush x:Key="ListBox.Disabled.Border" Color="{DynamicResource PrimaryBorderColor}" />
-    
+
+    <SolidColorBrush x:Key="ListBox.Static.Background"
+                     Color="{DynamicResource PrimaryColor}" />
+    <SolidColorBrush x:Key="ListBox.Static.Border"
+                     Color="{DynamicResource PrimaryBorderColor}" />
+
+    <SolidColorBrush x:Key="ListBox.Disabled.Background"
+                     Color="{DynamicResource PrimaryDisabledColor}" />
+    <SolidColorBrush x:Key="ListBox.Disabled.Border"
+                     Color="{DynamicResource PrimaryBorderColor}" />
+
     <Style TargetType="{x:Type ListView}">
         <Setter Property="Background" Value="{StaticResource ListBox.Static.Background}" />
         <Setter Property="BorderBrush" Value="{StaticResource ListBox.Static.Border}" />

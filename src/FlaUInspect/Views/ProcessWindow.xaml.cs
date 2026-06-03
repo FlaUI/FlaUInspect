@@ -46,7 +46,7 @@ public partial class ProcessWindow : Window {
                     processViewModel.ClosingCommand.Execute(DataContext);
                 }
             }
-            
+
             startupWindow.Show();
         }
     }

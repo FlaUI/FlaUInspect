@@ -2,34 +2,34 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="RibbonRadioButtonStyle"
-       TargetType="RadioButton">
+           TargetType="RadioButton">
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}" />
         <Setter Property="BorderThickness" Value="{DynamicResource PrimaryThickness}" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Setter Property="Padding" Value="4" />
         <Setter Property="Cursor" Value="Hand" />
-        
+
         <Setter Property="Margin" Value="2" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
                     <DockPanel LastChildFill="True">
                         <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              RecognizesAccessKey="True" />
+                                                  VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True" />
                                 <Border x:Name="Marker"
-                                    Height="2"
-                                    Margin="0"
-                                    VerticalAlignment="Bottom"
-                                    Background="{DynamicResource AccentBrush}"
-                                    BorderThickness="0"
-                                    DockPanel.Dock="Bottom"
-                                    Visibility="Hidden" />
+                                        Height="2"
+                                        Margin="0"
+                                        VerticalAlignment="Bottom"
+                                        Background="{DynamicResource AccentBrush}"
+                                        BorderThickness="0"
+                                        DockPanel.Dock="Bottom"
+                                        Visibility="Hidden" />
                             </Grid>
                         </Border>
                     </DockPanel>
@@ -41,7 +41,7 @@
                             <Setter TargetName="Marker" Property="Visibility" Value="Visible" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource PrimaryPressedBrush}"/>
+                            <Setter Property="Background" Value="{DynamicResource PrimaryPressedBrush}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{DynamicResource PrimaryHoverBrush}" />

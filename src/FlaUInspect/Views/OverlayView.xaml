@@ -10,8 +10,8 @@
              d:DataContext="{d:DesignInstance settings:OverlaySettings}"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             mc:Ignorable="d"
-             Background="{DynamicResource PrimaryWindowBackgroundBrush}">
+             Background="{DynamicResource PrimaryWindowBackgroundBrush}"
+             mc:Ignorable="d">
     <DockPanel LastChildFill="True">
         <HeaderedContentControl DockPanel.Dock="Top"
                                 Header="Size">

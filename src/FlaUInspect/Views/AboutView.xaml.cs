@@ -26,7 +26,6 @@ public partial class AboutView : UserControl {
         _ = RunColorLoop(_colorLoopCts.Token);
     }
 
-
     private void Regenerate() {
         if (HudCanvas.ActualWidth <= 0 || HudCanvas.ActualHeight <= 0)
             return;
@@ -38,7 +37,7 @@ public partial class AboutView : UserControl {
         double h = HudCanvas.ActualHeight;
 
         for (var i = 0; i < count; i++) {
-            Line line = new() {
+            Line line = new () {
                 X1 = _rnd.NextDouble() * w,
                 Y1 = _rnd.NextDouble() * h,
                 X2 = _rnd.NextDouble() * w,
@@ -63,7 +62,7 @@ public partial class AboutView : UserControl {
         while (!token.IsCancellationRequested) {
             Color next = RandomHudColor();
 
-            ColorAnimation anim = new() {
+            ColorAnimation anim = new () {
                 To = next,
                 Duration = TimeSpan.FromSeconds(2.5),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }

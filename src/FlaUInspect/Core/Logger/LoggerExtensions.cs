@@ -35,11 +35,10 @@ public static class LoggerExtensions {
         }
 
         List<string> paramsName = Regex.Matches(formattedMessage, @"(\{\w+\})")
-                                       .Cast<Match>()
-                                       .Select(x => x.Groups[1].Value)
-                                       .Where(x => !string.IsNullOrEmpty(x))
-                                       .Select(x => x!)
-                                       .ToList();
+            .Select(x => x.Groups[1].Value)
+            .Where(x => !string.IsNullOrEmpty(x))
+            .Select(x => x!)
+            .ToList();
 
         for (var i = 0; i < paramsName.Count; i++) {
             if (i < args.Length) {

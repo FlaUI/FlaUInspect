@@ -86,5 +86,4 @@ public partial class StartupWindow {
             OpenProcessWindow(new UIA3Automation());
         }
     }
-
 }

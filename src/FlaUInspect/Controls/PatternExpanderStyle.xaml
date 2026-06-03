@@ -8,7 +8,7 @@
     <Style x:Key="PatternExpanderStyle"
            TargetType="Expander">
         <Setter Property="BorderThickness" Value="{DynamicResource PrimaryThickness}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
         <Setter Property="Template">

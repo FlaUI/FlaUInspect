@@ -673,7 +673,7 @@
             </Path>
         </Canvas>
     </Canvas>
-    
+
     <Canvas x:Key="ExpandedIcon"
             Width="24"
             Height="24"
@@ -681,8 +681,8 @@
             UseLayoutRounding="False">
         <Path Data="M 12,19.330856 0.1121287,7.4429845 2.885964,4.6691442 12,13.78318 21.114036,4.6691442 23.887871,7.4429845 Z"
               Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
-    </Canvas>  
-    
+    </Canvas>
+
     <Canvas x:Key="CollapsedIcon"
             Width="24"
             Height="24"
