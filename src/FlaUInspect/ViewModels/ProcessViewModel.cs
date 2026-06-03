@@ -168,7 +168,6 @@ public class ProcessViewModel : ObservableObject {
             SetMode();
         }
     }
-
     private static ElementOverlay CreateTrackHighlighterOverlay() {
         return App.FlaUiAppOptions.SelectionOverlay() ?? App.FlaUiAppOptions.DefaultOverlay()!;
     }

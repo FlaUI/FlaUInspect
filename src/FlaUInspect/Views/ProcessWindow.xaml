@@ -7,6 +7,7 @@
         xmlns:models="clr-namespace:FlaUInspect.Models"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         xmlns:viewModels="clr-namespace:FlaUInspect.ViewModels"
+        xmlns:controls="clr-namespace:FlaUInspect.Controls"
         Title="{Binding WindowTitle}"
         Width="800"
         Height="450"
@@ -115,6 +116,19 @@
                     <ContentControl Content="{StaticResource RefreshIcon}" />
                 </Viewbox>
             </Button>
+            
+            <ToggleButton IsChecked="{Binding IsFindVisible}"
+                          x:Name="IsFindVisibleToggleButton"
+                          Style="{StaticResource RibbonToggleButtonStyle}">
+                <ButtonBase.ToolTip>
+                    <TextBlock>
+                        Display Find panel.
+                    </TextBlock>
+                </ButtonBase.ToolTip>
+                <Viewbox Style="{StaticResource ViewBoxStyle}">
+                    <ContentControl Content="{StaticResource EnableXPathIcon}" />
+                </Viewbox>
+            </ToggleButton>
 
             <Border Width="8"
                     Background="Transparent"
@@ -248,46 +262,51 @@
                       Header="Elements"
                       Style="{StaticResource GroupBoxStyle}">
                 <Grid>
-                    <ListView x:Name="TreeViewControl"
-                              ItemsSource="{Binding Elements}"
-                              ScrollViewer.CanContentScroll="True"
-                              SelectedItem="{Binding SelectedItem}"
-                              SelectionChanged="TreeOnSelectionChanged">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel x:Name="FindPropertiesPanel" DockPanel.Dock="Top">
+                            <controls:FindControl Visibility="{Binding IsChecked, ElementName=IsFindVisibleToggleButton}"/>
+                        </StackPanel>
+                        <ListView x:Name="TreeViewControl"
+                                  ItemsSource="{Binding Elements}"
+                                  ScrollViewer.CanContentScroll="True"
+                                  SelectedItem="{Binding SelectedItem}"
+                                  SelectionChanged="TreeOnSelectionChanged">
 
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
 
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Margin="{Binding Level, Converter={StaticResource IndentConverter}, Mode=OneWay}"
-                                            Orientation="Horizontal">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="{Binding Level, Converter={StaticResource IndentConverter}, Mode=OneWay}"
+                                                Orientation="Horizontal">
 
-                                    <ToggleButton Width="16"
-                                                  Height="16"
-                                                  Click="ToggleButton_Click"
-                                                  Focusable="False"
-                                                  IsChecked="{Binding IsExpanded}"
-                                                  Style="{StaticResource ElementToggleExpanderStyle}"
-                                                  Visibility="{Binding Children.Count, Converter={StaticResource CountToVisibilityConverter}}" />
+                                        <ToggleButton Width="16"
+                                                      Height="16"
+                                                      Click="ToggleButton_Click"
+                                                      Focusable="False"
+                                                      IsChecked="{Binding IsExpanded}"
+                                                      Style="{StaticResource ElementToggleExpanderStyle}"
+                                                      Visibility="{Binding Children.Count, Converter={StaticResource CountToVisibilityConverter}}" />
 
 
-                                    <TextBlock Margin="4,0,0,0"
-                                               ToolTip="{Binding}">
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">
-                                                <Binding Path="ControlType" />
-                                                <Binding Path="Name" />
-                                                <Binding Path="AutomationId" />
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                                        <TextBlock Margin="4,0,0,0"
+                                                   ToolTip="{Binding}">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">
+                                                    <Binding Path="ControlType" />
+                                                    <Binding Path="Name" />
+                                                    <Binding Path="AutomationId" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </DockPanel>
 
                     <TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Center"
