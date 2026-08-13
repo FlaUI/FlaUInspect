@@ -1,7 +1,7 @@
-using System.Windows;
+using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using FlaUI.Core;
 using FlaUI.Core.Definitions;
 
 namespace FlaUInspect.Controls;
@@ -11,50 +11,52 @@ public partial class FindControl : UserControl {
     // ── Events ────────────────────────────────────────────────────────────────
     public event EventHandler<FindCriteria>? FindNextRequested;
     public event EventHandler<FindCriteria>? FindPrevRequested;
-
-    /// <summary>Fired whenever the user changes any search field (criteria reset).</summary>
     public event EventHandler? CriteriaChanged;
 
     // ── Constructor ───────────────────────────────────────────────────────────
     public FindControl() {
         InitializeComponent();
 
-        FindByComboBox.ItemsSource = new[] {
-            "AutomationId", "ControlType", "ClassName", "Name",
-            "Text", "FrameworkId", "FrameworkType", "ProcessId",
-            "LocalizedControlType", "HelpText", "Value"
-        };
-        FindByComboBox.SelectedIndex = 0;
-
-        PropertyConditionFlagsComboBox.ItemsSource = Enum.GetNames(typeof(PropertyConditionFlags));
-        PropertyConditionFlagsComboBox.SelectedIndex = 0;
-
         ControlTypeCombobox.ItemsSource = Enum.GetNames(typeof(ControlType));
         ControlTypeCombobox.SelectedIndex = 0;
 
-        FrameworkTypeCombobox.ItemsSource = Enum.GetNames(typeof(FrameworkType));
+        FrameworkTypeCombobox.ItemsSource = Enum.GetNames(typeof(FlaUI.Core.FrameworkType));
         FrameworkTypeCombobox.SelectedIndex = 0;
+
+        // Apply correct visibility for the initially checked RadioButton (AutomationId)
+        UpdateCriteriaVisibility("AutomationId");
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
     public FindCriteria GetCurrentCriteria() {
-        FindCriteria criteria = new () {
-            FindBy = FindByComboBox.SelectedItem as string ?? "AutomationId",
-            IgnoreCase = PropertyConditionFlagsComboBox.SelectedItem as string == "IgnoreCase",
+        string findBy = FindByPanel.Children.OfType<RadioButton>()
+                                   .FirstOrDefault(rb => rb.IsChecked == true)
+                                   ?.Tag as string ?? "AutomationId";
+
+        string matchTag = MatchModePanel.Children.OfType<RadioButton>()
+                                        .FirstOrDefault(rb => rb.IsChecked == true)
+                                        ?.Tag as string ?? "Substring";
+
+        var criteria = new FindCriteria {
+            FindBy    = findBy,
+            MatchMode = matchTag switch {
+                "Exact"     => SearchMatchMode.Exact,
+                "IgnoreCase" => SearchMatchMode.IgnoreCase,
+                _            => SearchMatchMode.Substring
+            },
             SearchInChildrenOnly = SearchInChildrenCheckBox.IsChecked == true,
-            SearchInLoadedOnly = SearchInLoadedCheckBox.IsChecked == true
+            SearchInLoadedOnly   = SearchInLoadedCheckBox.IsChecked   == true
         };
 
-        switch (criteria.FindBy) {
+        switch (findBy) {
             case "ControlType":
-                if (Enum.TryParse<ControlType>(ControlTypeCombobox.SelectedItem as string, out ControlType ct)) {
+                if (Enum.TryParse<ControlType>(ControlTypeCombobox.SelectedItem as string, out var ct))
                     criteria.ControlTypeValue = ct;
-                }
                 break;
             case "FrameworkType":
-                if (Enum.TryParse<FrameworkType>(FrameworkTypeCombobox.SelectedItem as string, out FrameworkType ft)) {
+                if (Enum.TryParse<FlaUI.Core.FrameworkType>(
+                        FrameworkTypeCombobox.SelectedItem as string, out var ft))
                     criteria.FrameworkTypeValue = ft;
-                }
                 break;
             default:
                 criteria.TextValue = CriteriaTextBox.Text;
@@ -65,38 +67,47 @@ public partial class FindControl : UserControl {
     }
 
     // ── Handlers ──────────────────────────────────────────────────────────────
-    private void FindByComboBoxSelectionChanged(object sender, SelectionChangedEventArgs e) {
-        if (e.AddedItems.Count == 0) return;
-        var selected = e.AddedItems[0] as string;
+    private void FindByRadioChanged(object sender, System.Windows.RoutedEventArgs e) {
+        if (sender is RadioButton rb) {
+            UpdateCriteriaVisibility(rb.Tag as string);
+            CriteriaChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
 
-        switch (selected) {
+    private void MatchModeRadioChanged(object sender, System.Windows.RoutedEventArgs e) {
+        CriteriaChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void UpdateCriteriaVisibility(string? findBy) {
+        // Guard: controls may not yet be created during XAML init
+        if (CriteriaTextBox == null) return;
+
+        switch (findBy) {
             case "ControlType":
-                CriteriaTextBox.Visibility = Visibility.Collapsed;
-                ControlTypeCombobox.Visibility = Visibility.Visible;
-                FrameworkTypeCombobox.Visibility = Visibility.Collapsed;
-                PropertyConditionFlagsComboBox.Visibility = Visibility.Collapsed;
+                CriteriaTextBox.Visibility    = System.Windows.Visibility.Collapsed;
+                ControlTypeCombobox.Visibility  = System.Windows.Visibility.Visible;
+                FrameworkTypeCombobox.Visibility = System.Windows.Visibility.Collapsed;
+                MatchModePanel.Visibility       = System.Windows.Visibility.Collapsed;
                 break;
             case "FrameworkType":
-                CriteriaTextBox.Visibility = Visibility.Collapsed;
-                ControlTypeCombobox.Visibility = Visibility.Collapsed;
-                FrameworkTypeCombobox.Visibility = Visibility.Visible;
-                PropertyConditionFlagsComboBox.Visibility = Visibility.Collapsed;
+                CriteriaTextBox.Visibility    = System.Windows.Visibility.Collapsed;
+                ControlTypeCombobox.Visibility  = System.Windows.Visibility.Collapsed;
+                FrameworkTypeCombobox.Visibility = System.Windows.Visibility.Visible;
+                MatchModePanel.Visibility       = System.Windows.Visibility.Collapsed;
                 break;
             case "ProcessId":
-                CriteriaTextBox.Visibility = Visibility.Visible;
-                ControlTypeCombobox.Visibility = Visibility.Collapsed;
-                FrameworkTypeCombobox.Visibility = Visibility.Collapsed;
-                PropertyConditionFlagsComboBox.Visibility = Visibility.Collapsed;
+                CriteriaTextBox.Visibility    = System.Windows.Visibility.Visible;
+                ControlTypeCombobox.Visibility  = System.Windows.Visibility.Collapsed;
+                FrameworkTypeCombobox.Visibility = System.Windows.Visibility.Collapsed;
+                MatchModePanel.Visibility       = System.Windows.Visibility.Collapsed;
                 break;
             default:
-                CriteriaTextBox.Visibility = Visibility.Visible;
-                ControlTypeCombobox.Visibility = Visibility.Collapsed;
-                FrameworkTypeCombobox.Visibility = Visibility.Collapsed;
-                PropertyConditionFlagsComboBox.Visibility = Visibility.Visible;
+                CriteriaTextBox.Visibility    = System.Windows.Visibility.Visible;
+                ControlTypeCombobox.Visibility  = System.Windows.Visibility.Collapsed;
+                FrameworkTypeCombobox.Visibility = System.Windows.Visibility.Collapsed;
+                MatchModePanel.Visibility       = System.Windows.Visibility.Visible;
                 break;
         }
-
-        CriteriaChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void CriteriaTextBoxTextChanged(object sender, TextChangedEventArgs e) {
@@ -117,11 +128,11 @@ public partial class FindControl : UserControl {
         }
     }
 
-    private void FindNextClick(object sender, RoutedEventArgs e) {
+    private void FindNextClick(object sender, System.Windows.RoutedEventArgs e) {
         FindNextRequested?.Invoke(this, GetCurrentCriteria());
     }
 
-    private void FindPrevClick(object sender, RoutedEventArgs e) {
+    private void FindPrevClick(object sender, System.Windows.RoutedEventArgs e) {
         FindPrevRequested?.Invoke(this, GetCurrentCriteria());
     }
 }

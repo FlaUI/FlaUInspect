@@ -2,16 +2,158 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:FlaUInspect.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DesignWidth="500"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/RadioButtons.xaml" />
+                <ResourceDictionary Source="/Resources/FindByIcons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!--  Compact icon-toggle style for FindBy buttons  -->
+            <Style x:Key="FindByButtonStyle"
+                   BasedOn="{StaticResource RibbonRadioButtonStyle}"
+                   TargetType="RadioButton">
+                <Setter Property="Width" Value="26" />
+                <Setter Property="Height" Value="26" />
+                <Setter Property="Padding" Value="3" />
+                <Setter Property="Margin" Value="1" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <StackPanel Margin="0,2,0,4">
-        <!--  Row 1: search fields + buttons  -->
+
+        <!--  Row 1: FindBy icon toggle buttons  -->
+        <WrapPanel x:Name="FindByPanel"
+                   Margin="0,0,0,4">
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         IsChecked="True"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="AutomationId"
+                         ToolTip="AutomationId">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByAutomationIdIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="ControlType"
+                         ToolTip="Control Type">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByControlTypeIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="ClassName"
+                         ToolTip="Class Name">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByClassNameIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="Name"
+                         ToolTip="Name">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByNameIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="Text"
+                         ToolTip="Text">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByTextIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="FrameworkId"
+                         ToolTip="Framework Id">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByFrameworkIdIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="FrameworkType"
+                         ToolTip="Framework Type">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByFrameworkTypeIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="ProcessId"
+                         ToolTip="Process Id">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByProcessIdIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="LocalizedControlType"
+                         ToolTip="Localized Control Type">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByLocalizedControlTypeIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="HelpText"
+                         ToolTip="Help Text">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByHelpTextIcon}" />
+                </Viewbox>
+            </RadioButton>
+            <RadioButton Checked="FindByRadioChanged"
+                         GroupName="FindByGroup"
+                         Style="{StaticResource FindByButtonStyle}"
+                         Tag="Value"
+                         ToolTip="Value">
+                <Viewbox Width="18"
+                         Height="18"
+                         Stretch="Uniform">
+                    <ContentControl Content="{StaticResource FindByValueIcon}" />
+                </Viewbox>
+            </RadioButton>
+        </WrapPanel>
+
+        <!--  Row 2: criteria input + match-mode flags + Next / Prev  -->
         <DockPanel LastChildFill="True">
-            <TextBlock Margin="0,0,4,0"
-                       VerticalAlignment="Center"
-                       Text="Find:" />
             <Button x:Name="FindPrevButton"
                     Width="24"
                     Margin="2,0,0,0"
@@ -26,16 +168,47 @@
                     Content="▶ Next"
                     DockPanel.Dock="Right"
                     ToolTip="Find next (Enter)" />
-            <ComboBox x:Name="PropertyConditionFlagsComboBox"
-                      Width="90"
-                      Margin="4,0,0,0"
-                      DockPanel.Dock="Right"
-                      SelectionChanged="ConditionInputChanged" />
-            <ComboBox x:Name="FindByComboBox"
-                      Width="130"
-                      DockPanel.Dock="Left"
-                      SelectionChanged="FindByComboBoxSelectionChanged" />
-            <Grid Margin="4,0,0,0">
+            <!--  Match-mode radio buttons (replace PropertyConditionFlagsComboBox)  -->
+            <StackPanel x:Name="MatchModePanel"
+                        Margin="4,0,0,0"
+                        DockPanel.Dock="Right"
+                        Orientation="Horizontal">
+                <RadioButton Checked="MatchModeRadioChanged"
+                             GroupName="MatchModeGroup"
+                             IsChecked="True"
+                             Style="{StaticResource FindByButtonStyle}"
+                             Tag="Substring"
+                             ToolTip="Substring match (case-sensitive Contains)">
+                    <Viewbox Width="18"
+                             Height="18"
+                             Stretch="Uniform">
+                        <ContentControl Content="{StaticResource FindByFlagsMatchSubstringIcon}" />
+                    </Viewbox>
+                </RadioButton>
+                <RadioButton Checked="MatchModeRadioChanged"
+                             GroupName="MatchModeGroup"
+                             Style="{StaticResource FindByButtonStyle}"
+                             Tag="IgnoreCase"
+                             ToolTip="Case-insensitive match">
+                    <Viewbox Width="18"
+                             Height="18"
+                             Stretch="Uniform">
+                        <ContentControl Content="{StaticResource FindByFlagsIgnoreCaseIcon}" />
+                    </Viewbox>
+                </RadioButton>
+                <RadioButton Checked="MatchModeRadioChanged"
+                             GroupName="MatchModeGroup"
+                             Style="{StaticResource FindByButtonStyle}"
+                             Tag="Exact"
+                             ToolTip="Exact match (case-sensitive)">
+                    <Viewbox Width="18"
+                             Height="18"
+                             Stretch="Uniform">
+                        <ContentControl Content="{StaticResource FindByFlagsNoneIcon}" />
+                    </Viewbox>
+                </RadioButton>
+            </StackPanel>
+            <Grid>
                 <ComboBox x:Name="ControlTypeCombobox"
                           SelectionChanged="ConditionInputChanged"
                           Visibility="Collapsed" />
@@ -47,7 +220,8 @@
                          TextChanged="CriteriaTextBoxTextChanged" />
             </Grid>
         </DockPanel>
-        <!--  Row 2: scope options  -->
+
+        <!--  Row 3: scope options  -->
         <StackPanel Margin="0,3,0,0"
                     Orientation="Horizontal">
             <CheckBox x:Name="SearchInChildrenCheckBox"

@@ -735,8 +735,11 @@ public class ProcessViewModel : ObservableObject {
 
     private bool MatchString(string? value, FindCriteria criteria) {
         if (value == null) return false;
-        return criteria.IgnoreCase
-            ? value.Contains(criteria.TextValue ?? "", StringComparison.OrdinalIgnoreCase)
-            : value.Contains(criteria.TextValue ?? "", StringComparison.Ordinal);
+        string pattern = criteria.TextValue ?? "";
+        return criteria.MatchMode switch {
+            SearchMatchMode.Exact      => string.Equals(value, pattern, StringComparison.Ordinal),
+            SearchMatchMode.IgnoreCase => value.Contains(pattern, StringComparison.OrdinalIgnoreCase),
+            _                          => value.Contains(pattern, StringComparison.Ordinal)   // Substring
+        };
     }
 }
