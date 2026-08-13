@@ -20,6 +20,11 @@ public partial class ProcessWindow : Window {
         if (DataContext is ProcessViewModel processViewModel) {
             processViewModel.CopiedNotificationRequested += ShowCopiedNotification;
             processViewModel.CopiedNotificationCurrentElementSaveStateRequested += ShowCopiedNotificationCurrentElementSaveStateRequested;
+
+            // Wire up FindControl ↔ ProcessViewModel
+            FindPanel.FindNextRequested += (_, criteria) => processViewModel.FindNext(criteria);
+            FindPanel.FindPrevRequested += (_, criteria) => processViewModel.FindPrev(criteria);
+            FindPanel.CriteriaChanged += (_, _) => processViewModel.ResetSearch();
         }
     }
 

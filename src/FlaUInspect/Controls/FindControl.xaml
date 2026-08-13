@@ -1,25 +1,62 @@
 <UserControl x:Class="FlaUInspect.Controls.FindControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:FlaUInspect.Controls"
-             mc:Ignorable="d"
-              d:DesignWidth="300">
-    <DockPanel LastChildFill="True">
-        <TextBlock Text="Find by "
-                   
-                   x:Name="ConditionTextBlock"
-                   Margin="0 0 8 0"/>
-        <ComboBox x:Name="FindByComboBox"
-                  DockPanel.Dock="Left"
-                  SelectionChanged="FindByComboBoxSelectionChanged"/>
-        <ComboBox x:Name="PropertyConditionFlagsComboBox"
-                  DockPanel.Dock="Right"/>
-        <Grid>
-            <ComboBox x:Name="ControlTypeCombobox"/>
-            <ComboBox x:Name="FrameworkTypeCombobox"/>
-            <TextBox x:Name="CriteriaTextBox"/>
-        </Grid>
-    </DockPanel>
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignWidth="500"
+             mc:Ignorable="d">
+    <StackPanel Margin="0,2,0,4">
+        <!--  Row 1: search fields + buttons  -->
+        <DockPanel LastChildFill="True">
+            <TextBlock Margin="0,0,4,0"
+                       VerticalAlignment="Center"
+                       Text="Find:" />
+            <Button x:Name="FindPrevButton"
+                    Width="24"
+                    Margin="2,0,0,0"
+                    Click="FindPrevClick"
+                    Content="◀"
+                    DockPanel.Dock="Right"
+                    ToolTip="Find previous (Shift+Enter)" />
+            <Button x:Name="FindNextButton"
+                    MinWidth="48"
+                    Margin="2,0,0,0"
+                    Click="FindNextClick"
+                    Content="▶ Next"
+                    DockPanel.Dock="Right"
+                    ToolTip="Find next (Enter)" />
+            <ComboBox x:Name="PropertyConditionFlagsComboBox"
+                      Width="90"
+                      Margin="4,0,0,0"
+                      DockPanel.Dock="Right"
+                      SelectionChanged="ConditionInputChanged" />
+            <ComboBox x:Name="FindByComboBox"
+                      Width="130"
+                      DockPanel.Dock="Left"
+                      SelectionChanged="FindByComboBoxSelectionChanged" />
+            <Grid Margin="4,0,0,0">
+                <ComboBox x:Name="ControlTypeCombobox"
+                          SelectionChanged="ConditionInputChanged"
+                          Visibility="Collapsed" />
+                <ComboBox x:Name="FrameworkTypeCombobox"
+                          SelectionChanged="ConditionInputChanged"
+                          Visibility="Collapsed" />
+                <TextBox x:Name="CriteriaTextBox"
+                         KeyDown="CriteriaTextBoxKeyDown"
+                         TextChanged="CriteriaTextBoxTextChanged" />
+            </Grid>
+        </DockPanel>
+        <!--  Row 2: scope options  -->
+        <StackPanel Margin="0,3,0,0"
+                    Orientation="Horizontal">
+            <CheckBox x:Name="SearchInChildrenCheckBox"
+                      Margin="0,0,16,0"
+                      VerticalAlignment="Center"
+                      Content="Children of selected only" />
+            <CheckBox x:Name="SearchInLoadedCheckBox"
+                      VerticalAlignment="Center"
+                      Content="Loaded tree only" />
+        </StackPanel>
+    </StackPanel>
 </UserControl>
