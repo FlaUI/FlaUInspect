@@ -94,8 +94,26 @@ public partial class ProcessWindow : Window {
     }
 
     private void TreeOnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-        ListViewItem? container = TreeViewControl.ItemContainerGenerator.ContainerFromItem(TreeViewControl.SelectedItem) as ListViewItem;
+        object? selectedItem = TreeViewControl.SelectedItem;
+
+        // With virtualization the container may not have been generated yet; scroll to the
+        // selected item first to force its instantiation.
+        ListViewItem? container = selectedItem == null
+            ? null
+            : TreeViewControl.ItemContainerGenerator.ContainerFromItem(selectedItem) as ListViewItem;
+        if (container == null) {
+            TreeViewControl.ScrollIntoView(selectedItem);
+            container = selectedItem == null
+                ? null
+                : TreeViewControl.ItemContainerGenerator.ContainerFromItem(selectedItem) as ListViewItem;
+        }
+
         container?.BringIntoView();
+
+        // Programmatic selection (hover mode / focus tracking) leaves the ListView without
+        // keyboard focus, so the default template renders the selected item as a grey inactive
+        // highlight; re-focusing makes it render the active blue highlight like a mouse click.
+        TreeViewControl.Focus();
     }
 
     private void ToggleButton_Click(object sender, RoutedEventArgs e) {

@@ -50,7 +50,7 @@ public static class HoverManager {
                     return;
                 }
 
-                if (automationElement != null && (_hoveredElement == null || !automationElement.Equals(_hoveredElement))) {
+                if (automationElement != null && (_hoveredElement == null || !IsSameElement(automationElement, _hoveredElement))) {
                     _elementOverlay?.Dispose();
                     _hoveredElement = automationElement;
 
@@ -110,5 +110,58 @@ public static class HoverManager {
         _automationBase = automation;
         _logger = logger;
         _elementOverlayFunc = elementOverlayFunc;
+    }
+
+    private static bool IsSameElement(AutomationElement? a, AutomationElement? b) {
+        if (ReferenceEquals(a, b)) {
+            return true;
+        }
+
+        if (a == null || b == null) {
+            return false;
+        }
+
+        try {
+            if (a.Equals(b)) {
+                // FlaUI's Equals always returns true when both RuntimeIds are null, so an extra
+                // identity check is required to avoid false positives (common for dynamic elements
+                // in Flutter/self-drawn apps).
+                int[]? aRuntimeId = a.Properties.RuntimeId.ValueOrDefault;
+                int[]? bRuntimeId = b.Properties.RuntimeId.ValueOrDefault;
+
+                if (aRuntimeId == null && bRuntimeId == null) {
+                    return SameIdentity(a, b);
+                }
+
+                return true;
+            }
+        } catch {
+            // fall through to identity matching
+        }
+
+        return SameIdentity(a, b);
+    }
+
+    private static bool SameIdentity(AutomationElement a, AutomationElement b) {
+        try {
+            if (a.Properties.ControlType.ValueOrDefault != b.Properties.ControlType.ValueOrDefault) {
+                return false;
+            }
+
+            if ((a.Properties.Name.ValueOrDefault ?? string.Empty) != (b.Properties.Name.ValueOrDefault ?? string.Empty)) {
+                return false;
+            }
+
+            System.Drawing.Rectangle aRect = a.Properties.BoundingRectangle.ValueOrDefault;
+            System.Drawing.Rectangle bRect = b.Properties.BoundingRectangle.ValueOrDefault;
+
+            if (aRect.IsEmpty || bRect.IsEmpty) {
+                return true;
+            }
+
+            return aRect == bRect;
+        } catch {
+            return false;
+        }
     }
 }
