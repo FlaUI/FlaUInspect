@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows;
@@ -30,6 +31,7 @@ public class ProcessViewModel : ObservableObject {
     private PatternItemsFactory? _patternItemsFactory;
     private AutomationElement? _rootElement;
     private ElementOverlay _trackHighlighterOverlay;
+    private Process? _monitoredProcess;
 
     // ── Search state ──────────────────────────────────────────────────────────
     private int _lastFoundLoadedIndex = -1;
@@ -103,11 +105,23 @@ public class ProcessViewModel : ObservableObject {
         });
 
         ClosingCommand = new RelayCommand(_ => {
-            HoverManager.RemoveListener(_windowHandle);
-            _trackHighlighterOverlay?.Dispose();
-            _focusTrackingMode?.Stop();
+            try { HoverManager.RemoveListener(_windowHandle); } catch { }
+            try { _trackHighlighterOverlay?.Dispose(); } catch { }
+            try { _focusTrackingMode?.Stop(); } catch { }
             _focusTrackingMode = null;
+            try { _monitoredProcess?.Dispose(); } catch { }
+            _monitoredProcess = null;
         });
+
+        if (_processId != 0) {
+            try {
+                _monitoredProcess = Process.GetProcessById(_processId);
+                _monitoredProcess.EnableRaisingEvents = true;
+                _monitoredProcess.Exited += (_, _) => ProcessExited?.Invoke();
+            } catch {
+                // Process may have already exited or access is denied
+            }
+        }
 
         CopyDetailsToClipboardCommand = new RelayCommand(_ => {
             if (SelectedItem?.AutomationElement == null) {
@@ -225,6 +239,7 @@ public class ProcessViewModel : ObservableObject {
 
     public event Action? CopiedNotificationCurrentElementSaveStateRequested;
     public event Action CopiedNotificationRequested;
+    public event Action? ProcessExited;
 
     public void Initialize() {
         _patternItemsFactory = new PatternItemsFactory(_automation);

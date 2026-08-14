@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using FlaUI.Core.AutomationElements;
 using FlaUInspect.ViewModels;
 using Button = System.Windows.Controls.Button;
@@ -20,12 +21,28 @@ public partial class ProcessWindow : Window {
         if (DataContext is ProcessViewModel processViewModel) {
             processViewModel.CopiedNotificationRequested += ShowCopiedNotification;
             processViewModel.CopiedNotificationCurrentElementSaveStateRequested += ShowCopiedNotificationCurrentElementSaveStateRequested;
+            processViewModel.ProcessExited += OnProcessExited;
 
             // Wire up FindControl ↔ ProcessViewModel
             FindPanel.FindNextRequested += (_, criteria) => processViewModel.FindNext(criteria);
             FindPanel.FindPrevRequested += (_, criteria) => processViewModel.FindPrev(criteria);
             FindPanel.CriteriaChanged += (_, _) => processViewModel.ResetSearch();
         }
+    }
+
+    private void OnProcessExited() {
+        if (!App.FlaUiAppOptions.AutoCloseOnProcessExit) return;
+
+        // Close() at Normal priority first; show StartupWindow at Background priority
+        // (Background = 4 < Normal = 9, so it runs AFTER Close and all its Closed-event handlers)
+        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => Close());
+        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, () => {
+            if (Application.Current.Windows.OfType<ProcessWindow>().Any()) return;
+            if (Application.Current.MainWindow is StartupWindow startupWindow) {
+                startupWindow.Show();
+                (startupWindow.DataContext as StartupViewModel)?.RefreshCommand.Execute(null);
+            }
+        });
     }
 
     private async void ShowCopiedNotification() {
@@ -51,8 +68,8 @@ public partial class ProcessWindow : Window {
                     processViewModel.ClosingCommand.Execute(DataContext);
                 }
             }
-
             startupWindow.Show();
+            (startupWindow.DataContext as StartupViewModel)?.RefreshCommand.Execute(null);
         }
     }
 

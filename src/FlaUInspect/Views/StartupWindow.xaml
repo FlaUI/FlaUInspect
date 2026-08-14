@@ -33,6 +33,9 @@
     <Grid>
         <DockPanel LastChildFill="True">
             <StackPanel DockPanel.Dock="Bottom">
+                <ProgressBar Height="3"
+                             IsIndeterminate="True"
+                             Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <Border Height="1"
                         Margin="2"
                         HorizontalAlignment="Stretch"

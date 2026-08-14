@@ -89,6 +89,8 @@ public partial class App {
             SetTheme(settings);
         });
 
+        FlaUiAppOptions.AutoCloseOnProcessExit = settings.AutoCloseOnProcessExit;
+
         ThicknessConverter converter = new ();
         FlaUiAppSettings cloneSetting = settings.Clone() as FlaUiAppSettings;
 

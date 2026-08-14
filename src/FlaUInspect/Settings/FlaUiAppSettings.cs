@@ -7,9 +7,16 @@ public class FlaUiAppSettings : ObservableObject, ICloneable {
     private OverlaySettings? _pickOverlay = new ();
     private OverlaySettings? _selectionOverlay = new ();
     private string _theme = "Light";
+    private bool _autoCloseOnProcessExit = true;
+
     public string Theme {
         get => _theme;
         set => SetProperty(ref _theme, value);
+    }
+
+    public bool AutoCloseOnProcessExit {
+        get => _autoCloseOnProcessExit;
+        set => SetProperty(ref _autoCloseOnProcessExit, value);
     }
 
     public OverlaySettings? HoverOverlay {
@@ -30,6 +37,7 @@ public class FlaUiAppSettings : ObservableObject, ICloneable {
     public object Clone() {
         return new FlaUiAppSettings {
             Theme = Theme,
+            AutoCloseOnProcessExit = AutoCloseOnProcessExit,
             HoverOverlay = HoverOverlay?.Clone() as OverlaySettings,
             SelectionOverlay = SelectionOverlay?.Clone() as OverlaySettings,
             PickOverlay = PickOverlay?.Clone() as OverlaySettings
@@ -38,6 +46,7 @@ public class FlaUiAppSettings : ObservableObject, ICloneable {
 
     public void CopyTo(FlaUiAppSettings to) {
         to.Theme = Theme;
+        to.AutoCloseOnProcessExit = AutoCloseOnProcessExit;
         to.PickOverlay?.CoppyTo(PickOverlay);
         to.SelectionOverlay?.CoppyTo(SelectionOverlay);
         to.HoverOverlay?.CoppyTo(HoverOverlay);

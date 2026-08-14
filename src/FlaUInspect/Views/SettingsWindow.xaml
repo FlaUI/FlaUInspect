@@ -24,6 +24,14 @@
             <ComboBox ItemsSource="{Binding Themes}"
                       SelectedItem="{Binding Settings.Current.Theme}" />
         </GroupBox>
+        <GroupBox Width="250"
+                  Margin="8"
+                  HorizontalAlignment="Left"
+                  Header="General"
+                  Style="{StaticResource GroupBoxStyle}">
+            <CheckBox Content="Auto close on process exit"
+                      IsChecked="{Binding Settings.Current.AutoCloseOnProcessExit}" />
+        </GroupBox>
         <WrapPanel>
             <GroupBox Header="Application pick overlay">
                 <local:OverlayView DataContext="{Binding Settings.Current.PickOverlay}" />
