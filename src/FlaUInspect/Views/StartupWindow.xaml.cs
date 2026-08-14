@@ -27,10 +27,12 @@ public partial class StartupWindow {
     }
 
     private void Uia2Click(object sender, RoutedEventArgs e) {
+        e.Handled = true;
         OpenProcessWindow(new UIA2Automation());
     }
 
     private void Uia3Click(object sender, RoutedEventArgs e) {
+        e.Handled = true;
         OpenProcessWindow(new UIA3Automation());
     }
 
@@ -80,9 +82,9 @@ public partial class StartupWindow {
     }
 
     private void ProcessesListBoxOnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
-        if (Uia2RadioButton.IsChecked == true) {
+        if (App.FlaUiAppOptions.DefaultUiaVersion == "UIA2") {
             OpenProcessWindow(new UIA2Automation());
-        } else if (Uia3RadioButton.IsChecked == true) {
+        } else {
             OpenProcessWindow(new UIA3Automation());
         }
     }

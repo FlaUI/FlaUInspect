@@ -68,9 +68,10 @@ public class StartupViewModel : ObservableObject {
                                                       closableViewModel.Save();
                                                       DialogContent = null;
 
-                                                      if (settingsViewModel != null) {
-                                                          App.ApplyAppOption(settingsViewModel.Settings.Current);
-                                                      }
+                                       if (settingsViewModel != null) {
+                                           App.ApplyAppOption(settingsViewModel.Settings.Current);
+                                           OnPropertyChanged(nameof(DefaultUiaVersion));
+                                       }
                                                   }
                                               },
                                               _ => DialogContent is IDialogViewModel { CanClose: true });
@@ -104,6 +105,8 @@ public class StartupViewModel : ObservableObject {
         get => GetProperty<bool>();
         set => SetProperty(value);
     }
+
+    public string DefaultUiaVersion => App.FlaUiAppOptions.DefaultUiaVersion;
 
     public ProcessWindowInfo? SelectedProcess {
         get => GetProperty<ProcessWindowInfo>();

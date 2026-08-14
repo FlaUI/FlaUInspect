@@ -62,13 +62,7 @@
                 </Grid>
             </StackPanel>
             <Grid IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <DockPanel Grid.Column="0"
-                           Margin="8"
+                <DockPanel Margin="8"
                            LastChildFill="True">
                     <Button Width="128"
                             HorizontalAlignment="Left"
@@ -107,22 +101,79 @@
                                 Background="{DynamicResource PrimaryBorderBrush}"
                                 DockPanel.Dock="Bottom" />
                         <Grid DockPanel.Dock="Bottom">
-                            <TextBlock Text="Double click to open by selected UIA." />
+                            <TextBlock Text="Double-click to open with default UIA version." />
                         </Grid>
                         <Grid>
                             <ListBox x:Name="ProcessesListBox"
+                                     HorizontalContentAlignment="Stretch"
                                      ItemsSource="{Binding FilteredProcesses}"
                                      MouseDoubleClick="ProcessesListBoxOnMouseDoubleClick"
                                      SelectedItem="{Binding SelectedProcess}"
                                      Visibility="{Binding Processes.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=GreaterThanZero}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="{x:Type viewModels:ProcessWindowInfo}">
-                                        <TextBlock>
-                                            <Run Text="[" />
-                                            <Run Text="{Binding ProcessId}" />
-                                            <Run Text="] " />
-                                            <Run Text="{Binding WindowTitle}" />
-                                        </TextBlock>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0"
+                                                       Padding="2"
+                                                       VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis">
+                                                <Run Text="[" />
+                                                <Run Text="{Binding ProcessId}" />
+                                                <Run Text="] " />
+                                                <Run Text="{Binding WindowTitle}" />
+                                            </TextBlock>
+                                            <StackPanel x:Name="UiaPanel"
+                                                        Grid.Column="1"
+                                                        VerticalAlignment="Center"
+                                                        Orientation="Horizontal"
+                                                        Visibility="Collapsed">
+                                                <Button Width="48"
+                                                        Margin="0,0,4,0"
+                                                        Padding="6,2"
+                                                        Click="Uia2Click"
+                                                        Content="UIA2">
+                                                    <Button.Style>
+                                                        <Style BasedOn="{StaticResource {x:Type Button}}"
+                                                               TargetType="Button">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding DataContext.DefaultUiaVersion, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                             Value="UIA2">
+                                                                    <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                                                                    <Setter Property="Foreground" Value="White" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <Button Width="48"
+                                                        Padding="6,2"
+                                                        Click="Uia3Click"
+                                                        Content="UIA3">
+                                                    <Button.Style>
+                                                        <Style BasedOn="{StaticResource {x:Type Button}}"
+                                                               TargetType="Button">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding DataContext.DefaultUiaVersion, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                             Value="UIA3">
+                                                                    <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                                                                    <Setter Property="Foreground" Value="White" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}"
+                                                         Value="True">
+                                                <Setter TargetName="UiaPanel" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
@@ -133,66 +184,6 @@
                         </Grid>
                     </DockPanel>
                 </DockPanel>
-
-                <Border Grid.Column="1"
-                        Width="1"
-                        Margin="8"
-                        VerticalAlignment="Stretch"
-                        Background="{DynamicResource PrimaryBorderBrush}" />
-
-                <StackPanel Grid.Column="2"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertBooleanConverter}}"
-                            Orientation="Vertical">
-                    <StackPanel.Resources>
-                        <Style BasedOn="{StaticResource {x:Type Button}}"
-                               TargetType="{x:Type Button}">
-                            <Setter Property="Margin" Value="10" />
-                        </Style>
-                    </StackPanel.Resources>
-                    <DockPanel LastChildFill="True">
-                        <RadioButton x:Name="Uia2RadioButton"
-                                     VerticalAlignment="Center"
-                                     DockPanel.Dock="Left"
-                                     GroupName="UiaVersion" />
-                        <Button Padding="10"
-                                Click="Uia2Click"
-                                IsEnabled="{Binding ElementName=ProcessesListBox, Path=SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">
-                            <StackPanel Orientation="Vertical">
-                                <Viewbox Width="48"
-                                         Height="48"
-                                         Stretch="Uniform">
-                                    <ContentControl Content="{StaticResource Uia2Icon}" />
-                                </Viewbox>
-                                <TextBlock TextAlignment="Center">
-                                    UIA2<LineBreak />
-                                    Uia2Icon</TextBlock>
-                            </StackPanel>
-                        </Button>
-                    </DockPanel>
-                    <DockPanel LastChildFill="True">
-                        <RadioButton x:Name="Uia3RadioButton"
-                                     VerticalAlignment="Center"
-                                     DockPanel.Dock="Left"
-                                     GroupName="UiaVersion"
-                                     IsChecked="True" />
-                        <Button Padding="10"
-                                Click="Uia3Click"
-                                IsEnabled="{Binding ElementName=ProcessesListBox, Path=SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">
-                            <StackPanel Orientation="Vertical">
-                                <Viewbox Width="48"
-                                         Height="48"
-                                         Stretch="Uniform">
-                                    <ContentControl Content="{StaticResource Uia3Icon}" />
-                                </Viewbox>
-                                <TextBlock TextAlignment="Center">
-                                    UIA3<LineBreak />
-                                    Uia3Icon</TextBlock>
-                            </StackPanel>
-                        </Button>
-                    </DockPanel>
-                </StackPanel>
             </Grid>
         </DockPanel>
         <Grid Background="#cc000000"

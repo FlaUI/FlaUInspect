@@ -29,8 +29,15 @@
                   HorizontalAlignment="Left"
                   Header="General"
                   Style="{StaticResource GroupBoxStyle}">
-            <CheckBox Content="Auto close on process exit"
-                      IsChecked="{Binding Settings.Current.AutoCloseOnProcessExit}" />
+            <StackPanel>
+                <CheckBox Content="Auto close on process exit"
+                          IsChecked="{Binding Settings.Current.AutoCloseOnProcessExit}" />
+                <TextBlock Margin="0,8,0,2"
+                           Foreground="{DynamicResource TextBrush}"
+                           Text="Default UIA version (double-click):" />
+                <ComboBox ItemsSource="{Binding UiaVersions}"
+                          SelectedItem="{Binding Settings.Current.DefaultUiaVersion}" />
+            </StackPanel>
         </GroupBox>
         <WrapPanel>
             <GroupBox Header="Application pick overlay">
