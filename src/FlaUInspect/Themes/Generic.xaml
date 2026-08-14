@@ -13,5 +13,6 @@
         <ResourceDictionary Source="/Controls/ToggleButtons.xaml" />
         <ResourceDictionary Source="/Controls/PatternExpanderStyle.xaml" />
         <ResourceDictionary Source="/Controls/GroupStyle.xaml" />
+        <ResourceDictionary Source="/Controls/ToolTips.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

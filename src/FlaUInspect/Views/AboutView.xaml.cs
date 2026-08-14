@@ -15,8 +15,8 @@ public partial class AboutView : UserControl {
         Loaded += (_, __) => {
             Regenerate();
             StartTextColorLoop();
+            SizeChanged += (_, __) => Regenerate();
         };
-        SizeChanged += (_, __) => Regenerate();
     }
 
     private void StartTextColorLoop() {

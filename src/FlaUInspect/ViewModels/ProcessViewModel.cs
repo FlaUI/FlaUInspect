@@ -1,16 +1,21 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Input;
 using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
+using FlaUI.Core.Definitions;
 using FlaUI.Core.Identifiers;
+using FlaUI.Core.Patterns;
+using FlaUInspect.Controls;
 using FlaUInspect.Core;
 using FlaUInspect.Core.Exporters;
 using FlaUInspect.Core.Logger;
 using FlaUInspect.Models;
 using Microsoft.Win32;
+using Application = System.Windows.Application;
 
 namespace FlaUInspect.ViewModels;
 
@@ -28,6 +33,22 @@ public class ProcessViewModel : ObservableObject {
     private AutomationElement? _rootElement;
     private ElementOverlay _trackHighlighterOverlay;
     private ElementViewModel? _temporaryHoverNode;
+    private Process? _monitoredProcess;
+
+    // ── Search state ──────────────────────────────────────────────────────────
+    private int _lastFoundLoadedIndex = -1;
+    private AutomationElement? _lastFoundAutomationElement;
+    private CancellationTokenSource? _searchCts;
+
+    public bool IsSearching {
+        get => GetProperty<bool>();
+        private set => SetProperty(value);
+    }
+
+    public bool SearchNotFound {
+        get => GetProperty<bool>();
+        private set => SetProperty(value);
+    }
 
     public ProcessViewModel(AutomationBase automation, int processId, IntPtr mainWindowHandle, InternalLogger logger) {
         _logger = logger;
@@ -87,11 +108,23 @@ public class ProcessViewModel : ObservableObject {
         });
 
         ClosingCommand = new RelayCommand(_ => {
-            HoverManager.RemoveListener(_windowHandle);
-            _trackHighlighterOverlay?.Dispose();
-            _focusTrackingMode?.Stop();
+            try { HoverManager.RemoveListener(_windowHandle); } catch { }
+            try { _trackHighlighterOverlay?.Dispose(); } catch { }
+            try { _focusTrackingMode?.Stop(); } catch { }
             _focusTrackingMode = null;
+            try { _monitoredProcess?.Dispose(); } catch { }
+            _monitoredProcess = null;
         });
+
+        if (_processId != 0) {
+            try {
+                _monitoredProcess = Process.GetProcessById(_processId);
+                _monitoredProcess.EnableRaisingEvents = true;
+                _monitoredProcess.Exited += (_, _) => ProcessExited?.Invoke();
+            } catch {
+                // Process may have already exited or access is denied
+            }
+        }
 
         CopyDetailsToClipboardCommand = new RelayCommand(_ => {
             if (SelectedItem?.AutomationElement == null) {
@@ -209,6 +242,7 @@ public class ProcessViewModel : ObservableObject {
 
     public event Action? CopiedNotificationCurrentElementSaveStateRequested;
     public event Action CopiedNotificationRequested;
+    public event Action? ProcessExited;
 
     public void Initialize() {
         _patternItemsFactory = new PatternItemsFactory(_automation);
@@ -719,5 +753,331 @@ public class ProcessViewModel : ObservableObject {
             p = p.Parent;
         }
         return false;
+    }
+
+    // ── Public search API (called from code-behind) ───────────────────────────
+
+    /// <summary>Resets the search cursor. Call when criteria changes.</summary>
+    public void ResetSearch() {
+        _lastFoundLoadedIndex = -1;
+        _lastFoundAutomationElement = null;
+        _searchCts?.Cancel();
+        _searchCts = null;
+        IsSearching = false;
+        SearchNotFound = false;
+    }
+
+    public void FindNext(FindCriteria criteria) {
+        if (criteria.IsEmpty) return;
+        SearchNotFound = false;
+
+        if (criteria.SearchInLoadedOnly) {
+            FindInLoaded(criteria, true);
+        } else {
+            if (IsSearching) return;
+            StartFullTreeSearch(criteria, true);
+        }
+    }
+
+    public void FindPrev(FindCriteria criteria) {
+        if (criteria.IsEmpty) return;
+        SearchNotFound = false;
+
+        if (criteria.SearchInLoadedOnly) {
+            FindInLoaded(criteria, false);
+        } else {
+            if (IsSearching) return;
+            StartFullTreeSearch(criteria, false);
+        }
+    }
+
+    // ── Loaded-tree search ────────────────────────────────────────────────────
+
+    private void FindInLoaded(FindCriteria criteria, bool forward) {
+        // Build the pool – all visible elements or children of SelectedItem only
+        var pool = (criteria.SearchInChildrenOnly && SelectedItem != null
+            ? Elements.Where(e => IsDescendantOf(e, SelectedItem))
+            : (IEnumerable<ElementViewModel>)Elements).ToList();
+
+        if (pool.Count == 0) return;
+
+        // Determine start position based on last found or current selection
+        int startPos = GetLoadedStartPos(pool, forward);
+
+        for (var i = 0; i < pool.Count; i++) {
+            int idx = forward
+                ? (startPos + i) % pool.Count
+                : ((startPos - i) % pool.Count + pool.Count) % pool.Count;
+
+            if (MatchesViewModel(pool[idx], criteria)) {
+                SelectedItem = pool[idx];
+                _lastFoundLoadedIndex = Elements.IndexOf(pool[idx]);
+                return;
+            }
+        }
+
+        SearchNotFound = true;
+    }
+
+    private int GetLoadedStartPos(List<ElementViewModel> pool, bool forward) {
+        // If we have a last-found element, start right after (or before) it
+        if (_lastFoundLoadedIndex >= 0) {
+            ElementViewModel? last = _lastFoundLoadedIndex < Elements.Count
+                ? Elements[_lastFoundLoadedIndex]
+                : null;
+
+            if (last != null) {
+                int poolIdx = pool.IndexOf(last);
+                if (poolIdx >= 0)
+                    return forward
+                        ? (poolIdx + 1) % pool.Count
+                        : (poolIdx - 1 + pool.Count) % pool.Count;
+            }
+        }
+
+        // First search: start from right after SelectedItem (or 0)
+        if (SelectedItem != null) {
+            int poolIdx = pool.IndexOf(SelectedItem);
+            if (poolIdx >= 0)
+                return forward ? (poolIdx + 1) % pool.Count : poolIdx;
+        }
+
+        return forward ? 0 : pool.Count - 1;
+    }
+
+    // ── Full-tree DFS search ──────────────────────────────────────────────────
+
+    private void StartFullTreeSearch(FindCriteria criteria, bool forward) {
+        _searchCts?.Cancel();
+        _searchCts = new CancellationTokenSource();
+        CancellationToken token = _searchCts.Token;
+
+        // Seed _lastFoundAutomationElement from SelectedItem on fresh search
+        if (_lastFoundAutomationElement == null && SelectedItem?.AutomationElement != null)
+            _lastFoundAutomationElement = SelectedItem.AutomationElement;
+
+        AutomationElement? searchRoot = criteria.SearchInChildrenOnly && SelectedItem?.AutomationElement != null
+            ? SelectedItem.AutomationElement
+            : _rootElement;
+
+        IsSearching = true;
+
+        Task.Run(async () => {
+                     if (searchRoot == null) {
+                         await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => IsSearching = false);
+                         return;
+                     }
+
+                     try {
+                         AutomationElement? found = forward
+                             ? FindNextInTree(searchRoot, criteria, token)
+                             : FindPrevInTree(searchRoot, criteria, token);
+
+                         if (found == null || token.IsCancellationRequested) {
+                             if (found == null && !token.IsCancellationRequested)
+                                 await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => SearchNotFound = true);
+                             return;
+                         }
+
+                         _lastFoundAutomationElement = found;
+                         await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => ElementToSelectChanged(found));
+                     } catch (OperationCanceledException) {
+                         // expected on cancel – IsSearching already set to false by ResetSearch
+                     } catch (Exception ex) {
+                         _logger?.LogError(ex.ToString());
+                     } finally {
+                         if (!token.IsCancellationRequested) {
+                             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() => IsSearching = false);
+                         }
+                     }
+                 },
+                 token);
+    }
+
+    /// <summary>DFS: finds the first element that matches criteria AFTER _lastFoundAutomationElement.</summary>
+    private AutomationElement? FindNextInTree(AutomationElement root, FindCriteria criteria, CancellationToken ct) {
+        bool pastLast = _lastFoundAutomationElement == null;
+        (AutomationElement? found, _) = DfsForward(root, criteria, pastLast, ct);
+
+        if (found == null && _lastFoundAutomationElement != null) {
+            // Wrap around: search from root beginning
+            (AutomationElement? wrapped, _) = DfsForward(root, criteria, true, ct);
+            return wrapped;
+        }
+        return found;
+    }
+
+    /// <summary>Collect all DFS nodes, walk backwards to find prev match.</summary>
+    private AutomationElement? FindPrevInTree(AutomationElement root, FindCriteria criteria, CancellationToken ct) {
+        // Collect all matching elements in DFS order, pick the one before last found
+        List<AutomationElement> matches = [];
+        CollectMatches(root, criteria, matches, ct);
+
+        if (matches.Count == 0) return null;
+
+        if (_lastFoundAutomationElement == null)
+            return matches[^1];
+
+        for (var i = 0; i < matches.Count; i++) {
+            bool isLast;
+
+            try {
+                isLast = matches[i].Equals(_lastFoundAutomationElement);
+            } catch {
+                isLast = false;
+            }
+            if (isLast)
+                return matches[(i - 1 + matches.Count) % matches.Count];
+        }
+
+        // last found not in matches – return last match
+        return matches[^1];
+    }
+
+    private void CollectMatches(AutomationElement node, FindCriteria criteria,
+                                List<AutomationElement> result, CancellationToken ct) {
+        ct.ThrowIfCancellationRequested();
+        if (MatchesAutomationElement(node, criteria)) result.Add(node);
+
+        AutomationElement[] children;
+
+        try {
+            using (CacheRequest.ForceNoCache()) {
+                children = node.FindAllChildren();
+            }
+        } catch {
+            return;
+        }
+
+        foreach (AutomationElement child in children) {
+            ct.ThrowIfCancellationRequested();
+            CollectMatches(child, criteria, result, ct);
+        }
+    }
+
+    private (AutomationElement? found, bool pastLast) DfsForward(
+        AutomationElement node, FindCriteria criteria, bool pastLast, CancellationToken ct) {
+
+        ct.ThrowIfCancellationRequested();
+
+        if (pastLast) {
+            if (MatchesAutomationElement(node, criteria)) return (node, true);
+        } else {
+            try {
+                if (node.Equals(_lastFoundAutomationElement)) pastLast = true;
+            } catch {
+            }
+        }
+
+        AutomationElement[] children;
+
+        try {
+            using (CacheRequest.ForceNoCache()) {
+                children = node.FindAllChildren();
+            }
+        } catch {
+            return (null, pastLast);
+        }
+
+        foreach (AutomationElement child in children) {
+            ct.ThrowIfCancellationRequested();
+            (AutomationElement? found, bool newPast) = DfsForward(child, criteria, pastLast, ct);
+            pastLast = newPast;
+            if (found != null) return (found, true);
+        }
+
+        return (null, pastLast);
+    }
+
+    // ── Match helpers ─────────────────────────────────────────────────────────
+
+    private bool MatchesViewModel(ElementViewModel vm, FindCriteria criteria) {
+        try {
+            return criteria.FindBy switch {
+                "Name" => MatchString(vm.Name, criteria),
+                "AutomationId" => MatchString(vm.AutomationId, criteria),
+                "ControlType" => criteria.ControlTypeValue.HasValue &&
+                                 vm.ControlType == criteria.ControlTypeValue.Value,
+                "ClassName" => MatchString(
+                                           vm.AutomationElement?.Properties.ClassName.ValueOrDefault,
+                                           criteria),
+                "FrameworkId" => MatchString(
+                                             vm.AutomationElement?.Properties.FrameworkId.ValueOrDefault,
+                                             criteria),
+                "FrameworkType" => criteria.FrameworkTypeValue.HasValue &&
+                                   vm.AutomationElement != null &&
+                                   vm.AutomationElement.Properties.FrameworkId
+                                       .TryGetValue(out string? fid) &&
+                                   string.Equals(fid,
+                                                 criteria.FrameworkTypeValue.Value.ToString(),
+                                                 StringComparison.OrdinalIgnoreCase),
+                "ProcessId" => int.TryParse(criteria.TextValue, out int pid) &&
+                               vm.AutomationElement != null &&
+                               vm.AutomationElement.Properties.ProcessId
+                                   .TryGetValue(out int epid) &&
+                               epid == pid,
+                "LocalizedControlType" => MatchString(
+                                                      vm.AutomationElement?.Properties.LocalizedControlType.ValueOrDefault,
+                                                      criteria),
+                "HelpText" => MatchString(
+                                          vm.AutomationElement?.Properties.HelpText.ValueOrDefault,
+                                          criteria),
+                "Text" or "Value" => vm.AutomationElement != null &&
+                                     TryMatchValuePattern(vm.AutomationElement, criteria),
+                _ => false
+            };
+        } catch {
+            return false;
+        }
+    }
+
+    private bool MatchesAutomationElement(AutomationElement el, FindCriteria criteria) {
+        try {
+            return criteria.FindBy switch {
+                "Name" => MatchString(el.Properties.Name.ValueOrDefault, criteria),
+                "AutomationId" => MatchString(el.Properties.AutomationId.ValueOrDefault, criteria),
+                "ControlType" => criteria.ControlTypeValue.HasValue &&
+                                 el.Properties.ControlType.TryGetValue(out ControlType ct) &&
+                                 ct == criteria.ControlTypeValue.Value,
+                "ClassName" => MatchString(el.Properties.ClassName.ValueOrDefault, criteria),
+                "FrameworkId" => MatchString(el.Properties.FrameworkId.ValueOrDefault, criteria),
+                "FrameworkType" => criteria.FrameworkTypeValue.HasValue &&
+                                   el.Properties.FrameworkId.TryGetValue(out string? fid) &&
+                                   string.Equals(fid,
+                                                 criteria.FrameworkTypeValue.Value.ToString(),
+                                                 StringComparison.OrdinalIgnoreCase),
+                "ProcessId" => int.TryParse(criteria.TextValue, out int pid) &&
+                               el.Properties.ProcessId.TryGetValue(out int epid) &&
+                               epid == pid,
+                "LocalizedControlType" => MatchString(
+                                                      el.Properties.LocalizedControlType.ValueOrDefault,
+                                                      criteria),
+                "HelpText" => MatchString(el.Properties.HelpText.ValueOrDefault, criteria),
+                "Text" => MatchString(el.Properties.Name, criteria),
+                "Value" => TryMatchValuePattern(el, criteria),
+                _ => false
+            };
+        } catch {
+            return false;
+        }
+    }
+
+    private bool TryMatchValuePattern(AutomationElement el, FindCriteria criteria) {
+        try {
+            if (el.Patterns.Value.TryGetPattern(out IValuePattern? vp))
+                return MatchString(vp.Value.ValueOrDefault, criteria);
+        } catch {
+        }
+        return false;
+    }
+
+    private bool MatchString(string? value, FindCriteria criteria) {
+        if (value == null) return false;
+        string pattern = criteria.TextValue ?? "";
+        return criteria.MatchMode switch {
+            SearchMatchMode.Exact      => string.Equals(value, pattern, StringComparison.Ordinal),
+            SearchMatchMode.IgnoreCase => value.Contains(pattern, StringComparison.OrdinalIgnoreCase),
+            _                          => value.Contains(pattern, StringComparison.Ordinal)   // Substring
+        };
     }
 }

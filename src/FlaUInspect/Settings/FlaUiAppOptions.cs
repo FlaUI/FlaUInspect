@@ -5,6 +5,8 @@ using FlaUInspect.Core;
 namespace FlaUInspect.Settings;
 
 public class FlaUiAppOptions {
+    public bool AutoCloseOnProcessExit { get; set; } = true;
+    public string DefaultUiaVersion { get; set; } = "UIA3";
     public Func<ElementOverlay?> HoverOverlay { get; set; } = () => null;
     public Func<ElementOverlay?> SelectionOverlay { get; set; } = () => null;
     public Func<ElementOverlay?> PickOverlay { get; set; } = () => null;

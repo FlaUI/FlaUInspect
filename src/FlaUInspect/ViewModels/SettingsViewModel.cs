@@ -18,6 +18,7 @@ public class SettingsViewModel : ObservableObject, IDialogViewModel, ISettingVie
 
     public IEnumerable<string> Themes { get; } = new List<string> { "Light", "Dark" };
     public IEnumerable<string> OverlayModes { get; } = new List<string> { "Fill", "Border" };
+    public IEnumerable<string> UiaVersions { get; } = new List<string> { "UIA2", "UIA3" };
 
     public void Save() {
         _settingsService.Save(Settings.Current);
