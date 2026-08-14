@@ -2,9 +2,28 @@
 
 ![FlaUInspect](src/FlaUInspect/FlaUInspect.png)
 
-## NEW 3.0.0
+## NEW 3.1.0
 
-New version released! Download it [here](https://github.com/FlaUI/FlaUInspect/releases/tag/v3.0.0)
+New version released! Download it [here](https://github.com/FlaUI/FlaUInspect/releases/tag/v3.1.0)
+
+### What's new in 3.1.0:
+- added find panel by different properties to Process View
+- added Auto Close On Process Exit option to settings. Option allows to automatically close Process View when attached process is closed.
+- selection UAI2/UAI3 moved to settings
+- fixed tooltips foreground/background color in dark theme
+
+---
+Find Panel in Process View allows to find controls by different properties. It is possible to find controls by AutomationId, Name, ClassName, ControlType and XPath. The search is case insensitive and supports wildcards.
+
+<img width="1097" height="694" alt="Screenshot 2026-08-14 150554" src="https://github.com/user-attachments/assets/c798f983-a0f6-44f5-8cfe-18aaddbb8572" />
+
+Selection UAI2/UAI3 moved to settings 
+
+<img width="802" height="551" alt="Screenshot 2026-08-14 150852" src="https://github.com/user-attachments/assets/07d54fcd-a79d-4623-aec0-24b150b6cb7f" />
+
+## 3.0.0
+
+Download it [here](https://github.com/FlaUI/FlaUInspect/releases/tag/v3.0.0)
 
 This is a major update with a lot of changes:
 - using separated window for process
