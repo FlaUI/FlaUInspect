@@ -237,4 +237,95 @@
               Style="{StaticResource FbPath}" />
     </Canvas>
 
+    <!--  Arrow Up  -->
+    <Canvas x:Key="ArrowUpwardIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M 10.890822,20.873425 V 7.3691748 L 4.6794269,13.580585 3.1265781,11.999995 12,3.1265749 l 8.873422,8.8734201 -1.55285,1.58059 -6.211395,-6.2114101 V 20.873425 Z"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  Arrow Up  -->
+    <Canvas x:Key="ArrowDownwardIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M 10.872472,2.9797785 V 16.707428 L 4.5583172,10.393273 2.9797785,12 12,21.020222 21.020222,12 19.441683,10.393273 13.127528,16.707428 V 2.9797785 Z"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  LoadedTreeOnly – document lines with scroll up/down arrows  -->
+    <Canvas x:Key="LoadedTreeOnlyIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <!--  folder-tab / first tree row  -->
+        <Path Data="M6.5,7 h4 l1.5,1.5 h5.5"
+              Style="{StaticResource FbPath}" />
+        <!--  tree rows  -->
+        <Path Data="M6.5,11.5 h10 M6.5,16 h10 M6.5,20.5 h6"
+              Style="{StaticResource FbPath}" />
+        <!--  scroll track  -->
+        <Path Data="M19,5.5 v14"
+              Style="{StaticResource FbPath}" />
+        <!--  up arrow  -->
+        <Path Data="M16.5,8 l2.5,-2.5 l2.5,2.5"
+              Style="{StaticResource FbPath}" />
+        <!--  down arrow  -->
+        <Path Data="M16.5,17 l2.5,2.5 l2.5,-2.5"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  ChildrenOfSelectedOnly – parent node connected to two child nodes  -->
+    <Canvas x:Key="ChildrenOfSelectedOnlyIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <!--  parent node  -->
+        <Ellipse Canvas.Left="10"
+                 Canvas.Top="5"
+                 Width="4"
+                 Height="4"
+                 Style="{StaticResource FbEllipse}" />
+        <!--  vertical stem from parent  -->
+        <Path Data="M12,9 v4.5"
+              Style="{StaticResource FbPath}" />
+        <!--  left branch: horizontal then down  -->
+        <Path Data="M12,11.5 H7 v3.5"
+              Style="{StaticResource FbPath}" />
+        <!--  right branch: horizontal then down  -->
+        <Path Data="M12,11.5 h5 v3.5"
+              Style="{StaticResource FbPath}" />
+        <!--  centre vertical to bottom connector  -->
+        <Path Data="M12,13.5 v4 M12,17.5 h-5 M12,17.5 h5"
+              Style="{StaticResource FbPath}" />
+        <!--  left child node  -->
+        <Ellipse Canvas.Left="5.5"
+                 Canvas.Top="16"
+                 Width="3"
+                 Height="3"
+                 Style="{StaticResource FbEllipse}" />
+        <!--  right child node  -->
+        <Ellipse Canvas.Left="15.5"
+                 Canvas.Top="16"
+                 Width="3"
+                 Height="3"
+                 Style="{StaticResource FbEllipse}" />
+    </Canvas>
+
+    <!--  Arrow Up  -->
+    <Canvas x:Key="SearchIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M 0.46554087,19.497399 V 17.190507 H 12 v 2.306892 z m 0,-5.76723 V 11.423277 H 6.2327704 v 2.306892 z m 0,-5.7672297 V 5.6560475 H 6.2327704 V 7.9629393 Z M 21.919635,19.497399 17.478868,15.056631 q -0.692068,0.490215 -1.513898,0.735322 -0.82183,0.245108 -1.658078,0.245108 -2.3934,0 -4.080315,-1.686915 -1.6869147,-1.686914 -1.6869147,-4.080315 0,-2.3934001 1.6869147,-4.0803148 1.686915,-1.6869146 4.080315,-1.6869146 2.3934,0 4.080315,1.6869146 1.686914,1.6869147 1.686914,4.0803148 0,0.836249 -0.245107,1.658079 -0.245107,0.82183 -0.735322,1.513897 l 4.440767,4.440767 z m -7.612743,-5.76723 q 1.441807,0 2.451073,-1.009265 1.009265,-1.009266 1.009265,-2.451073 0,-1.4418072 -1.009265,-2.4510724 -1.009266,-1.0092652 -2.451073,-1.0092652 -1.441808,0 -2.451072,1.0092652 -1.009266,1.0092652 -1.009266,2.4510724 0,1.441807 1.009266,2.451073 1.009264,1.009265 2.451072,1.009265 z"
+              Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+    </Canvas>
+
 </ResourceDictionary>

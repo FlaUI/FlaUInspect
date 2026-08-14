@@ -20,6 +20,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Controls/ImageStyles.xaml" />
                 <ResourceDictionary Source="../Resources/Icons.xaml" />
+                <ResourceDictionary Source="../Resources/FindByIcons.xaml" />
                 <ResourceDictionary Source="/Resources/DetailsIcons.xaml" />
                 <ResourceDictionary Source="/Resources/RibbonIcons.xaml" />
                 <ResourceDictionary Source="/Controls/PatternExpanderStyle.xaml" />
@@ -127,7 +128,7 @@
                     </TextBlock>
                 </ButtonBase.ToolTip>
                 <Viewbox Style="{StaticResource ViewBoxStyle}">
-                    <ContentControl Content="{StaticResource EnableXPathIcon}" />
+                    <ContentControl Content="{StaticResource SearchIcon}" />
                 </Viewbox>
             </ToggleButton>
 
