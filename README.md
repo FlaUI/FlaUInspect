@@ -15,11 +15,11 @@ New version released! Download it [here](https://github.com/FlaUI/FlaUInspect/re
 ---
 Find Panel in Process View allows to find controls by different properties. It is possible to find controls by AutomationId, Name, ClassName, ControlType and XPath. The search is case insensitive and supports wildcards.
 
-<img width="1097" height="694" alt="Screenshot 2026-08-14 150554" src="https://github.com/user-attachments/assets/c798f983-a0f6-44f5-8cfe-18aaddbb8572" />
+<img width="800"  alt="Screenshot 2026-08-14 150554" src="https://github.com/user-attachments/assets/c798f983-a0f6-44f5-8cfe-18aaddbb8572" />
 
 Selection UAI2/UAI3 moved to settings 
 
-<img width="802" height="551" alt="Screenshot 2026-08-14 150852" src="https://github.com/user-attachments/assets/07d54fcd-a79d-4623-aec0-24b150b6cb7f" />
+<img width="600" alt="Screenshot 2026-08-14 150852" src="https://github.com/user-attachments/assets/07d54fcd-a79d-4623-aec0-24b150b6cb7f" />
 
 ## 3.0.0
 
