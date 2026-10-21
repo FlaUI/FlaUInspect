@@ -287,6 +287,11 @@
                                   SelectedItem="{Binding SelectedItem}"
                                   SelectionChanged="TreeOnSelectionChanged">
 
+                            <ListView.InputBindings>
+                                <KeyBinding Key="Left" Command="{Binding CollapseCommand}" />
+                                <KeyBinding Key="Right" Command="{Binding ExpandCommand}" />
+                            </ListView.InputBindings>
+
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
                                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />

@@ -138,6 +138,44 @@ public class ProcessViewModel : ObservableObject {
                 _logger?.LogError(e.ToString());
             }
         });
+
+        CollapseCommand = new RelayCommand(_ => {
+            if (SelectedItem is null) {
+                return;
+            }
+
+            // Move selection to previous node if current node is already collapsed
+            if (!SelectedItem.IsExpanded) {
+                int currentIndex = Elements.IndexOf(SelectedItem);
+
+                if (currentIndex > 0) {
+                    SelectedItem = Elements[currentIndex - 1];
+                }
+                return;
+            }
+
+            SelectedItem.IsExpanded = false;
+            CollapseElement(SelectedItem);
+        });
+
+        ExpandCommand = new RelayCommand(_ => {
+            if (SelectedItem is null) {
+                return;
+            }
+
+            // Move selection to next node if current node is already expanded
+            if (SelectedItem.IsExpanded) {
+                int currentIndex = Elements.IndexOf(SelectedItem);
+
+                if (currentIndex >= 0 && currentIndex < Elements.Count - 1) {
+                    SelectedItem = Elements[currentIndex + 1];
+                }
+                return;
+            }
+
+            SelectedItem.IsExpanded = true;
+            ElementToSelectChanged(SelectedItem.AutomationElement, true);
+        });
     }
 
     public string? WindowTitle { get; }
@@ -193,6 +231,8 @@ public class ProcessViewModel : ObservableObject {
     public ICommand CaptureSelectedItemCommand { get; }
     public ICommand CurrentElementSaveStateCommand { get; }
     public ICommand CopyDetailsToClipboardCommand { get; }
+    public ICommand CollapseCommand { get; }
+    public ICommand ExpandCommand { get; }
 
     public bool EnableFocusTrackingMode {
         get => GetProperty<bool>();
