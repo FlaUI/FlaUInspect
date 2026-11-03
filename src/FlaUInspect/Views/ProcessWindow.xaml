@@ -1,639 +1,419 @@
-Skip to content
-FlaUI
-FlaUInspect
-Repository navigation
-Code
-Issues
-19
- (19)
-Pull requests
-5
- (5)
-Agents
-Discussions
-Actions
-Projects
-Wiki
-Security and quality
-Insights
-Open a pull request
-Create a new pull request by comparing changes across two branches. If you need to, you can also . Learn more about diff comparisons here.
- 
-...
- 
- Able to merge. These branches can be automatically merged.
-@Ghislain1
-Add a title
-*
-#51 Improve  ToolTip 
-
-Add a description
-Comment
- 
-
-Add your description here...
-Allow edits by maintainers
-Remember, contributions to this repository should follow our GitHub Community Guidelines.
-️
-Helpful resources
-GitHub Community Guidelines
- 2 commits
- 1 file changed
- 1 contributor
-Commits on Nov 3, 2026
-#51 Fix typo in ToolTip
-
-@Ghislain1
-Ghislain1 committed 48 minutes ago
-format xaml files
-
-@Ghislain1
-Ghislain1 committed 15 minutes ago
- Showing  with 470 additions and 457 deletions.
- 927 changes: 470 additions & 457 deletions927  
-src/FlaUInspect/Views/ProcessWindow.xaml
-Original file line number	Original file line	Diff line number	Diff line change
-@@ -1,471 +1,484 @@
-<Window x:Class="FlaUInspect.Views.ProcessWindow"	<Window
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"	    x:Class="FlaUInspect.Views.ProcessWindow"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"	    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:controls="clr-namespace:FlaUInspect.Controls"	    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:converters="clr-namespace:FlaUInspect.Core.Converters"	    xmlns:controls="clr-namespace:FlaUInspect.Controls"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"	    xmlns:converters="clr-namespace:FlaUInspect.Core.Converters"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"	    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:models="clr-namespace:FlaUInspect.Models"	    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:system="clr-namespace:System;assembly=System.Runtime"	    xmlns:models="clr-namespace:FlaUInspect.Models"
-        xmlns:viewModels="clr-namespace:FlaUInspect.ViewModels"	    xmlns:system="clr-namespace:System;assembly=System.Runtime"
-        Title="{Binding WindowTitle}"	    xmlns:viewModels="clr-namespace:FlaUInspect.ViewModels"
-        Width="800"	    Title="{Binding WindowTitle}"
-        Height="450"	    Width="800"
-        d:DataContext="{d:DesignInstance viewModels:ProcessViewModel}"	    Height="450"
-        Background="{DynamicResource PrimaryWindowBackgroundBrush}"	    d:DataContext="{d:DesignInstance viewModels:ProcessViewModel}"
-        Closed="ProcessWindowOnClosed"	    Background="{DynamicResource PrimaryWindowBackgroundBrush}"
-        mc:Ignorable="d">	    Closed="ProcessWindowOnClosed"
-    <Window.Resources>	    mc:Ignorable="d">
-        <ResourceDictionary>	 <Window.Resources>
-            <ResourceDictionary.MergedDictionaries>	  <ResourceDictionary>
-                <ResourceDictionary Source="/Controls/ImageStyles.xaml" />	   <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resources/Icons.xaml" />	    <ResourceDictionary Source="/Controls/ImageStyles.xaml" />
-                <ResourceDictionary Source="../Resources/FindByIcons.xaml" />	    <ResourceDictionary Source="../Resources/Icons.xaml" />
-                <ResourceDictionary Source="/Resources/DetailsIcons.xaml" />	    <ResourceDictionary Source="../Resources/FindByIcons.xaml" />
-                <ResourceDictionary Source="/Resources/RibbonIcons.xaml" />	    <ResourceDictionary Source="/Resources/DetailsIcons.xaml" />
-                <ResourceDictionary Source="/Controls/PatternExpanderStyle.xaml" />	    <ResourceDictionary Source="/Resources/RibbonIcons.xaml" />
-                <ResourceDictionary Source="/Controls/GroupStyle.xaml" />	    <ResourceDictionary Source="/Controls/PatternExpanderStyle.xaml" />
-                <ResourceDictionary Source="/Controls/ElementToggleExpander.xaml" />	    <ResourceDictionary Source="/Controls/GroupStyle.xaml" />
-            </ResourceDictionary.MergedDictionaries>	    <ResourceDictionary Source="/Controls/ElementToggleExpander.xaml" />
-
+<Window x:Class="FlaUInspect.Views.ProcessWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:FlaUInspect.Controls"
+        xmlns:converters="clr-namespace:FlaUInspect.Core.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:FlaUInspect.Models"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:viewModels="clr-namespace:FlaUInspect.ViewModels"
+        Title="{Binding WindowTitle}"
+        Width="800"
+        Height="450"
+        d:DataContext="{d:DesignInstance viewModels:ProcessViewModel}"
+        Background="{DynamicResource PrimaryWindowBackgroundBrush}"
+        Closed="ProcessWindowOnClosed"
+        mc:Ignorable="d">
+ <Window.Resources>
+  <ResourceDictionary>
+   <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/Controls/ImageStyles.xaml" />
+    <ResourceDictionary Source="../Resources/Icons.xaml" />
+    <ResourceDictionary Source="../Resources/FindByIcons.xaml" />
+    <ResourceDictionary Source="/Resources/DetailsIcons.xaml" />
+    <ResourceDictionary Source="/Resources/RibbonIcons.xaml" />
+    <ResourceDictionary Source="/Controls/PatternExpanderStyle.xaml" />
+    <ResourceDictionary Source="/Controls/GroupStyle.xaml" />
+    <ResourceDictionary Source="/Controls/ElementToggleExpander.xaml" />
    </ResourceDictionary.MergedDictionaries>
-            <system:Double x:Key="ButtonWidth">	
-                32	   <system:Double x:Key="ButtonWidth">
-            </system:Double>	    32
-            <system:Double x:Key="ButtonHeight">	   </system:Double>
-                32	   <system:Double x:Key="ButtonHeight">
-            </system:Double>	    32
 
+   <system:Double x:Key="ButtonWidth">
+    32
    </system:Double>
-            <Style x:Key="SelectableLabel"	
-                   TargetType="{x:Type TextBox}">	   <Style x:Key="SelectableLabel" TargetType="{x:Type TextBox}">
-                <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />	    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-                <Setter Property="Background" Value="Transparent" />	    <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />	    <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="IsReadOnly" Value="True" />	    <Setter Property="IsReadOnly" Value="True" />
-            </Style>	   </Style>
+   <system:Double x:Key="ButtonHeight">
+    32
+   </system:Double>
 
-
-            <SolidColorBrush x:Key="Details.Item.Background"	   <SolidColorBrush x:Key="Details.Item.Background" Color="{DynamicResource PrimaryColor}" />
-                             Color="{DynamicResource PrimaryColor}" />	   <SolidColorBrush x:Key="Details.Item.Background.Alternative" Color="{DynamicResource SecondaryColor}" />
-            <SolidColorBrush x:Key="Details.Item.Background.Alternative"	
-                             Color="{DynamicResource SecondaryColor}" />	   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-   <converters:AlternationToColorConverter
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />	                x:Key="AlternationToColorConverter"
-            <converters:AlternationToColorConverter x:Key="AlternationToColorConverter"	                AlternativeBrush="{StaticResource Details.Item.Background}"
-                                                    AlternativeBrush="{StaticResource Details.Item.Background}"	                Brush="{StaticResource Details.Item.Background.Alternative}" />
-                                                    Brush="{StaticResource Details.Item.Background.Alternative}" />	
-
-   <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter" ZeroCountVisibility="Hidden" />
-            <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"	   <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
-                                                   ZeroCountVisibility="Hidden" />	   <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />	   <converters:IndentConverter x:Key="IndentConverter" />
-            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />	   <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
-            <converters:IndentConverter x:Key="IndentConverter" />	
-            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />	   <Style
-
-                x:Key="RibbonButtonStyle"
-            <Style x:Key="RibbonButtonStyle"	                BasedOn="{StaticResource {x:Type Button}}"
-                   BasedOn="{StaticResource {x:Type Button}}"	                TargetType="{x:Type Button}">
-                   TargetType="{x:Type Button}">	    <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
-                <Setter Property="Width" Value="{StaticResource ButtonWidth}" />	    <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
-                <Setter Property="Height" Value="{StaticResource ButtonHeight}" />	    <Setter Property="Margin" Value="4" />
-                <Setter Property="Margin" Value="4" />	    <Setter Property="Padding" Value="0" />
-                <Setter Property="Padding" Value="0" />	   </Style>
-            </Style>	
-
-   <Style
-            <Style x:Key="RibbonToggleButtonStyle"	                x:Key="RibbonToggleButtonStyle"
-                   BasedOn="{StaticResource {x:Type ToggleButton}}"	                BasedOn="{StaticResource {x:Type ToggleButton}}"
-                   TargetType="{x:Type ToggleButton}">	                TargetType="{x:Type ToggleButton}">
-                <Setter Property="Width" Value="{StaticResource ButtonWidth}" />	    <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
-                <Setter Property="Height" Value="{StaticResource ButtonHeight}" />	    <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
-                <Setter Property="Margin" Value="4" />	    <Setter Property="Margin" Value="4" />
-            </Style>	   </Style>
-
-
-            <Style x:Key="ProcessRadioButtonStyle"	   <Style
-                   BasedOn="{StaticResource RibbonRadioButtonStyle}"	                x:Key="ProcessRadioButtonStyle"
-                   TargetType="RadioButton">	                BasedOn="{StaticResource RibbonRadioButtonStyle}"
-                <Setter Property="Width" Value="{StaticResource ButtonWidth}" />	                TargetType="RadioButton">
-                <Setter Property="Height" Value="{StaticResource ButtonHeight}" />	    <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
-            </Style>	    <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
-
+   <Style x:Key="SelectableLabel"
+                   TargetType="{x:Type TextBox}">
+    <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="IsReadOnly" Value="True" />
    </Style>
-            <Style x:Key="ViewBoxStyle"	
-                   TargetType="Viewbox">	   <Style x:Key="ViewBoxStyle" TargetType="Viewbox">
-                <Setter Property="Width" Value="20" />	    <Setter Property="Width" Value="20" />
-                <Setter Property="Height" Value="20" />	    <Setter Property="Height" Value="20" />
-                <Setter Property="Stretch" Value="Uniform" />	    <Setter Property="Stretch" Value="Uniform" />
-            </Style>	   </Style>
 
+   <SolidColorBrush x:Key="Details.Item.Background"
+                             Color="{DynamicResource PrimaryColor}" />
+   <SolidColorBrush x:Key="Details.Item.Background.Alternative"
+                             Color="{DynamicResource SecondaryColor}" />
 
-        </ResourceDictionary>	  </ResourceDictionary>
+   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+   <converters:AlternationToColorConverter x:Key="AlternationToColorConverter"
+                                                    AlternativeBrush="{StaticResource Details.Item.Background}"
+                                                    Brush="{StaticResource Details.Item.Background.Alternative}" />
 
+   <converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter"
+                                                   ZeroCountVisibility="Hidden" />
+   <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+   <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+   <converters:IndentConverter x:Key="IndentConverter" />
+   <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />
 
-    </Window.Resources>	 </Window.Resources>
-    <DockPanel LastChildFill="True">	 <DockPanel LastChildFill="True">
-        <StackPanel DockPanel.Dock="Top"	  <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                    Orientation="Horizontal">	   <Button
-            <Button Margin="8"	                Margin="8"
-                    HorizontalAlignment="Left"	                HorizontalAlignment="Left"
-                    VerticalAlignment="Top"	                VerticalAlignment="Top"
-                    Click="SelectWindowClick"	                Click="SelectWindowClick"
-                    Style="{StaticResource RibbonButtonStyle}">	                Style="{StaticResource RibbonButtonStyle}">
-                <Viewbox Style="{StaticResource ViewBoxStyle}">	    <Viewbox Style="{StaticResource ViewBoxStyle}">
-                    <ContentControl Content="{StaticResource OpenIcon}" />	     <ContentControl Content="{StaticResource OpenIcon}" />
-                </Viewbox>	    </Viewbox>
-            </Button>	   </Button>
+   <Style x:Key="RibbonButtonStyle"
+                   BasedOn="{StaticResource {x:Type Button}}"
+                   TargetType="{x:Type Button}">
+    <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
+    <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
+    <Setter Property="Margin" Value="4" />
+    <Setter Property="Padding" Value="0" />
+   </Style>
 
+   <Style x:Key="RibbonToggleButtonStyle"
+                   BasedOn="{StaticResource {x:Type ToggleButton}}"
+                   TargetType="{x:Type ToggleButton}">
+    <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
+    <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
+    <Setter Property="Margin" Value="4" />
+   </Style>
 
-            <Border Width="8"	   <Border
-                    Background="Transparent"	                Width="8"
-                    BorderBrush="Transparent" />	                Background="Transparent"
+   <Style x:Key="ProcessRadioButtonStyle"
+                   BasedOn="{StaticResource RibbonRadioButtonStyle}"
+                   TargetType="RadioButton">
+    <Setter Property="Width" Value="{StaticResource ButtonWidth}" />
+    <Setter Property="Height" Value="{StaticResource ButtonHeight}" />
+   </Style>
 
-                BorderBrush="Transparent" />
-            <Button Command="{Binding RefreshCommand}"	
-                    Style="{StaticResource RibbonButtonStyle}"	   <Button
-                    ToolTip="Refresh. Reload the UI Automation tree">	                Command="{Binding RefreshCommand}"
-                <Viewbox Style="{StaticResource ViewBoxStyle}">	                Style="{StaticResource RibbonButtonStyle}"
-                    <ContentControl Content="{StaticResource RefreshIcon}" />	                ToolTip="Refresh. Reload the UI Automation tree">
-                </Viewbox>	    <Viewbox Style="{StaticResource ViewBoxStyle}">
-            </Button>	     <ContentControl Content="{StaticResource RefreshIcon}" />
+   <Style x:Key="ViewBoxStyle"
+                   TargetType="Viewbox">
+    <Setter Property="Width" Value="20" />
+    <Setter Property="Height" Value="20" />
+    <Setter Property="Stretch" Value="Uniform" />
+   </Style>
 
+  </ResourceDictionary>
+
+ </Window.Resources>
+ <DockPanel LastChildFill="True">
+  <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal">
+   <Button Margin="8"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="SelectWindowClick"
+                    Style="{StaticResource RibbonButtonStyle}">
+    <Viewbox Style="{StaticResource ViewBoxStyle}">
+     <ContentControl Content="{StaticResource OpenIcon}" />
     </Viewbox>
-            <ToggleButton x:Name="IsFindVisibleToggleButton"	   </Button>
-                          IsChecked="{Binding IsFindVisible}"	
-                          Style="{StaticResource RibbonToggleButtonStyle}">	   <ToggleButton
-                <ButtonBase.ToolTip>	                x:Name="IsFindVisibleToggleButton"
-                    <TextBlock>	                IsChecked="{Binding IsFindVisible}"
-                Style="{StaticResource RibbonToggleButtonStyle}">
+   </Button>
+
+   <Border Width="8"
+                    Background="Transparent"
+                    BorderBrush="Transparent" />
+
+   <Button Command="{Binding RefreshCommand}"
+                    Style="{StaticResource RibbonButtonStyle}"
+                    ToolTip="Refresh. Reload the UI Automation tree">
+    <Viewbox Style="{StaticResource ViewBoxStyle}">
+     <ContentControl Content="{StaticResource RefreshIcon}" />
+    </Viewbox>
+   </Button>
+
+   <ToggleButton x:Name="IsFindVisibleToggleButton"
+                          IsChecked="{Binding IsFindVisible}"
+                          Style="{StaticResource RibbonToggleButtonStyle}">
     <ButtonBase.ToolTip>
      <TextBlock>
-                        Display Find panel.	                        Display Find panel.
-                    </TextBlock>	     </TextBlock>
-                </ButtonBase.ToolTip>	    </ButtonBase.ToolTip>
-                <Viewbox Style="{StaticResource ViewBoxStyle}">	    <Viewbox Style="{StaticResource ViewBoxStyle}">
-                    <ContentControl Content="{StaticResource SearchIcon}" />	     <ContentControl Content="{StaticResource SearchIcon}" />
-                </Viewbox>	    </Viewbox>
-            </ToggleButton>	   </ToggleButton>
+                        Display Find panel.
+     </TextBlock>
+    </ButtonBase.ToolTip>
+    <Viewbox Style="{StaticResource ViewBoxStyle}">
+     <ContentControl Content="{StaticResource SearchIcon}" />
+    </Viewbox>
+   </ToggleButton>
 
+   <Border Width="8"
+                    Background="Transparent"
+                    BorderBrush="Transparent" />
 
-            <Border Width="8"	   <Border
-                    Background="Transparent"	                Width="8"
-                    BorderBrush="Transparent" />	                Background="Transparent"
-
-                BorderBrush="Transparent" />
-            <RadioButton GroupName="SelectionMode"	
-                         IsChecked="{Binding EnableHoverMode}"	   <RadioButton
-                         Style="{StaticResource ProcessRadioButtonStyle}">	                GroupName="SelectionMode"
-                <ButtonBase.ToolTip>	                IsChecked="{Binding EnableHoverMode}"
-                    <TextBlock>	                Style="{StaticResource ProcessRadioButtonStyle}">
+   <RadioButton GroupName="SelectionMode"
+                         IsChecked="{Binding EnableHoverMode}"
+                         Style="{StaticResource ProcessRadioButtonStyle}">
     <ButtonBase.ToolTip>
      <TextBlock>
-                        Enable HoverMode (use Ctrl).<LineBreak />	                        Enable HoverMode (use Ctrl).<LineBreak />
-                        To select control press and hold Ctrl button place mouse cursor over a coltrol.</TextBlock>	                        To select a control, press and hold Ctrl button while mouse cursor is placed over the control.</TextBlock>
-                </ButtonBase.ToolTip>	    </ButtonBase.ToolTip>
-                <Viewbox Style="{StaticResource ViewBoxStyle}">	    <Viewbox Style="{StaticResource ViewBoxStyle}">
-                    <ContentControl Content="{StaticResource HighLightSelectionModeIcon}" />	     <ContentControl Content="{StaticResource HighLightSelectionModeIcon}" />
-                </Viewbox>	    </Viewbox>
-            </RadioButton>	   </RadioButton>
+                        Enable HoverMode (use Ctrl).<LineBreak />
+                        To select control press and hold Ctrl button place mouse cursor over a coltrol.</TextBlock>
+    </ButtonBase.ToolTip>
+    <Viewbox Style="{StaticResource ViewBoxStyle}">
+     <ContentControl Content="{StaticResource HighLightSelectionModeIcon}" />
+    </Viewbox>
+   </RadioButton>
 
-
-            <RadioButton GroupName="SelectionMode"	   <RadioButton
-                         IsChecked="{Binding EnableHighLightSelectionMode}"	                GroupName="SelectionMode"
-                         Style="{StaticResource ProcessRadioButtonStyle}">	                IsChecked="{Binding EnableHighLightSelectionMode}"
-                <ButtonBase.ToolTip>	                Style="{StaticResource ProcessRadioButtonStyle}">
-                    <TextBlock>	    <ButtonBase.ToolTip>
+   <RadioButton GroupName="SelectionMode"
+                         IsChecked="{Binding EnableHighLightSelectionMode}"
+                         Style="{StaticResource ProcessRadioButtonStyle}">
+    <ButtonBase.ToolTip>
      <TextBlock>
-                        Enable Select Mode.<LineBreak />	                        Enable Select Mode.<LineBreak />
-                        Highlight selected control.</TextBlock>	                        Highlight selected control.</TextBlock>
-                </ButtonBase.ToolTip>	    </ButtonBase.ToolTip>
-                <Viewbox Style="{StaticResource ViewBoxStyle}">	    <Viewbox Style="{StaticResource ViewBoxStyle}">
-                    <ContentControl Content="{StaticResource EnableHoverModeIcon}" />	     <ContentControl Content="{StaticResource EnableHoverModeIcon}" />
-                </Viewbox>	    </Viewbox>
-            </RadioButton>	   </RadioButton>
-            <RadioButton GroupName="SelectionMode"	   <RadioButton
-                         IsChecked="{Binding EnableFocusTrackingMode}"	                GroupName="SelectionMode"
-                         Style="{StaticResource ProcessRadioButtonStyle}">	                IsChecked="{Binding EnableFocusTrackingMode}"
-                <ButtonBase.ToolTip>	                Style="{StaticResource ProcessRadioButtonStyle}">
-                    <TextBlock>	    <ButtonBase.ToolTip>
+                        Enable Select Mode.<LineBreak />
+                        Highlight selected control.</TextBlock>
+    </ButtonBase.ToolTip>
+    <Viewbox Style="{StaticResource ViewBoxStyle}">
+     <ContentControl Content="{StaticResource EnableHoverModeIcon}" />
+    </Viewbox>
+   </RadioButton>
+   <RadioButton GroupName="SelectionMode"
+                         IsChecked="{Binding EnableFocusTrackingMode}"
+                         Style="{StaticResource ProcessRadioButtonStyle}">
+    <ButtonBase.ToolTip>
      <TextBlock>
-                        Focus Tracking.<LineBreak />	                        Focus Tracking.<LineBreak />
-                        The focused control will be selected in tree.</TextBlock>	                        The focused control will be selected in tree.</TextBlock>
-                </ButtonBase.ToolTip>	    </ButtonBase.ToolTip>
-                <Viewbox Style="{StaticResource ViewBoxStyle}">	    <Viewbox Style="{StaticResource ViewBoxStyle}">
-                    <ContentControl Content="{StaticResource EnableFocusTrackingModeIcon}" />	     <ContentControl Content="{StaticResource EnableFocusTrackingModeIcon}" />
-                </Viewbox>	    </Viewbox>
-            </RadioButton>	   </RadioButton>
+                        Focus Tracking.<LineBreak />
+                        The focused control will be selected in tree.</TextBlock>
+    </ButtonBase.ToolTip>
+    <Viewbox Style="{StaticResource ViewBoxStyle}">
+     <ContentControl Content="{StaticResource EnableFocusTrackingModeIcon}" />
+    </Viewbox>
+   </RadioButton>
 
+   <Border Width="8"
+                    Background="Transparent"
+                    BorderBrush="Transparent" />
 
-            <Border Width="8"	   <Border
-                    Background="Transparent"	                Width="8"
-                    BorderBrush="Transparent" />	                Background="Transparent"
+   <Button Command="{Binding CaptureSelectedItemCommand}"
+                    Style="{StaticResource RibbonButtonStyle}">
+    <ButtonBase.ToolTip>
+     <TextBlock>
+                        Capture selected item.<LineBreak />
+                        Export to PNG file.</TextBlock>
+    </ButtonBase.ToolTip>
+    <Viewbox>
+     <ContentControl Content="{StaticResource CaptureSelectedItemIcon}" />
+    </Viewbox>
+   </Button>
 
-                BorderBrush="Transparent" />
-            <Button Command="{Binding CaptureSelectedItemCommand}"	
-                    Style="{StaticResource RibbonButtonStyle}">	   <Button Command="{Binding CaptureSelectedItemCommand}" Style="{StaticResource RibbonButtonStyle}">
-                <ButtonBase.ToolTip>	    <ButtonBase.ToolTip>
-                    <TextBlock>	     <TextBlock>
-                        Capture selected item.<LineBreak />	                        Capture selected item.<LineBreak />
-                        Export to PNG file.</TextBlock>	                        Export to PNG file.</TextBlock>
-                </ButtonBase.ToolTip>	    </ButtonBase.ToolTip>
-                <Viewbox>	    <Viewbox>
-                    <ContentControl Content="{StaticResource CaptureSelectedItemIcon}" />	     <ContentControl Content="{StaticResource CaptureSelectedItemIcon}" />
-                </Viewbox>	    </Viewbox>
-            </Button>	   </Button>
-
-
-            <Grid>	   <Grid>
-                <Button Command="{Binding CurrentElementSaveStateCommand}"	    <Button Command="{Binding CurrentElementSaveStateCommand}" Style="{StaticResource RibbonButtonStyle}">
-                        Style="{StaticResource RibbonButtonStyle}">	     <ButtonBase.ToolTip>
-                    <ButtonBase.ToolTip>	      <TextBlock>
-                        <TextBlock>	
-                            Get current element state.<LineBreak />	                            Get current element state.<LineBreak />
-                            Copy state of current element to clipboard.</TextBlock>	                            Copy state of current element to clipboard.</TextBlock>
-                    </ButtonBase.ToolTip>	     </ButtonBase.ToolTip>
-                    <Viewbox>	     <Viewbox>
-                        <ContentControl Content="{StaticResource GetStateIcon}" />	      <ContentControl Content="{StaticResource GetStateIcon}" />
-                    </Viewbox>	     </Viewbox>
-                </Button>	    </Button>
-                <Grid x:Name="CopiedNotificationCurrentElementSaveStateGrid"	    <Grid
-                      Background="DarkBlue"	                    x:Name="CopiedNotificationCurrentElementSaveStateGrid"
-                      Visibility="Collapsed">	                    Background="DarkBlue"
-                    <TextBlock HorizontalAlignment="Center"	                    Visibility="Collapsed">
-                               VerticalAlignment="Center"	     <TextBlock
-                               Foreground="White"	                        HorizontalAlignment="Center"
-                               Text="Copied." />	                        VerticalAlignment="Center"
-                </Grid>	                        Foreground="White"
-            </Grid>	                        Text="Copied." />
-
+   <Grid>
+    <Button Command="{Binding CurrentElementSaveStateCommand}"
+                        Style="{StaticResource RibbonButtonStyle}">
+     <ButtonBase.ToolTip>
+      <TextBlock>
+                            Get current element state.<LineBreak />
+                            Copy state of current element to clipboard.</TextBlock>
+     </ButtonBase.ToolTip>
+     <Viewbox>
+      <ContentControl Content="{StaticResource GetStateIcon}" />
+     </Viewbox>
+    </Button>
+    <Grid x:Name="CopiedNotificationCurrentElementSaveStateGrid"
+                      Background="DarkBlue"
+                      Visibility="Collapsed">
+     <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="White"
+                               Text="Copied." />
     </Grid>
-            <Grid>	   </Grid>
-                <Button Command="{Binding CopyDetailsToClipboardCommand}"	
-                        Style="{StaticResource RibbonButtonStyle}"	   <Grid>
-                        ToolTip="Copy current element state to clipboard">	    <Button
-                    <StackPanel Orientation="Vertical">	                    Command="{Binding CopyDetailsToClipboardCommand}"
-                        <Viewbox Width="20"	                    Style="{StaticResource RibbonButtonStyle}"
-                                 Height="20"	                    ToolTip="Copy current element state to clipboard">
-                                 Stretch="Uniform">	     <StackPanel Orientation="Vertical">
-                            <ContentControl Content="{StaticResource PropertiesIcon}" />	      <Viewbox
-                        </Viewbox>	                            Width="20"
-                    </StackPanel>	                            Height="20"
-                </Button>	                            Stretch="Uniform">
-                <Grid x:Name="CopiedNotificationGrid"	       <ContentControl Content="{StaticResource PropertiesIcon}" />
-                      Background="DarkBlue"	      </Viewbox>
-                      Visibility="Collapsed">	     </StackPanel>
-                    <TextBlock HorizontalAlignment="Center"	    </Button>
-                               VerticalAlignment="Center"	    <Grid
-                               Foreground="White"	                    x:Name="CopiedNotificationGrid"
-                               Text="Copied." />	                    Background="DarkBlue"
-                </Grid>	                    Visibility="Collapsed">
-            </Grid>	     <TextBlock
-
-                        HorizontalAlignment="Center"
-            <ToggleButton IsChecked="{Binding EnableXPath}"	                        VerticalAlignment="Center"
-                          Style="{StaticResource RibbonToggleButtonStyle}">	                        Foreground="White"
-                <ButtonBase.ToolTip>	                        Text="Copied." />
-                    <TextBlock>	    </Grid>
    </Grid>
 
-   <ToggleButton IsChecked="{Binding EnableXPath}" Style="{StaticResource RibbonToggleButtonStyle}">
+   <Grid>
+    <Button Command="{Binding CopyDetailsToClipboardCommand}"
+                        Style="{StaticResource RibbonButtonStyle}"
+                        ToolTip="Copy current element state to clipboard">
+     <StackPanel Orientation="Vertical">
+      <Viewbox Width="20"
+                                 Height="20"
+                                 Stretch="Uniform">
+       <ContentControl Content="{StaticResource PropertiesIcon}" />
+      </Viewbox>
+     </StackPanel>
+    </Button>
+    <Grid x:Name="CopiedNotificationGrid"
+                      Background="DarkBlue"
+                      Visibility="Collapsed">
+     <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="White"
+                               Text="Copied." />
+    </Grid>
+   </Grid>
+
+   <ToggleButton IsChecked="{Binding EnableXPath}"
+                          Style="{StaticResource RibbonToggleButtonStyle}">
     <ButtonBase.ToolTip>
      <TextBlock>
-                        Display XPath to the current element.	                        Display XPath to the current element.
-                    </TextBlock>	     </TextBlock>
-                </ButtonBase.ToolTip>	    </ButtonBase.ToolTip>
-                <Viewbox Style="{StaticResource ViewBoxStyle}">	    <Viewbox Style="{StaticResource ViewBoxStyle}">
-                    <ContentControl Content="{StaticResource EnableXPathIcon}" />	     <ContentControl Content="{StaticResource EnableXPathIcon}" />
-                </Viewbox>	    </Viewbox>
-            </ToggleButton>	   </ToggleButton>
-        </StackPanel>	  </StackPanel>
-        <Grid>	  <Grid>
-            <Grid.Resources />	   <Grid.Resources />
-            <Grid.ColumnDefinitions>	   <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />	    <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="5" />	    <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="1*" />	    <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>	   </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>	   <Grid.RowDefinitions>
-                <RowDefinition Height="*" />	    <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />	    <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>	   </Grid.RowDefinitions>
+                        Display XPath to the current element.
+     </TextBlock>
+    </ButtonBase.ToolTip>
+    <Viewbox Style="{StaticResource ViewBoxStyle}">
+     <ContentControl Content="{StaticResource EnableXPathIcon}" />
+    </Viewbox>
+   </ToggleButton>
+  </StackPanel>
+  <Grid>
+   <Grid.Resources />
+   <Grid.ColumnDefinitions>
+    <ColumnDefinition Width="1*" />
+    <ColumnDefinition Width="5" />
+    <ColumnDefinition Width="1*" />
+   </Grid.ColumnDefinitions>
+   <Grid.RowDefinitions>
+    <RowDefinition Height="*" />
+    <RowDefinition Height="Auto" />
+   </Grid.RowDefinitions>
 
+   <GroupBox Grid.Row="0"
+                      Grid.RowSpan="2"
+                      Grid.Column="0"
+                      Header="Elements"
+                      Style="{StaticResource GroupBoxStyle}">
+    <Grid>
+     <DockPanel LastChildFill="True">
+      <StackPanel x:Name="FindPropertiesPanel"
+                                    DockPanel.Dock="Top">
+       <controls:FindControl x:Name="FindPanel"
+                                                  IsEnabled="{Binding IsSearching, Converter={StaticResource InvertBooleanConverter}}"
+                                                  Visibility="{Binding IsChecked, ElementName=IsFindVisibleToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
+       <ProgressBar Height="3"
+                                         Margin="0,1,0,0"
+                                         IsIndeterminate="True"
+                                         Visibility="{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}}" />
+       <TextBlock Margin="4,2,0,0"
+                                       FontStyle="Italic"
+                                       Foreground="OrangeRed"
+                                       Text="Nothing found"
+                                       Visibility="{Binding SearchNotFound, Converter={StaticResource BooleanToVisibilityConverter}}" />
+      </StackPanel>
+      <ListView x:Name="TreeViewControl"
+                                  IsEnabled="{Binding IsSearching, Converter={StaticResource InvertBooleanConverter}}"
+                                  ItemsSource="{Binding Elements}"
+                                  ScrollViewer.CanContentScroll="True"
+                                  SelectedItem="{Binding SelectedItem}"
+                                  SelectionChanged="TreeOnSelectionChanged">
 
-            <GroupBox Grid.Row="0"	   <GroupBox
-                      Grid.RowSpan="2"	                Grid.Row="0"
-                      Grid.Column="0"	                Grid.RowSpan="2"
-                      Header="Elements"	                Grid.Column="0"
-                      Style="{StaticResource GroupBoxStyle}">	                Header="Elements"
-                <Grid>	                Style="{StaticResource GroupBoxStyle}">
-                    <DockPanel LastChildFill="True">	    <Grid>
-                        <StackPanel x:Name="FindPropertiesPanel"	     <DockPanel LastChildFill="True">
-                                    DockPanel.Dock="Top">	      <StackPanel x:Name="FindPropertiesPanel" DockPanel.Dock="Top">
-                            <controls:FindControl x:Name="FindPanel"	       <controls:FindControl
-                                                  IsEnabled="{Binding IsSearching, Converter={StaticResource InvertBooleanConverter}}"	                                x:Name="FindPanel"
-                                                  Visibility="{Binding IsChecked, ElementName=IsFindVisibleToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}" />	                                IsEnabled="{Binding IsSearching, Converter={StaticResource InvertBooleanConverter}}"
-                            <ProgressBar Height="3"	                                Visibility="{Binding IsChecked, ElementName=IsFindVisibleToggleButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                         Margin="0,1,0,0"	       <ProgressBar
-                                         IsIndeterminate="True"	                                Height="3"
-                                         Visibility="{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}}" />	                                Margin="0,1,0,0"
-                            <TextBlock Margin="4,2,0,0"	                                IsIndeterminate="True"
-                                       FontStyle="Italic"	                                Visibility="{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                       Foreground="OrangeRed"	       <TextBlock
-                                       Text="Nothing found"	                                Margin="4,2,0,0"
-                                       Visibility="{Binding SearchNotFound, Converter={StaticResource BooleanToVisibilityConverter}}" />	                                FontStyle="Italic"
-                        </StackPanel>	                                Foreground="OrangeRed"
-                        <ListView x:Name="TreeViewControl"	                                Text="Nothing found"
-                                  IsEnabled="{Binding IsSearching, Converter={StaticResource InvertBooleanConverter}}"	                                Visibility="{Binding SearchNotFound, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                  ItemsSource="{Binding Elements}"	      </StackPanel>
-                                  ScrollViewer.CanContentScroll="True"	      <ListView
-                                  SelectedItem="{Binding SelectedItem}"	                            x:Name="TreeViewControl"
-                                  SelectionChanged="TreeOnSelectionChanged">	                            IsEnabled="{Binding IsSearching, Converter={StaticResource InvertBooleanConverter}}"
-
-                            ItemsSource="{Binding Elements}"
-                            <ListView.ItemContainerStyle>	                            ScrollViewer.CanContentScroll="True"
-                                <Style TargetType="ListViewItem">	                            SelectedItem="{Binding SelectedItem}"
-                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />	                            SelectionChanged="TreeOnSelectionChanged">
-                                </Style>	
-                            </ListView.ItemContainerStyle>	       <ListView.ItemContainerStyle>
-
+       <ListView.ItemContainerStyle>
         <Style TargetType="ListViewItem">
-                            <ListView.ItemTemplate>	         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                                <DataTemplate>	        </Style>
-                                    <StackPanel Margin="{Binding Level, Converter={StaticResource IndentConverter}, Mode=OneWay}"	       </ListView.ItemContainerStyle>
-                                                Orientation="Horizontal">	
+         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+        </Style>
+       </ListView.ItemContainerStyle>
 
        <ListView.ItemTemplate>
-                                        <ToggleButton Width="16"	        <DataTemplate>
-                                                      Height="16"	         <StackPanel Margin="{Binding Level, Converter={StaticResource IndentConverter}, Mode=OneWay}" Orientation="Horizontal">
-                                                      Click="ToggleButton_Click"	
-                                                      Focusable="False"	          <ToggleButton
-                                                      IsChecked="{Binding IsExpanded}"	                                            Width="16"
-                                                      Style="{StaticResource ElementToggleExpanderStyle}"	                                            Height="16"
-                                                      Visibility="{Binding Children.Count, Converter={StaticResource CountToVisibilityConverter}}" />	                                            Click="ToggleButton_Click"
+        <DataTemplate>
+         <StackPanel Margin="{Binding Level, Converter={StaticResource IndentConverter}, Mode=OneWay}"
+                                                Orientation="Horizontal">
 
-                                            Focusable="False"
+          <ToggleButton Width="16"
+                                                      Height="16"
+                                                      Click="ToggleButton_Click"
+                                                      Focusable="False"
+                                                      IsChecked="{Binding IsExpanded}"
+                                                      Style="{StaticResource ElementToggleExpanderStyle}"
+                                                      Visibility="{Binding Children.Count, Converter={StaticResource CountToVisibilityConverter}}" />
 
-                                            IsChecked="{Binding IsExpanded}"
-                                        <TextBlock Margin="4,0,0,0"	                                            Style="{StaticResource ElementToggleExpanderStyle}"
-                                                   ToolTip="{Binding}">	                                            Visibility="{Binding Children.Count, Converter={StaticResource CountToVisibilityConverter}}" />
-                                            <TextBlock.Text>	
-                                                <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">	
-                                                    <Binding Path="ControlType" />	          <TextBlock Margin="4,0,0,0" ToolTip="{Binding}">
-                                                    <Binding Path="Name" />	           <TextBlock.Text>
-                                                    <Binding Path="AutomationId" />	            <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">
-                                                </MultiBinding>	             <Binding Path="ControlType" />
-                                            </TextBlock.Text>	             <Binding Path="Name" />
-                                        </TextBlock>	             <Binding Path="AutomationId" />
-                                    </StackPanel>	            </MultiBinding>
-                                </DataTemplate>	           </TextBlock.Text>
-                            </ListView.ItemTemplate>	          </TextBlock>
-                        </ListView>	         </StackPanel>
-                    </DockPanel>	        </DataTemplate>
 
+          <TextBlock Margin="4,0,0,0"
+                                                   ToolTip="{Binding}">
+           <TextBlock.Text>
+            <MultiBinding StringFormat="{}{0} &quot;{1}&quot; &quot;{2}&quot;">
+             <Binding Path="ControlType" />
+             <Binding Path="Name" />
+             <Binding Path="AutomationId" />
+            </MultiBinding>
+           </TextBlock.Text>
+          </TextBlock>
+         </StackPanel>
+        </DataTemplate>
        </ListView.ItemTemplate>
-                    <TextBlock HorizontalAlignment="Center"	      </ListView>
-                               VerticalAlignment="Center"	     </DockPanel>
-                               Text="Loading ..."	
-                               Visibility="{Binding Elements.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=EqualsZero}" />	     <TextBlock
-                </Grid>	                        HorizontalAlignment="Center"
-            </GroupBox>	                        VerticalAlignment="Center"
-            <GridSplitter Grid.Row="0"	                        Text="Loading ..."
-                          Grid.RowSpan="2"	                        Visibility="{Binding Elements.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=EqualsZero}" />
-                          Grid.Column="1"	    </Grid>
-                          HorizontalAlignment="Stretch"	   </GroupBox>
-                          Background="{DynamicResource PrimaryWindowBackgroundBrush}" />	   <GridSplitter
+      </ListView>
+     </DockPanel>
 
-                Grid.Row="0"
+     <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Text="Loading ..."
+                               Visibility="{Binding Elements.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=EqualsZero}" />
+    </Grid>
+   </GroupBox>
+   <GridSplitter Grid.Row="0"
+                          Grid.RowSpan="2"
+                          Grid.Column="1"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource PrimaryWindowBackgroundBrush}" />
 
-                Grid.RowSpan="2"
-            <GroupBox Grid.Row="0"	                Grid.Column="1"
-                      Grid.Column="2"	                HorizontalAlignment="Stretch"
-                      Header="Details"	                Background="{DynamicResource PrimaryWindowBackgroundBrush}" />
-                      Style="{StaticResource GroupBoxStyle}">	
-                <DockPanel LastChildFill="True">	
 
-   <GroupBox
-                    <Grid>	                Grid.Row="0"
-                        <DockPanel LastChildFill="True"	                Grid.Column="2"
-                                   Visibility="{Binding TreeViewControl.SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">	                Header="Details"
-                            <ScrollViewer>	                Style="{StaticResource GroupBoxStyle}">
-                                <ItemsControl ItemsSource="{Binding ElementPatterns}">	    <DockPanel LastChildFill="True">
-                                    <ItemsControl.ItemTemplate>	
-                                        <DataTemplate>	
-                                            <Grid d:DataContext="{d:DesignInstance {x:Type models:ElementPatternItem}}"	
-                                                  Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">	
-                                                <Expander IsExpanded="{Binding IsExpanded}"	
-                                                          Style="{StaticResource PatternExpanderStyle}">	
-                                                    <Expander.Header>	
-                                                        <DockPanel LastChildFill="True">	
-                                                            <Viewbox Width="16"	
-                                                                     Height="16"	
-                                                                     Margin="0,0,1,0"	
-                                                                     Stretch="Uniform">	
-                                                                <ContentControl Style="{StaticResource DetailsResourceStyle}" />	
-                                                            </Viewbox>	
-                                                            <TextBlock VerticalAlignment="Center"	
-                                                                       FontWeight="Bold"	
-                                                                       Text="{Binding PatternName}" />	
-                                                        </DockPanel>	
-                                                    </Expander.Header>	
-                                                    <ItemsControl AlternationCount="2"	
-                                                                  Foreground="{DynamicResource TextBrush}"	
-                                                                  Grid.IsSharedSizeScope="True"	
-                                                                  ItemsSource="{Binding Children}">	
-                                                        <ItemsControl.ItemTemplate>	
-                                                            <DataTemplate>	
-                                                                <Border Margin="0"	
-                                                                        Padding="0">	
-                                                                    <Border.Background>	
-                                                                        <MultiBinding Converter="{StaticResource AlternationToColorConverter}">	
-                                                                            <Binding Path="(ItemsControl.AlternationIndex)"	
-                                                                                     RelativeSource="{RelativeSource Mode=FindAncestor,	
-                                                                                                                     AncestorType=ContentPresenter}" />	
-                                                                        </MultiBinding>	
-                                                                    </Border.Background>	
-
-                                                                    <Grid>	
-                                                                        <Grid.ColumnDefinitions>	
-                                                                            <ColumnDefinition Width="130"	
-                                                                                              SharedSizeGroup="DetailColumnKey" />	
-                                                                            <ColumnDefinition Width="*" />	
-                                                                        </Grid.ColumnDefinitions>	
-                                                                        <TextBox Grid.Column="0"	
-                                                                                 IsReadOnly="True"	
-                                                                                 Text="{Binding Key}">	
-                                                                            <TextBox.Style>	
-                                                                                <Style BasedOn="{StaticResource SelectableLabel}"	
-                                                                                       TargetType="{x:Type TextBox}">	
-                                                                                    <Style.Triggers>	
-                                                                                        <DataTrigger Binding="{Binding Value}"	
-                                                                                                     Value="Yes">	
-                                                                                            <Setter Property="FontWeight" Value="Bold" />	
-                                                                                        </DataTrigger>	
-                                                                                    </Style.Triggers>	
-                                                                                </Style>	
-                                                                            </TextBox.Style>	
-                                                                        </TextBox>	
-                                                                        <TextBox Grid.Column="1"	
-                                                                                 Margin="5,0,0,0"	
-                                                                                 IsReadOnly="True"	
-                                                                                 Text="{Binding Value}"	
-                                                                                 TextWrapping="Wrap">	
-                                                                            <TextBox.Style>	
-                                                                                <Style BasedOn="{StaticResource SelectableLabel}"	
-                                                                                       TargetType="{x:Type TextBox}">	
-                                                                                    <Style.Triggers>	
-                                                                                        <DataTrigger Binding="{Binding Value}"	
-                                                                                                     Value="Yes">	
-                                                                                            <Setter Property="TextBox.Foreground" Value="Green" />	
-                                                                                            <Setter Property="FontWeight" Value="Bold" />	
-                                                                                        </DataTrigger>	
-                                                                                    </Style.Triggers>	
-                                                                                </Style>	
-                                                                            </TextBox.Style>	
-                                                                        </TextBox>	
-                                                                        <Button Grid.Column="1"	
-                                                                                Click="InvokePatternActionHandler"	
-                                                                                Content="{Binding Value}">	
-                                                                            <Button.Style>	
-                                                                                <Style TargetType="{x:Type Button}">	
-                                                                                    <Setter Property="Visibility" Value="Hidden" />	
-                                                                                    <Style.Triggers>	
-                                                                                        <DataTrigger Binding="{Binding HasExecutableAction}"	
-                                                                                                     Value="True">	
-                                                                                            <Setter Property="Visibility" Value="Visible" />	
-                                                                                        </DataTrigger>	
-                                                                                    </Style.Triggers>	
-                                                                                </Style>	
-                                                                            </Button.Style>	
-                                                                        </Button>	
-                                                                    </Grid>	
-                                                                </Border>	
-                                                            </DataTemplate>	
-                                                        </ItemsControl.ItemTemplate>	
-                                                    </ItemsControl>	
-                                                </Expander>	
-                                            </Grid>	
-                                        </DataTemplate>	
-                                    </ItemsControl.ItemTemplate>	
-                                </ItemsControl>	
-                            </ScrollViewer>	
-                        </DockPanel>	
-                        <TextBlock HorizontalAlignment="Center"	
-                                   VerticalAlignment="Center"	
-                                   Text="Select item in tree ..."	
-                                   Visibility="{Binding Elements.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=EqualsZero}" />	
-                    </Grid>	
-                </DockPanel>	
-
-            </GroupBox>	
-
-            <GroupBox Grid.Row="1"	
-                      Grid.Column="2"	
-                      Margin="0,4"	
-                      Header="XPath"	
-                      Style="{StaticResource GroupBoxStyle}"	
-                      Visibility="{Binding EnableXPath, Converter={StaticResource BooleanToVisibilityConverter}}">	
-                <TextBlock Text="{Binding SelectedItem.XPath, ElementName=TreeViewControl}" />	
-            </GroupBox>	
-        </Grid>	
-
+   <GroupBox Grid.Row="0"
+                      Grid.Column="2"
+                      Header="Details"
+                      Style="{StaticResource GroupBoxStyle}">
+    <DockPanel LastChildFill="True">
 
      <Grid>
-      <DockPanel LastChildFill="True" Visibility="{Binding TreeViewControl.SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">
+      <DockPanel LastChildFill="True"
+                                   Visibility="{Binding TreeViewControl.SelectedItem, Converter={StaticResource NullToVisibilityConverter}}">
        <ScrollViewer>
         <ItemsControl ItemsSource="{Binding ElementPatterns}">
          <ItemsControl.ItemTemplate>
           <DataTemplate>
-           <Grid d:DataContext="{d:DesignInstance {x:Type models:ElementPatternItem}}" Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Expander IsExpanded="{Binding IsExpanded}" Style="{StaticResource PatternExpanderStyle}">
+           <Grid d:DataContext="{d:DesignInstance {x:Type models:ElementPatternItem}}"
+                                                  Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Expander IsExpanded="{Binding IsExpanded}"
+                                                          Style="{StaticResource PatternExpanderStyle}">
              <Expander.Header>
               <DockPanel LastChildFill="True">
-               <Viewbox
-                                                                Width="16"
-                                                                Height="16"
-                                                                Margin="0,0,1,0"
-                                                                Stretch="Uniform">
+               <Viewbox Width="16"
+                                                                     Height="16"
+                                                                     Margin="0,0,1,0"
+                                                                     Stretch="Uniform">
                 <ContentControl Style="{StaticResource DetailsResourceStyle}" />
                </Viewbox>
-               <TextBlock
-                                                                VerticalAlignment="Center"
-                                                                FontWeight="Bold"
-                                                                Text="{Binding PatternName}" />
+               <TextBlock VerticalAlignment="Center"
+                                                                       FontWeight="Bold"
+                                                                       Text="{Binding PatternName}" />
               </DockPanel>
              </Expander.Header>
-             <ItemsControl
-                                                        AlternationCount="2"
-                                                        Foreground="{DynamicResource TextBrush}"
-                                                        Grid.IsSharedSizeScope="True"
-                                                        ItemsSource="{Binding Children}">
+             <ItemsControl AlternationCount="2"
+                                                                  Foreground="{DynamicResource TextBrush}"
+                                                                  Grid.IsSharedSizeScope="True"
+                                                                  ItemsSource="{Binding Children}">
               <ItemsControl.ItemTemplate>
                <DataTemplate>
-                <Border Margin="0" Padding="0">
+                <Border Margin="0"
+                                                                        Padding="0">
                  <Border.Background>
                   <MultiBinding Converter="{StaticResource AlternationToColorConverter}">
-                   <Binding Path="(ItemsControl.AlternationIndex)" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ContentPresenter}" />
+                   <Binding Path="(ItemsControl.AlternationIndex)"
+                                                                                     RelativeSource="{RelativeSource Mode=FindAncestor,
+                                                                                                                     AncestorType=ContentPresenter}" />
                   </MultiBinding>
                  </Border.Background>
 
                  <Grid>
                   <Grid.ColumnDefinitions>
-                   <ColumnDefinition Width="130" SharedSizeGroup="DetailColumnKey" />
+                   <ColumnDefinition Width="130"
+                                                                                              SharedSizeGroup="DetailColumnKey" />
                    <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
-                  <TextBox
-                                                                            Grid.Column="0"
-                                                                            IsReadOnly="True"
-                                                                            Text="{Binding Key}">
+                  <TextBox Grid.Column="0"
+                                                                                 IsReadOnly="True"
+                                                                                 Text="{Binding Key}">
                    <TextBox.Style>
-                    <Style BasedOn="{StaticResource SelectableLabel}" TargetType="{x:Type TextBox}">
+                    <Style BasedOn="{StaticResource SelectableLabel}"
+                                                                                       TargetType="{x:Type TextBox}">
                      <Style.Triggers>
-                      <DataTrigger Binding="{Binding Value}" Value="Yes">
+                      <DataTrigger Binding="{Binding Value}"
+                                                                                                     Value="Yes">
                        <Setter Property="FontWeight" Value="Bold" />
                       </DataTrigger>
                      </Style.Triggers>
                     </Style>
                    </TextBox.Style>
                   </TextBox>
-                  <TextBox
-                                                                            Grid.Column="1"
-                                                                            Margin="5,0,0,0"
-                                                                            IsReadOnly="True"
-                                                                            Text="{Binding Value}"
-                                                                            TextWrapping="Wrap">
+                  <TextBox Grid.Column="1"
+                                                                                 Margin="5,0,0,0"
+                                                                                 IsReadOnly="True"
+                                                                                 Text="{Binding Value}"
+                                                                                 TextWrapping="Wrap">
                    <TextBox.Style>
-                    <Style BasedOn="{StaticResource SelectableLabel}" TargetType="{x:Type TextBox}">
+                    <Style BasedOn="{StaticResource SelectableLabel}"
+                                                                                       TargetType="{x:Type TextBox}">
                      <Style.Triggers>
-                      <DataTrigger Binding="{Binding Value}" Value="Yes">
+                      <DataTrigger Binding="{Binding Value}"
+                                                                                                     Value="Yes">
                        <Setter Property="TextBox.Foreground" Value="Green" />
                        <Setter Property="FontWeight" Value="Bold" />
                       </DataTrigger>
@@ -641,15 +421,15 @@ Original file line number	Original file line	Diff line number	Diff line change
                     </Style>
                    </TextBox.Style>
                   </TextBox>
-                  <Button
-                                                                            Grid.Column="1"
-                                                                            Click="InvokePatternActionHandler"
-                                                                            Content="{Binding Value}">
+                  <Button Grid.Column="1"
+                                                                                Click="InvokePatternActionHandler"
+                                                                                Content="{Binding Value}">
                    <Button.Style>
                     <Style TargetType="{x:Type Button}">
                      <Setter Property="Visibility" Value="Hidden" />
                      <Style.Triggers>
-                      <DataTrigger Binding="{Binding HasExecutableAction}" Value="True">
+                      <DataTrigger Binding="{Binding HasExecutableAction}"
+                                                                                                     Value="True">
                        <Setter Property="Visibility" Value="Visible" />
                       </DataTrigger>
                      </Style.Triggers>
@@ -668,26 +448,23 @@ Original file line number	Original file line	Diff line number	Diff line change
         </ItemsControl>
        </ScrollViewer>
       </DockPanel>
-      <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="Select item in tree ..."
-                            Visibility="{Binding Elements.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=EqualsZero}" />
+      <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Text="Select item in tree ..."
+                                   Visibility="{Binding Elements.Count, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=EqualsZero}" />
      </Grid>
-    </DockPanel>	    </DockPanel>
+    </DockPanel>
 
    </GroupBox>
 
-   <GroupBox
-                Grid.Row="1"
-                Grid.Column="2"
-                Margin="0,4"
-                Header="XPath"
-                Style="{StaticResource GroupBoxStyle}"
-                Visibility="{Binding EnableXPath, Converter={StaticResource BooleanToVisibilityConverter}}">
+   <GroupBox Grid.Row="1"
+                      Grid.Column="2"
+                      Margin="0,4"
+                      Header="XPath"
+                      Style="{StaticResource GroupBoxStyle}"
+                      Visibility="{Binding EnableXPath, Converter={StaticResource BooleanToVisibilityConverter}}">
     <TextBlock Text="{Binding SelectedItem.XPath, ElementName=TreeViewControl}" />
    </GroupBox>
   </Grid>
-
  </DockPanel>
 </Window>
