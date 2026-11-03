@@ -142,7 +142,7 @@
                 <ButtonBase.ToolTip>
                     <TextBlock>
                         Enable HoverMode (use Ctrl).<LineBreak />
-                        To select control press and hold Ctrl button place mouse cursor over a coltrol.</TextBlock>
+                        To select a control, press and hold Ctrl button while mouse cursor is placed over the control.</TextBlock>
                 </ButtonBase.ToolTip>
                 <Viewbox Style="{StaticResource ViewBoxStyle}">
                     <ContentControl Content="{StaticResource HighLightSelectionModeIcon}" />
