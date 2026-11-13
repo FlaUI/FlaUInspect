@@ -14,7 +14,6 @@ public sealed class InternalLogger : ILogger {
 
     public event EventHandler? LogEvent;
 
-
     private void OnLogEvent() {
         LogEvent?.Invoke(this, EventArgs.Empty);
     }

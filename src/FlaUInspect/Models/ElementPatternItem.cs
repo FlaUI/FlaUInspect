@@ -4,8 +4,7 @@ using FlaUInspect.ViewModels;
 
 namespace FlaUInspect.Models;
 
-public class ElementPatternItem(string patternName, string patternIdName, bool isVisible = true, bool isExpanded = false)
-    : ObservableObject {
+public class ElementPatternItem(string patternName, string patternIdName, bool isVisible = true, bool isExpanded = false) : ObservableObject {
     private bool _isExpanded = isExpanded;
     private bool _isVisible = isVisible;
 
@@ -22,5 +21,8 @@ public class ElementPatternItem(string patternName, string patternIdName, bool i
     }
 
     // ReSharper disable once CollectionNeverQueried.Global
-    public ObservableCollection<PatternItem> Children { get; } = [];
+    public ObservableCollection<PatternItem>? Children {
+        get => GetProperty<ObservableCollection<PatternItem>>();
+        set => SetProperty(value);
+    }
 }

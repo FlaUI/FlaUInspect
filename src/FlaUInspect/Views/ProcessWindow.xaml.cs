@@ -1,0 +1,134 @@
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
+using System.Windows.Threading;
+using FlaUI.Core.AutomationElements;
+using FlaUInspect.ViewModels;
+using Button = System.Windows.Controls.Button;
+using ToggleButton = System.Windows.Controls.Primitives.ToggleButton;
+using Window = System.Windows.Window;
+
+namespace FlaUInspect.Views;
+
+public partial class ProcessWindow : Window {
+    public ProcessWindow() {
+        InitializeComponent();
+        Closed += ProcessWindow_Closed;
+        Loaded += MainWindow_Loaded;
+    }
+
+    private void MainWindow_Loaded(object sender, EventArgs e) {
+        if (DataContext is ProcessViewModel processViewModel) {
+            processViewModel.CopiedNotificationRequested += ShowCopiedNotification;
+            processViewModel.CopiedNotificationCurrentElementSaveStateRequested += ShowCopiedNotificationCurrentElementSaveStateRequested;
+            processViewModel.ProcessExited += OnProcessExited;
+
+            // Wire up FindControl ↔ ProcessViewModel
+            FindPanel.FindNextRequested += (_, criteria) => processViewModel.FindNext(criteria);
+            FindPanel.FindPrevRequested += (_, criteria) => processViewModel.FindPrev(criteria);
+            FindPanel.CriteriaChanged += (_, _) => processViewModel.ResetSearch();
+        }
+    }
+
+    private void OnProcessExited() {
+        if (!App.FlaUiAppOptions.AutoCloseOnProcessExit) return;
+
+        // Close() at Normal priority first; show StartupWindow at Background priority
+        // (Background = 4 < Normal = 9, so it runs AFTER Close and all its Closed-event handlers)
+        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => Close());
+        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, () => {
+            if (Application.Current.Windows.OfType<ProcessWindow>().Any()) return;
+            if (Application.Current.MainWindow is StartupWindow startupWindow) {
+                startupWindow.Show();
+                (startupWindow.DataContext as StartupViewModel)?.RefreshCommand.Execute(null);
+            }
+        });
+    }
+
+    private async void ShowCopiedNotification() {
+        CopiedNotificationGrid.Visibility = Visibility.Visible;
+        DoubleAnimation animation = new (1, 0, TimeSpan.FromSeconds(1));
+        CopiedNotificationGrid.BeginAnimation(OpacityProperty, animation);
+        await Task.Delay(1000);
+        CopiedNotificationGrid.Visibility = Visibility.Collapsed;
+    }
+
+    private async void ShowCopiedNotificationCurrentElementSaveStateRequested() {
+        CopiedNotificationCurrentElementSaveStateGrid.Visibility = Visibility.Visible;
+        DoubleAnimation animation = new (1, 0, TimeSpan.FromSeconds(1));
+        CopiedNotificationCurrentElementSaveStateGrid.BeginAnimation(OpacityProperty, animation);
+        await Task.Delay(1000);
+        CopiedNotificationCurrentElementSaveStateGrid.Visibility = Visibility.Collapsed;
+    }
+
+    private void ProcessWindow_Closed(object? sender, EventArgs e) {
+        if (Application.Current.Windows.Count == 1 && Application.Current.MainWindow is StartupWindow startupWindow) {
+            if (DataContext is ProcessViewModel processViewModel) {
+                if (processViewModel.ClosingCommand.CanExecute(DataContext)) {
+                    processViewModel.ClosingCommand.Execute(DataContext);
+                }
+            }
+            startupWindow.Show();
+            (startupWindow.DataContext as StartupViewModel)?.RefreshCommand.Execute(null);
+        }
+    }
+
+    private void SelectWindowClick(object sender, RoutedEventArgs e) {
+        (Application.Current.MainWindow as StartupWindow)?.Show();
+    }
+
+    private void TreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) {
+        if (DataContext is ProcessViewModel processViewModel) {
+            processViewModel.SelectedItem = e.NewValue as ElementViewModel;
+        }
+    }
+
+    private void InvokePatternActionHandler(object sender, RoutedEventArgs e) {
+        PatternItem? vm = (sender as Button)?.DataContext as PatternItem;
+
+        if (vm?.Action != null) {
+            Task.Run(() => {
+                vm.Action();
+            });
+        }
+    }
+
+    private void TreeOnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+        ListViewItem? container = TreeViewControl.ItemContainerGenerator.ContainerFromItem(TreeViewControl.SelectedItem) as ListViewItem;
+        container?.BringIntoView();
+    }
+
+    private void ToggleButton_Click(object sender, RoutedEventArgs e) {
+        ToggleButton? expandToggleButton = sender as ToggleButton;
+
+        if (expandToggleButton == null) {
+            return;
+        }
+
+        ProcessViewModel? processViewModel = DataContext as ProcessViewModel;
+        ElementViewModel? elementViewModel = expandToggleButton.DataContext as ElementViewModel;
+
+        if (processViewModel == null) {
+            return;
+        }
+
+        if (elementViewModel == null) {
+            return;
+        }
+
+        if (expandToggleButton.IsChecked == true) {
+            AutomationElement? automationElement = elementViewModel?.AutomationElement;
+            processViewModel?.ElementToSelectChanged(automationElement, true);
+        } else if (expandToggleButton.IsChecked == false) {
+            processViewModel.CollapseElement(elementViewModel);
+        }
+    }
+
+    private void ProcessWindowOnClosed(object? sender, EventArgs e) {
+        if (DataContext is ProcessViewModel processViewModel) {
+            if (processViewModel.ClosingCommand.CanExecute(DataContext)) {
+                processViewModel.ClosingCommand.Execute(DataContext);
+            }
+        }
+    }
+}

@@ -10,3 +10,6 @@ obj/
 
 # Artifacts
 artifacts/
+src/.idea/
+*.user
+desktop.ini

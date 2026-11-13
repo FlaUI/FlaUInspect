@@ -6,10 +6,10 @@ namespace FlaUInspect.Core;
 public static class TreeViewItemBringIntoViewBehavior {
     public static readonly DependencyProperty MonitorSelectionProperty =
         DependencyProperty.RegisterAttached(
-            "MonitorSelection",
-            typeof(bool),
-            typeof(TreeViewItemBringIntoViewBehavior),
-            new PropertyMetadata(false, OnMonitorSelectionChanged));
+                                            "MonitorSelection",
+                                            typeof(bool),
+                                            typeof(TreeViewItemBringIntoViewBehavior),
+                                            new PropertyMetadata(false, OnMonitorSelectionChanged));
 
     public static bool GetMonitorSelection(DependencyObject obj) {
         return (bool)obj.GetValue(MonitorSelectionProperty);

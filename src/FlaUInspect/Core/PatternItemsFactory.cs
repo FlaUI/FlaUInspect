@@ -294,7 +294,7 @@ public class PatternItemsFactory(AutomationBase? automationBase) {
     }
 
     private static string GetTextAttribute<T>(AutomationElement element, ITextPattern pattern,
-        TextAttributeId textAttribute, object mixedValue, Func<T, string> func) {
+                                              TextAttributeId textAttribute, object mixedValue, Func<T, string> func) {
         object value = pattern.DocumentRange.GetAttributeValue(textAttribute);
 
         if (value == mixedValue) {

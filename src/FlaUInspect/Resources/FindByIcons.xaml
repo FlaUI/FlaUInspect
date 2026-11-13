@@ -1,0 +1,331 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  Shared path/ellipse styles so each element stays compact  -->
+    <Style x:Key="FbPath"
+           TargetType="Path">
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="StrokeStartLineCap" Value="Round" />
+        <Setter Property="StrokeEndLineCap" Value="Round" />
+        <Setter Property="StrokeLineJoin" Value="Round" />
+        <Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+    </Style>
+    <Style x:Key="FbEllipse"
+           TargetType="Ellipse">
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+    </Style>
+
+    <!--  1. AutomationId – 8 rays + centre square  -->
+    <Canvas x:Key="FindByAutomationIdIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M12,2 V4 M12,20 V22 M4.93,4.93 L6.34,6.34 M17.66,17.66 L19.07,19.07 M2,12 H4 M20,12 H22 M6.34,17.66 L4.93,19.07 M19.07,4.93 L17.66,6.34"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M10,9 H14 A1,1 0 0 1 15,10 V14 A1,1 0 0 1 14,15 H10 A1,1 0 0 1 9,14 V10 A1,1 0 0 1 10,9 Z"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  2. ControlType – two rects + circle + triangle  -->
+    <Canvas x:Key="FindByControlTypeIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M4,3 H9 A1,1 0 0 1 10,4 V9 A1,1 0 0 1 9,10 H4 A1,1 0 0 1 3,9 V4 A1,1 0 0 1 4,3 Z"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M15,14 H20 A1,1 0 0 1 21,15 V20 A1,1 0 0 1 20,21 H15 A1,1 0 0 1 14,20 V15 A1,1 0 0 1 15,14 Z"
+              Style="{StaticResource FbPath}" />
+        <Ellipse Canvas.Left="3"
+                 Canvas.Top="14"
+                 Width="7"
+                 Height="7"
+                 Style="{StaticResource FbEllipse}" />
+        <Path Data="M17.5,3.5 L21,7 L14,7 Z"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  3. ClassName – curly braces  -->
+    <Canvas x:Key="FindByClassNameIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M10,19 c-2,0 -3,-1 -3,-3 V12 c0,-1 -1,-2 -2,-2 c1,0 2,-1 2,-2 V8 c0,-2 1,-3 3,-3"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M14,5 c2,0 3,1 3,3 v4 c0,1 1,2 2,2 c-1,0 -2,1 -2,2 v4 c0,2 -1,3 -3,3"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  4. Name – ID card with person  -->
+    <Canvas x:Key="FindByNameIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M5,4 H19 A2,2 0 0 1 21,6 V18 A2,2 0 0 1 19,20 H5 A2,2 0 0 1 3,18 V6 A2,2 0 0 1 5,4 Z"
+              Style="{StaticResource FbPath}" />
+        <Ellipse Canvas.Left="7"
+                 Canvas.Top="9"
+                 Width="4"
+                 Height="4"
+                 Style="{StaticResource FbEllipse}" />
+        <Path Data="M6,17 C6,15.5 7.5,14.5 9,14.5 S12,16 12,17"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M15,10 H18 M15,14 H18"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  5. Text – T with baseline  -->
+    <Canvas x:Key="FindByTextIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M4,7 L4,4 L20,4 L20,7 M12,4 V20 M9,20 H15"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  6. FrameworkId – 3-D box  -->
+    <Canvas x:Key="FindByFrameworkIdIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M21,16 V8 a2,2 0 0 0 -1,-1.73 l-7,-4 a2,2 0 0 0 -2,0 l-7,4 A2,2 0 0 0 3,8 v8 a2,2 0 0 0 1,1.73 l7,4 a2,2 0 0 0 2,0 l7,-4 A2,2 0 0 0 21,16 Z"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M3.27,6.96 L12,12.01 L20.73,6.96"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M12,22.08 V12"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  7. FrameworkType – table / grid  -->
+    <Canvas x:Key="FindByFrameworkTypeIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M22,3 H2 V21 H22 Z"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M2,7 H22"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M12,7 V21"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  8. ProcessId – CPU chip  -->
+    <Canvas x:Key="FindByProcessIdIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M7,5 H17 A2,2 0 0 1 19,7 V17 A2,2 0 0 1 17,19 H7 A2,2 0 0 1 5,17 V7 A2,2 0 0 1 7,5 Z"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M9,1 H7 V5 H9 V1 Z M17,1 H15 V5 H17 V1 Z M9,19 H7 V23 H9 V19 Z M17,19 H15 V23 H17 V19 Z M1,9 V11 H5 V9 H1 Z M1,15 V17 H5 V15 H1 Z M19,9 V11 H23 V9 H19 Z M19,15 V17 H23 V15 H19 Z"
+              Style="{StaticResource FbPath}" />
+        <Ellipse Canvas.Left="10"
+                 Canvas.Top="10"
+                 Width="4"
+                 Height="4"
+                 Style="{StaticResource FbEllipse}" />
+    </Canvas>
+
+    <!--  9. LocalizedControlType – globe  -->
+    <Canvas x:Key="FindByLocalizedControlTypeIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Ellipse Canvas.Left="2"
+                 Canvas.Top="2"
+                 Width="20"
+                 Height="20"
+                 Style="{StaticResource FbEllipse}" />
+        <Path Data="M12,2 a14.5,14.5 0 0 0 0,20 a14.5,14.5 0 0 0 0,-20"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M2,12 H22"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  10. HelpText – speech bubble with ?  -->
+    <Canvas x:Key="FindByHelpTextIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M21,15 a2,2 0 0 1 -2,2 H7 L3,21 V5 a2,2 0 0 1 2,-2 H19 a2,2 0 0 1 2,2 Z"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M9.09,9 a3,3 0 0 1 5.83,1 c0,2 -3,3 -3,3"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M12,17 L12.01,17"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  11. Value – bar chart inside rect  -->
+    <Canvas x:Key="FindByValueIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M5,5 H19 A2,2 0 0 1 21,7 V17 A2,2 0 0 1 19,19 H5 A2,2 0 0 1 3,17 V7 A2,2 0 0 1 5,5 Z"
+              Style="{StaticResource FbPath}" />
+        <Path Data="M7,5 V10 M12,5 V12 M17,5 V10"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  ══ Match-mode icons ══════════════════════════════════════════════════  -->
+
+    <!--  None / Exact – circle with diagonal slash  -->
+    <Canvas x:Key="FindByFlagsNoneIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Ellipse Canvas.Left="2"
+                 Canvas.Top="2"
+                 Width="20"
+                 Height="20"
+                 Style="{StaticResource FbEllipse}" />
+        <Path Data="M4.93,4.93 L19.07,19.07"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  IgnoreCase – "Aa" (capital A + small a)  -->
+    <Canvas x:Key="FindByFlagsIgnoreCaseIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <!--  capital A with crossbar  -->
+        <Path Data="M4,19 L9,4 L14,19 M6,14 H12"
+              Style="{StaticResource FbPath}" />
+        <!--  small a: circle + right vertical bar  -->
+        <Ellipse Canvas.Left="15"
+                 Canvas.Top="12"
+                 Width="6"
+                 Height="6"
+                 Style="{StaticResource FbEllipse}" />
+        <Path Data="M21,12 V19"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  MatchSubstring – text lines + magnifying glass  -->
+    <Canvas x:Key="FindByFlagsMatchSubstringIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <!--  top and bottom lines (normal weight)  -->
+        <Path Data="M2,6 H14 M2,18 H14"
+              Style="{StaticResource FbPath}" />
+        <!--  middle line – thick (highlighted match)  -->
+        <Path Data="M2,12 H10"
+              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"
+              StrokeEndLineCap="Round"
+              StrokeStartLineCap="Round"
+              StrokeThickness="3" />
+        <!--  magnifying glass: circle + handle  -->
+        <Ellipse Canvas.Left="12"
+                 Canvas.Top="9"
+                 Width="8"
+                 Height="8"
+                 Style="{StaticResource FbEllipse}" />
+        <Path Data="M19,16 L22,19"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  Arrow Up  -->
+    <Canvas x:Key="ArrowUpwardIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M 10.890822,20.873425 V 7.3691748 L 4.6794269,13.580585 3.1265781,11.999995 12,3.1265749 l 8.873422,8.8734201 -1.55285,1.58059 -6.211395,-6.2114101 V 20.873425 Z"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  Arrow Up  -->
+    <Canvas x:Key="ArrowDownwardIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M 10.872472,2.9797785 V 16.707428 L 4.5583172,10.393273 2.9797785,12 12,21.020222 21.020222,12 19.441683,10.393273 13.127528,16.707428 V 2.9797785 Z"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  LoadedTreeOnly – document lines with scroll up/down arrows  -->
+    <Canvas x:Key="LoadedTreeOnlyIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <!--  folder-tab / first tree row  -->
+        <Path Data="M6.5,7 h4 l1.5,1.5 h5.5"
+              Style="{StaticResource FbPath}" />
+        <!--  tree rows  -->
+        <Path Data="M6.5,11.5 h10 M6.5,16 h10 M6.5,20.5 h6"
+              Style="{StaticResource FbPath}" />
+        <!--  scroll track  -->
+        <Path Data="M19,5.5 v14"
+              Style="{StaticResource FbPath}" />
+        <!--  up arrow  -->
+        <Path Data="M16.5,8 l2.5,-2.5 l2.5,2.5"
+              Style="{StaticResource FbPath}" />
+        <!--  down arrow  -->
+        <Path Data="M16.5,17 l2.5,2.5 l2.5,-2.5"
+              Style="{StaticResource FbPath}" />
+    </Canvas>
+
+    <!--  ChildrenOfSelectedOnly – parent node connected to two child nodes  -->
+    <Canvas x:Key="ChildrenOfSelectedOnlyIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <!--  parent node  -->
+        <Ellipse Canvas.Left="10"
+                 Canvas.Top="5"
+                 Width="4"
+                 Height="4"
+                 Style="{StaticResource FbEllipse}" />
+        <!--  vertical stem from parent  -->
+        <Path Data="M12,9 v4.5"
+              Style="{StaticResource FbPath}" />
+        <!--  left branch: horizontal then down  -->
+        <Path Data="M12,11.5 H7 v3.5"
+              Style="{StaticResource FbPath}" />
+        <!--  right branch: horizontal then down  -->
+        <Path Data="M12,11.5 h5 v3.5"
+              Style="{StaticResource FbPath}" />
+        <!--  centre vertical to bottom connector  -->
+        <Path Data="M12,13.5 v4 M12,17.5 h-5 M12,17.5 h5"
+              Style="{StaticResource FbPath}" />
+        <!--  left child node  -->
+        <Ellipse Canvas.Left="5.5"
+                 Canvas.Top="16"
+                 Width="3"
+                 Height="3"
+                 Style="{StaticResource FbEllipse}" />
+        <!--  right child node  -->
+        <Ellipse Canvas.Left="15.5"
+                 Canvas.Top="16"
+                 Width="3"
+                 Height="3"
+                 Style="{StaticResource FbEllipse}" />
+    </Canvas>
+
+    <!--  Arrow Up  -->
+    <Canvas x:Key="SearchIcon"
+            Width="24"
+            Height="24"
+            x:Shared="False"
+            UseLayoutRounding="False">
+        <Path Data="M 0.46554087,19.497399 V 17.190507 H 12 v 2.306892 z m 0,-5.76723 V 11.423277 H 6.2327704 v 2.306892 z m 0,-5.7672297 V 5.6560475 H 6.2327704 V 7.9629393 Z M 21.919635,19.497399 17.478868,15.056631 q -0.692068,0.490215 -1.513898,0.735322 -0.82183,0.245108 -1.658078,0.245108 -2.3934,0 -4.080315,-1.686915 -1.6869147,-1.686914 -1.6869147,-4.080315 0,-2.3934001 1.6869147,-4.0803148 1.686915,-1.6869146 4.080315,-1.6869146 2.3934,0 4.080315,1.6869146 1.686914,1.6869147 1.686914,4.0803148 0,0.836249 -0.245107,1.658079 -0.245107,0.82183 -0.735322,1.513897 l 4.440767,4.440767 z m -7.612743,-5.76723 q 1.441807,0 2.451073,-1.009265 1.009265,-1.009266 1.009265,-2.451073 0,-1.4418072 -1.009265,-2.4510724 -1.009266,-1.0092652 -2.451073,-1.0092652 -1.441808,0 -2.451072,1.0092652 -1.009266,1.0092652 -1.009266,2.4510724 0,1.441807 1.009266,2.451073 1.009264,1.009265 2.451072,1.009265 z"
+              Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+    </Canvas>
+
+</ResourceDictionary>

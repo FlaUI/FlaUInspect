@@ -59,4 +59,14 @@ public abstract class ObservableObject : INotifyPropertyChanged {
         // Alternative: EqualityComparer<T>.Default.Equals(field, newValue);
         return Equals(field, newValue);
     }
+
+    public void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
+        RaisePropertyChanged(new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected virtual void RaisePropertyChanged(PropertyChangedEventArgs args) {
+        PropertyChangedEventHandler? copy = PropertyChanged;
+        if (copy != null)
+            copy(this, args);
+    }
 }

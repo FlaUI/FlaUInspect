@@ -1,0 +1,19 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="ScrollableHeaderedControl"
+           BasedOn="{StaticResource {x:Type HeaderedContentControl}}"
+           TargetType="HeaderedContentControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="HeaderedContentControl">
+                    <DockPanel LastChildFill="True">
+                        <ContentControl Content="{TemplateBinding Header}"
+                                        DockPanel.Dock="Top" />
+                        <ContentPresenter />
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+</ResourceDictionary>
