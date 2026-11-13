@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <TargetFramework>net11.0-windows10.0.19041.0</TargetFramework>
         <UseWPF>true</UseWPF>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -28,9 +28,9 @@
         <PackageReference Include="FlaUI.Core" Version="5.0.0"/>
         <PackageReference Include="FlaUI.UIA2" Version="5.0.0"/>
         <PackageReference Include="FlaUI.UIA3" Version="5.0.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="11.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="11.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
